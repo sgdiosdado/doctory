@@ -1,0 +1,39 @@
+version: "3.8"
+   
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=doctory
+      - POSTGRES_USER=doctory
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  doctory:
+    build: ./doctory
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./doctory:/doctory
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+    depends_on:
+      - db
+    stdin_open: true
+    tty: true
+    environment:
+      - POSTGRES_DB=doctory
+      - POSTGRES_USER=doctory
+      - POSTGRES_PASSWORD=postgres
+
+  app:
+    build: ./app
+    command: yarn start
+    volumes:
+      - ./app:/app
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:
