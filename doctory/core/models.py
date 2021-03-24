@@ -2,16 +2,17 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.db.models.fields.related import OneToOneField
-
-from .utils import AutoDateTimeField
 from django.utils import timezone
 
+from .utils import AutoDateTimeField
+
+
 class UserTypes(models.TextChoices):
-    PACIENT = 'PAC', 'Pacient'
+    PATIENT = 'PAC', 'Patient'
     MEDIC = 'MED', 'Medic'
 
 def set_default_user_type():
-    return [UserTypes.PACIENT]
+    return [UserTypes.PATIENT]
 
 
 class User(AbstractUser):
@@ -24,9 +25,9 @@ class User(AbstractUser):
         return self.username
 
 
-class PacientManager(models.Manager):
+class PatientManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
-        return super().get_queryset(*args, **kwargs).filter(type__contains=[UserTypes.PACIENT])
+        return super().get_queryset(*args, **kwargs).filter(type__contains=[UserTypes.PATIENT])
 
 
 class MedicManager(models.Manager):
@@ -34,19 +35,19 @@ class MedicManager(models.Manager):
         return super().get_queryset(*args, **kwargs).filter(type__contains=[UserTypes.MEDIC])
 
 
-class Pacient(User):
-    objects = PacientManager()
+class Patient(User):
+    objects = PatientManager()
 
     class Meta:
         proxy = True
     
     @property
     def more(self):
-        return self.pacientmore
+        return self.patientmore
     
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.type = [UserTypes.PACIENT]
+            self.type = [UserTypes.PATIENT]
         return super().save(*args, **kwargs)
 
 
@@ -66,7 +67,7 @@ class Medic(User):
         return super().save(*args, **kwargs)
 
 
-class PacientMore(models.Model):
+class PatientMore(models.Model):
     user = OneToOneField(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     updated_at = AutoDateTimeField(default=timezone.now, editable=False)
