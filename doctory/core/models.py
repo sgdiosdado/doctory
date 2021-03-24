@@ -8,7 +8,7 @@ from .utils import AutoDateTimeField
 
 
 class UserTypes(models.TextChoices):
-    PATIENT = 'PAC', 'Patient'
+    PATIENT = 'PAT', 'Patient'
     MEDIC = 'MED', 'Medic'
 
 def set_default_user_type():
