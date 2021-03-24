@@ -1,0 +1,34 @@
+[
+  {
+    "model": "core.BackgroundType",
+    "pk": 1,
+    "fields" : {
+      "name": "Inherited",
+      "description": "Conditions that run on your direct bloodline family and you don't have."
+    }
+  },
+  {
+    "model": "core.BackgroundType",
+    "pk": 2,
+    "fields": {
+      "name": "Pathologic",
+      "description": "Conditions that you have had."
+    }
+  },
+  {
+    "model": "core.BackgroundType",
+    "pk": 3,
+    "fields": {
+      "name": "Andrological and Gyneco-obstretic",
+      "description": "Conditions releated to reproductive organs."
+    }
+  },
+  {
+    "model": "core.BackgroundType",
+    "pk": 4,
+    "fields": {
+      "name": "No pathologic",
+      "description": "Conditions of environments that are frequented."
+    }
+  }
+]
