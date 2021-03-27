@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.db.models.deletion import CASCADE
 from django.db.models.fields.related import OneToOneField
 from django.utils import timezone
 
@@ -123,6 +124,7 @@ class BackgroundSubtype(models.Model):
 
 
 class Condition(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='conditions')
     background_subtype = models.ForeignKey(BackgroundSubtype, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
