@@ -1,39 +1,28 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.db.models.deletion import CASCADE
 from django.db.models.fields.related import OneToOneField
 from django.utils import timezone
 
-from .utils import AutoDateTimeField
-
-
-class UserTypes(models.TextChoices):
-    PATIENT = 'PAT', 'Patient'
-    MEDIC = 'MED', 'Medic'
-
-def set_default_user_type():
-    return [UserTypes.PATIENT]
+from .managers import UserManager, PatientManager, MedicManager
+from .utils import AutoDateTimeField, ChoiceArrayField, UserTypes, set_default_user_type
 
 
 class User(AbstractUser):
-
-    type = ArrayField(models.CharField(max_length=50, choices=UserTypes.choices), default=set_default_user_type)
+    username = None
+    email = models.EmailField(unique=True)
+    type = ChoiceArrayField(models.CharField(max_length=50, choices=UserTypes.choices), default=set_default_user_type)
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     updated_at = AutoDateTimeField(default=timezone.now, editable=False)
 
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    objects = UserManager()
+
     def __str__(self):
-        return self.username
-
-
-class PatientManager(models.Manager):
-    def get_queryset(self, *args, **kwargs):
-        return super().get_queryset(*args, **kwargs).filter(type__contains=[UserTypes.PATIENT])
-
-
-class MedicManager(models.Manager):
-    def get_queryset(self, *args, **kwargs):
-        return super().get_queryset(*args, **kwargs).filter(type__contains=[UserTypes.MEDIC])
+        return self.email
 
 
 class Patient(User):

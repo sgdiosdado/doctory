@@ -1,9 +1,16 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.postgres.fields import ArrayField
+from django.forms import MultipleChoiceField
 
-class AutoDateTimeField(models.DateTimeField):
-    def pre_save(self, model_instance, add):
-        return timezone.now()
+
+class UserTypes(models.TextChoices):
+    PATIENT = 'PAT', 'Patient'
+    MEDIC = 'MED', 'Medic'
+
+
+def set_default_user_type():
+    return [UserTypes.PATIENT]
 
 
 def standard_response(data=None, errors=None):
@@ -12,3 +19,24 @@ def standard_response(data=None, errors=None):
         'errors': errors
     }
     return res
+
+
+class AutoDateTimeField(models.DateTimeField):
+    def pre_save(self, model_instance, add):
+        return timezone.now()
+
+class ChoiceArrayField(ArrayField):
+    """
+    A field that allows us to store an array of choices.
+    Uses Django's Postgres ArrayField
+    and a MultipleChoiceField for its formfield.
+    """
+
+    def formfield(self, **kwargs):
+        defaults = {
+            'form_class': MultipleChoiceField,
+            'choices': self.base_field.choices,
+            'help_text': 'Use command (control on Windows) to select multiple options.'
+        }
+        defaults.update(kwargs)
+        return super(ArrayField, self).formfield(**defaults)

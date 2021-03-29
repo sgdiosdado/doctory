@@ -1,11 +1,11 @@
-from typing import List
 from django.urls import path
-from rest_framework.authtoken.views import obtain_auth_token
 
-from .views.views_user import ListPatients, ListConditions
+from .views.views_condition import ListConditions, ConditionDetail
+from core.views.views_authentication import Signup, Login
 
 urlpatterns = [
-    path('patients/', ListPatients.as_view(), name='patients'),
     path('conditions/', ListConditions.as_view(), name='conditions'),
-    path('api-token-auth/', obtain_auth_token)
+    path('conditions/<int:condition_id>/', ConditionDetail.as_view(), name='condition'),
+    path('signup/', Signup.as_view(), name='signup'),
+    path('login/', Login.as_view(), name='login')
 ]
