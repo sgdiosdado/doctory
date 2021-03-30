@@ -14,6 +14,21 @@ export const navbarItems: Array<NavItem> = [
     label: 'Contacto',
     path: '/contact',
   },
+  {
+      label: 'Doctores',
+      children: [
+        {
+          label: 'Job Board',
+          subLabel: 'Find your dream design job',
+          path: '#',
+        },
+        {
+          label: 'Freelance Projects',
+          subLabel: 'An exclusive list for contract work',
+          path: '#',
+        },
+      ],
+    },
 ]
 
 // ---------- STRUCTURE-----------

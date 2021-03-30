@@ -1,3 +1,4 @@
+import { useColorModeValue } from '@chakra-ui/color-mode';
 import Icon from '@chakra-ui/icon';
 import { ChevronRightIcon } from '@chakra-ui/icons';
 import { Box, Flex, Link, Stack, Text } from '@chakra-ui/layout';
@@ -16,8 +17,7 @@ export const DesktopNavbar = () => {
                 p={2}
                 href={navItem.path ?? '#'}
                 fontSize={'sm'}
-                fontWeight={500}
-                color={'primary'}
+                fontWeight={600}
               >
                 {navItem.label}
               </Link>
@@ -54,13 +54,15 @@ const DesktopSubNav = ({ label, path, subLabel }: NavItem) => {
       display={'block'}
       p={2}
       rounded={'md'}
+      color={useColorModeValue('blue.800', 'white')}
     >
       <Stack direction={'row'} align={'center'}>
         <Box>
           <Text
             transition={'all .3s ease'}
-            _groupHover={{ color: 'pink.400' }}
-            fontWeight={500}>
+            _groupHover={{ color: useColorModeValue('blue.400', 'blue.300')}}
+            fontWeight={500}
+          >
             {label}
           </Text>
           <Text fontSize={'sm'}>{subLabel}</Text>
@@ -73,7 +75,7 @@ const DesktopSubNav = ({ label, path, subLabel }: NavItem) => {
           justify={'flex-end'}
           align={'center'}
           flex={1}>
-          <Icon color={'pink.400'} w={5} h={5} as={ChevronRightIcon} />
+          <Icon color={'blue.400'} w={5} h={5} as={ChevronRightIcon} />
         </Flex>
       </Stack>
     </Link>
