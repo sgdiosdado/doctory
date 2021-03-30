@@ -6,7 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@chakra-ui/popover';
 import React from 'react'
 import { navbarItems, NavItem } from './navbarItems';
 
-export const DesktopNavbar = () => {
+export const DesktopNavbar = ():JSX.Element => {
   return <>
     <Stack direction={'row'} spacing={4}>
       {navbarItems.map((navItem) => (
