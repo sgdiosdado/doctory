@@ -39,6 +39,9 @@ class ListConditionsTests(APITestCase):
         self.assertEqual(ConditionSerializer(created_condition).data, response.data['data'])
     
     def test_fail_create_condition(self):
+        """
+        Ensure it can fail when creating condition with invalid payload
+        """
         data = {
             'name': 'Diabetes',
             'description': 'Diabetes type 2',
@@ -146,7 +149,7 @@ class ConditionDetailTests(APITestCase):
             }
         serializer = ConditionSerializer(data=dummy_condition)
         serializer.is_valid()
-        serializer.save(patient=another_user)
+        condition = serializer.save(patient=another_user)
 
         data = {
             'name': 'Condition 2',
@@ -154,6 +157,33 @@ class ConditionDetailTests(APITestCase):
             'date_of_diagnosis': '2017-01-18T00:00',
             'background_subtype': 3
             }
-        response = self.client.put(reverse('condition', kwargs={'condition_id': 2}), data)
+        response = self.client.put(reverse('condition', kwargs={'condition_id': condition.id}), data)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_delete_condition(self):
+        """
+        Ensure a condition can be deleted
+        """
+        response = self.client.delete(self.url)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+    
+    def test_delete_forbidden_condition(self):
+        """
+        Ensure a condition cannot be deleted by a user different from the owner
+        """
+        another_user =  Patient.objects.create(email='anothertest@mail.com')
+        dummy_condition = {
+            'name': 'Condition 2',
+            'description': 'Some other description',
+            'date_of_diagnosis': '2017-12-20T00:00',
+            'background_subtype': 3
+            }
+        serializer = ConditionSerializer(data=dummy_condition)
+        serializer.is_valid()
+        condition = serializer.save(patient=another_user)
+
+        response = self.client.delete(reverse('condition', kwargs={'condition_id': condition.id}))
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

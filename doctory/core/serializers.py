@@ -4,7 +4,7 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 from django.contrib.auth.password_validation import validate_password
-from .models import Condition, User
+from .models import BackgroundSubtype, BackgroundType, Condition, User
 
 
 class SignupSerializer(serializers.ModelSerializer):
@@ -66,3 +66,19 @@ class ConditionSerializer(serializers.ModelSerializer):
         if 'background_subtype' not in data:
             raise serializers.ValidationError({'background_subtype': ['This field is required']})
         return data
+
+
+class BackgroundSubtypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BackgroundSubtype
+        fields = ['id', 'name', 'description']
+        read_only_fields = ['id', 'name', 'description']
+
+
+class BackgroundTypeSerializer(serializers.ModelSerializer):
+    background_subtypes = BackgroundSubtypeSerializer(many=True)
+
+    class Meta:
+        model = BackgroundType
+        fields = ['id', 'name', 'description', 'background_subtypes']
+        read_only_fields = ['id', 'name', 'description', 'backgroundsubtypes']
