@@ -68,3 +68,13 @@ class ConditionDetail(APIView):
         except Condition.DoesNotExist:
             res = standard_response(errors={'forbidden': 'You are not the owner of this condition'})
             return Response(res, status=status.HTTP_403_FORBIDDEN)
+    
+    def delete(self, request, condition_id):
+        try:
+            condition = Condition.objects.get(id=condition_id, patient=request.user)
+            condition.delete()
+            res = standard_response()
+            return Response(res, status.HTTP_204_NO_CONTENT)
+        except Condition.DoesNotExist:
+            res = standard_response(errors={'forbidden': 'You are not the owner of this condition'})
+            return Response(res, status=status.HTTP_403_FORBIDDEN)

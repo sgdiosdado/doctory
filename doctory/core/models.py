@@ -102,7 +102,7 @@ class BackgroundType(models.Model):
 
 
 class BackgroundSubtype(models.Model):
-    background_type = models.ForeignKey(BackgroundType, on_delete=models.CASCADE)
+    background_type = models.ForeignKey(BackgroundType, on_delete=models.CASCADE, related_name='background_subtypes')
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True) 
     created_at = models.DateTimeField(default=timezone.now, editable=False)

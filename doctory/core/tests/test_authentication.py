@@ -8,6 +8,9 @@ class SignupTests(APITestCase):
     url = reverse('signup')
     
     def test_signup(self):
+        """
+        Ensure an anonymous user can sign up
+        """
         data = {
             'email': 'test@mail.com',
             'first_name': 'John',
@@ -20,6 +23,9 @@ class SignupTests(APITestCase):
         self.assertTrue('token' in response.data['data'])
     
     def test_fail_signup(self):
+        """
+        Ensure an anonymous user cannot sign up with invalid payload
+        """
         data = {
             'email': 'test@mail.com',
             'password1': 'MyVeryStrongPassword@',
@@ -36,6 +42,9 @@ class LoginTests(APITestCase):
         User.objects.create_user(email='test@mail.com', password='MyVeryStrongPassword@')
 
     def test_login(self):
+        """
+        Ensure a user can login
+        """
         data = {
             'email': 'test@mail.com',
             'password': 'MyVeryStrongPassword@',
@@ -45,6 +54,9 @@ class LoginTests(APITestCase):
         self.assertTrue('token' in response.data['data'])
     
     def test_fail_login(self):
+        """
+        Ensure a user cannot fail with invalid payload
+        """
         data = {
             'email': 'test@mail.com',
             'password': 'SomeIncorrectPassword12345@$'
