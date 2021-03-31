@@ -18,15 +18,16 @@ import {
 import { MobileNavbar } from "./MobileNavbar";
 import { DesktopNavbar } from "./DesktopNavbar";
 import { ColorModeSwitcher } from "../../ColorModeSwitcher";
+import { Link } from "react-router-dom";
+import { paths } from "../../routes/paths";
 
 export const Navbar = ({userType}:any) => {
   const { isOpen, onToggle } = useDisclosure();
-  console.log(userType);
   
   return (
     <Box>
       <Flex
-        bg={useColorModeValue('blue.400','blue.800')}
+        bg={useColorModeValue('primary.400','primary.800')}
         color='white'
         minH={'60px'}
         py={{ base: 2 }}
@@ -71,15 +72,16 @@ export const Navbar = ({userType}:any) => {
         >
           <ColorModeSwitcher />
           <Button
-            as={'a'}
             fontSize={'sm'}
             fontWeight={400}
             variant={'link'}
             colorScheme={'white'}
-            href={'#'}
+            as='button'
           >
+            <Link to={paths.login}>
             {/* TODO: when logged in, display none */}
             Iniciar sesión
+            </Link>
           </Button>
         </Stack>
       </Flex>

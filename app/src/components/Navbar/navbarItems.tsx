@@ -1,3 +1,5 @@
+import { paths } from "../../routes/paths";
+
 export interface NavItem {
   label: string;
   subLabel?: string;
@@ -8,27 +10,12 @@ export interface NavItem {
 export const navbarItems: Array<NavItem> = [
   {
     label: 'Inicio',
-    path: '/',
+    path: paths.default,
   },
   {
     label: 'Contacto',
-    path: '/contact',
+    path: paths.contact,
   },
-  {
-      label: 'Doctores',
-      children: [
-        {
-          label: 'Job Board',
-          subLabel: 'Find your dream design job',
-          path: '#',
-        },
-        {
-          label: 'Freelance Projects',
-          subLabel: 'An exclusive list for contract work',
-          path: '#',
-        },
-      ],
-    },
 ]
 
 // ---------- STRUCTURE-----------

@@ -1,9 +1,10 @@
 import { useColorModeValue } from '@chakra-ui/color-mode';
 import Icon from '@chakra-ui/icon';
 import { ChevronRightIcon } from '@chakra-ui/icons';
-import { Box, Flex, Link, Stack, Text } from '@chakra-ui/layout';
+import { Box, Flex, Stack, Link as ChackraLink, Text } from '@chakra-ui/layout';
 import { Popover, PopoverContent, PopoverTrigger } from '@chakra-ui/popover';
 import React from 'react'
+import { Link } from 'react-router-dom';
 import { navbarItems, NavItem } from './navbarItems';
 
 export const DesktopNavbar = ():JSX.Element => {
@@ -13,14 +14,11 @@ export const DesktopNavbar = ():JSX.Element => {
         <Box key={navItem.label}>
           <Popover trigger={'hover'} placement={'bottom-start'}>
             <PopoverTrigger>
-              <Link
-                p={2}
-                href={navItem.path ?? '#'}
-                fontSize={'sm'}
-                fontWeight={600}
-              >
-                {navItem.label}
-              </Link>
+              <ChackraLink as='span' p={2} fontSize={'sm'} fontWeight={600}>
+                <Link to={navItem.path ?? '/'}>
+                  {navItem.label}
+                </Link>
+              </ChackraLink>
             </PopoverTrigger>
 
             {navItem.children && (
@@ -48,8 +46,9 @@ export const DesktopNavbar = ():JSX.Element => {
 
 const DesktopSubNav = ({ label, path, subLabel }: NavItem) => {
   return (
-    <Link
-      href={path}
+    <Link to={path ?? '/'}>
+    <ChackraLink
+      as='span'
       role={'group'}
       display={'block'}
       p={2}
@@ -78,6 +77,7 @@ const DesktopSubNav = ({ label, path, subLabel }: NavItem) => {
           <Icon color={'blue.400'} w={5} h={5} as={ChevronRightIcon} />
         </Flex>
       </Stack>
+    </ChackraLink>
     </Link>
   );
 };
