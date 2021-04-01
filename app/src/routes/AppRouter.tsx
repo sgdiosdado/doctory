@@ -1,12 +1,8 @@
 import { Box } from '@chakra-ui/layout';
 import React from 'react'
 import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
-import LoginView from '../components/AuthComponents/LoginView';
-import { SigninView } from '../components/AuthComponents/SigninView';
-import { Landing } from '../components/Landing/Landing';
 import { Navbar } from '../components/Navbar/Navbar';
-import { NotfoundPage } from '../components/NotFoundPage/NotfoundPage';
-import { paths } from './paths';
+import { routes } from './routes';
 
 export const AppRouter = () => {
   // const [isLoggedIn, setisLoggedIn] = useState(false);
@@ -20,12 +16,12 @@ export const AppRouter = () => {
         </Box>
         <Box h='100%' width='100%' d='flex' flexGrow={1} flexDirection={'column'}>
           <Switch>
-            <Route exact path={paths.default} component={Landing} />
-            <Route exact path={paths.login} component={LoginView} />
-            <Route exact path={paths.signin} component={SigninView} />
-            {/* <Route exact path={paths.contact} component={ContactView} /> TODO: create contact component */}
-            <Route path={paths.notFound} component={NotfoundPage} />
-            <Redirect to={paths.notFound} />
+            <Route exact path={routes.default.path} component={routes.default.component} />
+            <Route exact path={routes.login.path} component={routes.login.component} />
+            <Route exact path={routes.signin.path} component={routes.signin.component} />
+            {/* <Route exact path={paths.contact.path} component={} /> TODO: create contact component */}
+            <Route path={routes.notFound.path} component={routes.notFound.component} />
+            <Redirect to={routes.notFound.path} />
           </Switch>
         </Box>
       </Router>

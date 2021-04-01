@@ -12,7 +12,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
   
-  export default function LoginView() {
+  export const LoginView = () => {
     return (
       <Flex
         minH={'100%'}

@@ -17,11 +17,12 @@ import {
   } from '@chakra-ui/icons'
 import { MobileNavbar } from "./MobileNavbar";
 import { DesktopNavbar } from "./DesktopNavbar";
-import { ColorModeSwitcher } from "../../ColorModeSwitcher";
+import { ColorModeSwitcher } from "../../theme/ColorModeSwitcher";
 import { Link } from "react-router-dom";
-import { paths } from "../../routes/paths";
+import { routes } from "../../routes/routes";
 
-export const Navbar = ({userType}:any) => {
+export const Navbar = ({userType}:any) => {  
+
   const { isOpen, onToggle } = useDisclosure();
   
   return (
@@ -49,16 +50,18 @@ export const Navbar = ({userType}:any) => {
           />
         </Flex>
         <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
-          <Text
-            textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
-            fontFamily={'heading'}
-            fontSize={'1em'}
-            fontWeight={'bold'}
-            color='white'>
-            {/* TODO: replace for logo */}
-            Doctory
-          </Text>
-
+          <Link to={routes.default.path}>
+            <Text
+              textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
+              fontFamily={'heading'}
+              fontSize={'1em'}
+              fontWeight={'bold'}
+              color='white'
+            >
+              {/* TODO: replace for logo */}
+              Doctory
+            </Text>
+          </Link>
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
             <DesktopNavbar />
           </Flex>
@@ -70,24 +73,23 @@ export const Navbar = ({userType}:any) => {
           direction={'row'}
           spacing={6}
         >
-          <ColorModeSwitcher />
-          <Button
-            fontSize={'sm'}
-            fontWeight={400}
-            variant={'link'}
-            colorScheme={'white'}
-            as='button'
-          >
-            <Link to={paths.login}>
-            {/* TODO: when logged in, display none */}
-            Iniciar sesión
-            </Link>
-          </Button>
+          <ColorModeSwitcher display={{ base: 'none', md: 'flex' }}/>
+          <Link to={routes.login.path} style={{marginLeft: '0'}}>
+            <Button
+              size={'md'}
+              fontSize={'sm'}
+              variant={'ghost'}
+              as='button'
+            >
+              {/* TODO: when logged in, display none */}
+              Iniciar sesión
+            </Button>
+          </Link>
         </Stack>
       </Flex>
 
       <Collapse in={isOpen} animateOpacity>
-        <MobileNavbar />
+        <MobileNavbar closeNavbar={onToggle} />
       </Collapse>
     </Box>
   );

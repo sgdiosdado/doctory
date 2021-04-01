@@ -1,4 +1,4 @@
-import { paths } from "../../routes/paths";
+import { routes } from "../../routes/routes";
 
 export interface NavItem {
   label: string;
@@ -10,11 +10,11 @@ export interface NavItem {
 export const navbarItems: Array<NavItem> = [
   {
     label: 'Inicio',
-    path: paths.default,
+    path: routes.default.path,
   },
   {
     label: 'Contacto',
-    path: paths.contact,
+    path: routes.contact.path,
   },
 ]
 

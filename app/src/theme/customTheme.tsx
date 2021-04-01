@@ -12,7 +12,7 @@ export const customTheme =  extendTheme({
       600: '#2d2291',
       700: '#241769',
       800: '#170c41',
-      900: '#0c041c',
+      900: '#0c041c'
     }
   }
 })

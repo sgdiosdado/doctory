@@ -6,17 +6,25 @@ import { Flex, Link as ChakraLink, Stack, Text } from '@chakra-ui/layout';
 import { Collapse } from '@chakra-ui/transition';
 import React from 'react'
 import { Link } from 'react-router-dom';
+import { ColorModeSwitcher } from '../../theme/ColorModeSwitcher';
 import { navbarItems, NavItem } from './navbarItems';
 
-export const MobileNavbar = () => {
+type mobileNavbarProps = {
+  closeNavbar: any
+}
+
+export const MobileNavbar = ({closeNavbar} : mobileNavbarProps) => {
     return (
         <Stack
           bg={useColorModeValue('primary.50', 'primary.900')}
-          p={4}
+          py={4}
           display={{ md: 'none' }}>
           {navbarItems.map((navItem) => (
-            <MobileNavItem key={navItem.label} {...navItem} />
+            <div key={navItem.label} onClick={closeNavbar} >
+              <MobileNavItem  {...navItem} />
+            </div>
           ))}
+          <span onClick={closeNavbar}><ColorModeSwitcher label='Cambiar tema'/></span>
         </Stack>
       );
 }
@@ -29,8 +37,10 @@ const MobileNavItem = ({ label, children, path }: NavItem) => {
         <Link to={path ?? '/'}>
           <Flex
             py={2}
+            px={4}
             justify={'space-between'}
             align={'center'}
+            _hover={{background: useColorModeValue('primary.100', 'primary.800')}}
           >
             <Text
               fontWeight={600}
