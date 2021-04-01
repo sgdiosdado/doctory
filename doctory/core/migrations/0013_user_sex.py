@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='user',
             name='sex',
-            field=models.CharField(choices=[('F', 'Female'), ('M', 'Male'), ('O', 'Other'), ('U', 'Undefined')], default=core.utils.set_default_sext_type, max_length=10),
+            field=models.CharField(choices=[('F', 'Female'), ('M', 'Male'), ('O', 'Other'), ('U', 'Undefined')], default=core.utils.set_default_sex_type, max_length=10),
         ),
     ]

@@ -18,7 +18,7 @@ class SexTypes(models.TextChoices):
     OTHER = 'O'
     NOT_SPECIFIED = 'U'
 
-def set_default_sext_type():
+def set_default_sex_type():
     return SexTypes.NOT_SPECIFIED
 
 def standard_response(data=None, errors=None):

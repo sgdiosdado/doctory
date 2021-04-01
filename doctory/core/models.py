@@ -6,7 +6,7 @@ from django.db.models.fields.related import OneToOneField
 from django.utils import timezone
 
 from .managers import UserManager, PatientManager, MedicManager
-from .utils import AutoDateTimeField, ChoiceArrayField, UserTypes, set_default_sext_type, set_default_user_type, SexTypes
+from .utils import AutoDateTimeField, ChoiceArrayField, UserTypes, set_default_sex_type, set_default_user_type, SexTypes
 
 
 class User(AbstractUser):
@@ -14,7 +14,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     type = ChoiceArrayField(models.CharField(max_length=50, choices=UserTypes.choices), default=set_default_user_type)
     location = models.CharField(max_length=200, null=True, blank=True)
-    sex = models.CharField(max_length=10, choices=SexTypes.choices, default=set_default_sext_type)
+    sex = models.CharField(max_length=10, choices=SexTypes.choices, default=set_default_sex_type)
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     updated_at = AutoDateTimeField(default=timezone.now, editable=False)
 
