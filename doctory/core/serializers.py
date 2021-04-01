@@ -1,10 +1,12 @@
+from core.utils import SexTypes
+from django.contrib.postgres import fields
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 from django.contrib.auth.password_validation import validate_password
-from .models import BackgroundSubtype, BackgroundType, Condition, User
+from .models import BackgroundSubtype, BackgroundType, Condition, Patient, User
 
 
 class SignupSerializer(serializers.ModelSerializer):
@@ -51,6 +53,17 @@ class LoginSerializer(serializers.Serializer):
         update_last_login(None, user)
         token_key = Token.objects.get(user=user)
         return {'token': token_key}
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'first_name', 'last_name', 'type', 'location', 'sex']
+        read_only_fields = ['email']
+    def validate(self, data):
+        if 'sex' in SexTypes:
+            raise serializers.ValidationError({'sex': ['Invalid type']})
+        return data
 
 
 class ConditionSerializer(serializers.ModelSerializer):
