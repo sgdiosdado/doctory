@@ -5,7 +5,6 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Checkbox,
   Stack,
   Link as ChakraLink,
   Button,
@@ -19,10 +18,11 @@ import {
         minH={'100%'}
         align={'center'}
         justify={'center'}
-        bg={useColorModeValue('gray.50', 'gray.800')}>
+        bg={useColorModeValue('gray.100', 'gray.800')}
+      >
         <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
           <Stack align={'center'}>
-            <Heading fontSize={'4xl'}>Sign in to your account</Heading>
+            <Heading fontSize={'4xl'}>Iniciar sesión</Heading>
           </Stack>
           <Box
             rounded={'lg'}
@@ -31,28 +31,41 @@ import {
             p={8}>
             <Stack spacing={4}>
               <FormControl id="email">
-                <FormLabel>Email address</FormLabel>
-                <Input type="email" />
+                <FormLabel>Correo</FormLabel>
+                <Input 
+                  type="email" 
+                  autoComplete='off'
+                  placeholder='ejemplo@gmail.com'
+                />
               </FormControl>
               <FormControl id="password">
-                <FormLabel>Password</FormLabel>
-                <Input type="password" />
+                <FormLabel>Contraseña</FormLabel>
+                <Input 
+                  type="password" 
+                  autoComplete='off'
+                />
               </FormControl>
               <Stack spacing={10}>
                 <Stack
                   direction={{ base: 'column', sm: 'row' }}
                   align={'start'}
-                  justify={'space-between'}>
-                  <Checkbox>Remember me</Checkbox>
-                  <ChakraLink color={'blue.400'}>Forgot password?</ChakraLink>
+                  justify={'end'}>
+                  <ChakraLink 
+                    color={'primary.400'}
+                    _hover={{
+                      color: 'primary.500'
+                    }}
+                  >
+                      ¿Olvidó la contraseña?
+                  </ChakraLink>
                 </Stack>
                 <Button
-                  bg={'blue.400'}
+                  bg={'primary.400'}
                   color={'white'}
                   _hover={{
-                    bg: 'blue.500',
+                    bg: 'primary.500',
                   }}>
-                  Sign in
+                  Entrar
                 </Button>
               </Stack>
             </Stack>
