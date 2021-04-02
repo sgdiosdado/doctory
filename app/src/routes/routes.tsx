@@ -1,9 +1,9 @@
-import { LoginView } from "../components/AuthComponents/LoginView";
-import { SigninView } from "../components/AuthComponents/SigninView";
-import { DoctorLandingView } from "../components/Doctor/DoctorLandingView";
-import { Landing } from "../components/Landing/Landing";
-import { NotfoundPage } from "../components/NotFoundPage/NotfoundPage";
-import { PacientLandingView } from "../components/Pacient/PacientLandingView";
+import { LoginView } from "../views/AuthComponents/LoginView";
+import { SignUpView } from "../views/AuthComponents/SignUpView";
+import { DoctorLandingView } from "../views/Doctor/DoctorLandingView";
+import { Landing } from "../views/Landing/Landing";
+import { NotfoundPage } from "../views/NotFoundPage/NotfoundPage";
+import { PacientLandingView } from "../views/Pacient/PacientLandingView";
 
 type route = {
   path: string,
@@ -27,7 +27,7 @@ const doctorPaths: {[name:string]: route} = {
 const generalPaths: {[name:string]: route} = {
   default: { path: '/', component: Landing },
   login: { path: '/login', component: LoginView },
-  signin: { path: '/signin', component: SigninView },
+  signin: { path: '/signup', component: SignUpView },
   contact: { path: '/contact', component: NotfoundPage }, // TODO: Contanct component
   notFound: {path: '/404', component: NotfoundPage },
 }
