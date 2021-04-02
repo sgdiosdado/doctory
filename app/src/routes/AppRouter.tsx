@@ -1,7 +1,7 @@
 import { Box } from '@chakra-ui/layout';
-import React from 'react'
-import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
-import { Navbar } from '../components/Navbar/Navbar';
+import React from 'react';
+import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
+import { Navbar } from '../views/Navbar/Navbar';
 import { routes } from './routes';
 
 export const AppRouter = () => {
