@@ -1,5 +1,5 @@
-import { LoginView } from "../views/AuthComponents/LoginView";
-import { SignUpView } from "../views/AuthComponents/SignUpView";
+import { LoginView } from "../views/AuthViews/LoginView";
+import { SignUpView } from "../views/AuthViews/SignUpView";
 import { DoctorLandingView } from "../views/Doctor/DoctorLandingView";
 import { Landing } from "../views/Landing/Landing";
 import { NotfoundPage } from "../views/NotFoundPage/NotfoundPage";
