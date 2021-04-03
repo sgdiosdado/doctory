@@ -10,7 +10,7 @@ import { routes } from '../../routes/routes';
 import SecureImage from '../../assets/SecureImage.svg';
 import DoctorsInComputerImage from '../../assets/DoctorsInComputerImage.svg';
 import DoctorWithPhoneImage from '../../assets/DoctorWithPhoneImage.svg';
-import PersonWithComputerImage from '../../assets/PersonWithComputerImage.svg';
+import PresonInComputerImage from '../../assets/PresonInComputerImage.svg';
 
 const bulletList = [{
   title: 'Con una cuenta de paciente:',
@@ -52,7 +52,7 @@ const landingImage = useBreakpointValue({ base: DoctorWithPhoneImage, md: Doctor
         w={'100%'}
       >
         <VStack align="stretch" spacing={{base: '5em', md:'10em'}} w={'100%'}>
-          {/**************  1st Section **************/}
+          {/**************  Call to Action Section **************/}
           <HStack w={'100%'} justifyContent='center' spacing={'1em'}>
             <Box  w={'55%'} maxW='60em' align='center'>
               <Image src={landingImage} alt={'Doctory'}/>
@@ -78,7 +78,7 @@ const landingImage = useBreakpointValue({ base: DoctorWithPhoneImage, md: Doctor
               </Box>
             </Box>
           </HStack>
-          {/**************  2nd Section **************/}
+          {/**************  Information is Secure Section **************/}
           <HStack w={'100%'} justifyContent='center' spacing={{base:'1em', md:'3em'}}>
             <Box  w={{base:'md', md:'xl'}} align='center'>
               <Image src={SecureImage} alt={'Doctory'}/>
@@ -89,7 +89,7 @@ const landingImage = useBreakpointValue({ base: DoctorWithPhoneImage, md: Doctor
               </Text>
             </Box>
           </HStack>
-          {/**************  3rd Section **************/}
+          {/************** Features Section **************/}
           <Box>
           <Text fontSize={['2xl', '3xl', '4xl', '5xl']} mb={'2em'} textAlign='center' fontWeight='medium'>
            <Text as={'span'} color={useColorModeValue('primary.500', 'white')}>Doctory</Text> funciona para doctores y pacientes
@@ -109,11 +109,11 @@ const landingImage = useBreakpointValue({ base: DoctorWithPhoneImage, md: Doctor
               </div>)}            
             </Box>
             <Box w={'100%'} maxW={{base:'20em', lg:'35em'}} align='center'>
-              <Image src={PersonWithComputerImage} w='75%' alt={'Doctory'} mb={'2em'}/>
+              <Image src={PresonInComputerImage} w='75%' alt={'Doctory'} mb={'2em'}/>
             </Box>
           </Stack>
           </Box>
-          {/**************  4th Section **************/}
+          {/**************  Call to Action Section **************/}
           <Box d={'flex'} justifyContent='center' w={'100%'}>
             <Box textAlign='center' w='sm' >
               <Link to={routes.signin.path}>
