@@ -53,9 +53,13 @@ export const SignUpView = () => {
   return (
     <Container
       w="100%"
-      maxW="100%">
+      h="100%"
+      maxW="100%"
+			d={'flex'}
+			flexGrow={1}
+		>
       <Flex
-        minH={'100%'}
+        flexGrow={1}
         align={'center'}
         justify={'center'}>
         <Stack

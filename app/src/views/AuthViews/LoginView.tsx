@@ -15,7 +15,8 @@ import {
 export const LoginView = () => {
   return (
     <Flex
-      minH={'100%'}
+      flexGrow={1}
+      h={'100%'}
       align={'center'}
       justify={'center'}
       bg={useColorModeValue('gray.100', 'gray.800')}

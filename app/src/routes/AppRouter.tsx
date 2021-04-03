@@ -10,10 +10,10 @@ export const AppRouter = () => {
   // const [useType, setUserType] = useState('PAC');
 
   return (
-    <Box d={'flex'} alignItems={'center'} flexDirection={'column'} h={'100vh'}>
+    <Box d={'flex'} alignItems={'center'} flexDirection={'column'} minH={'100vh'}>
       <Router>
         <Box w='100%'>
-        <Navbar />
+          <Navbar />
         </Box>
         <Box h='100%' width='100%' d='flex' flexGrow={1} flexDirection={'column'} bg={useColorModeValue('gray.100', 'gray.800')}>
           <Switch>
