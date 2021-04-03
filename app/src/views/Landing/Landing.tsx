@@ -91,17 +91,17 @@ const landingImage = useBreakpointValue({ base: DoctorWithPhoneImage, md: Doctor
           </Text>
           <Stack justifyContent='center' alignItems='center' direction={{base:'column-reverse', md:'row'}}>
             <Box   maxW={'30em'} align='center' textAlign='left'>
-              {bulletList.map(list => <>
-                <Text fontWeight='medium' fontSize='lg' mb={'1em'}>{list.title}</Text>
-                <List spacing={3} mb={'2.5em'}>
-                {list.listItems.map(item => <>
+              {bulletList.map((list,i) => <div key={i+list.title}>
+                <Text key={'listTitle'+list.title} fontWeight='medium' fontSize='lg' mb={'1em'}>{list.title}</Text>
+                <List key={'listSection'+list.title}  spacing={3} mb={'2.5em'}>
+                {list.listItems.map((item, indx) => <div key={list.title+indx+item}>
                   <ListItem>
                     <ListIcon as={CheckIcon} color={'primary.400'} />
                       {item}
                   </ListItem>
-                </>)}
+                </div>)}
                 </List>
-              </>)}            
+              </div>)}            
             </Box>
             <Box w={'100%'} maxW={{base:'20em', lg:'35em'}} align='center'>
               <Image src={PersonWithComputerImage} w='75%' alt={'Doctory'} mb={'2em'}/>
