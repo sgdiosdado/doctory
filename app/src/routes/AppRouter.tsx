@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-d
 import { Navbar } from '../views/Navbar/Navbar';
 import { routes } from './routes';
 import { useColorModeValue } from '@chakra-ui/color-mode';
+import { Footer } from '../views/Footer/Footer';
 
 export const AppRouter = () => {
   // const [isLoggedIn, setisLoggedIn] = useState(false);
@@ -24,6 +25,7 @@ export const AppRouter = () => {
             <Route path={routes.notFound.path} component={routes.notFound.component} />
             <Redirect to={routes.notFound.path} />
           </Switch>
+          <Footer />
         </Box>
       </Router>
   </Box>
