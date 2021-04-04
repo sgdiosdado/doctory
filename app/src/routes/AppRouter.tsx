@@ -21,6 +21,7 @@ export const AppRouter = () => {
             <Route exact path={routes.default.path} component={routes.default.component} />
             <Route exact path={routes.login.path} component={routes.login.component} />
             <Route exact path={routes.signin.path} component={routes.signin.component} />
+            <Route exact path={routes.pacientLanding.path} component={routes.pacientLanding.component} />
             {/* <Route exact path={paths.contact.path} component={} /> TODO: create contact component */}
             <Route path={routes.notFound.path} component={routes.notFound.component} />
             <Redirect to={routes.notFound.path} />

@@ -3,7 +3,7 @@ import { SignUpView } from "../views/AuthViews/SignUpView";
 import { DoctorLandingView } from "../views/Doctor/DoctorLandingView";
 import { Landing } from "../views/Landing/Landing";
 import { NotfoundPage } from "../views/NotFoundPage/NotfoundPage";
-import { PacientLandingView } from "../views/Pacient/PacientLandingView";
+import { PacientHomeView } from "../views/Pacient/PacientHomeView";
 
 type route = {
   path: string,
@@ -11,7 +11,7 @@ type route = {
 }
 
 const pacientPaths: {[name:string]: route} = {
-  pacientLanding: {path: '/pac/landing', component: PacientLandingView},
+  pacientLanding: {path: '/pac/landing', component: PacientHomeView},
   pacientNewCondition: {path: '/pac/new-condition', component: NotfoundPage}, // TODO: NewCondition component
   pacientStudies: {path: '/pac/studies', component: NotfoundPage}, // TODO: Studies component
   pacientProfile: {path: '/pac/profile', component: NotfoundPage}, // TODO: Profile component (check if will be the same for doctor?¿)
