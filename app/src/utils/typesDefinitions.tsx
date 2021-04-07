@@ -7,3 +7,11 @@ export type userInformation = {
   bloodType?: string,
   alergies?: [string],
 }
+
+export type timeLineItemProps = {
+  conditionTitle: string,
+  date_of_diagnosis: string,
+  conditionType?: string,
+  conditionSubtype?: string,
+  conditionDescription?: string,
+}

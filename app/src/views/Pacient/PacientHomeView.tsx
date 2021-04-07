@@ -1,8 +1,10 @@
-import { Container, Flex, Text } from '@chakra-ui/layout'
+import { Box, Container, Flex, Text, VStack } from '@chakra-ui/layout'
 import React from 'react'
 import { PresetationCard } from '../../components/PresentationCard'
 import { userInformation } from '../../utils/typesDefinitions'
 import avatar from '../../assets/PowerPeople_Emma.png'
+import { TimeLine } from '../../components/TimeLine/TimeLine'
+import { TimeLineItem } from '../../components/TimeLine/TimeLineItem'
 
 export const PacientHomeView = () => {
 
@@ -30,8 +32,19 @@ export const PacientHomeView = () => {
         py={12}
         w={'100%'}
       >
-        <Text fontSize='4xl'>Historia Médica</Text>
-        <PresetationCard userData={userData} avatar={avatar} />
+        <VStack>
+          <Text fontSize='4xl'>Historia Médica</Text>
+          <PresetationCard userData={userData} avatar={avatar} />
+          <Box
+            w={'100%'}
+          >
+            <TimeLine>
+              <TimeLineItem conditionTitle='Apendicitis Apendicitis Apendicitis Apendicitis Apendicitis Apendicitis Apendicitis Apendicitis' date_of_diagnosis='32-Ene-54'/>
+              <TimeLineItem conditionTitle='Apendicitis' date_of_diagnosis='32-Ene-54' conditionDescription='Fue una hospitalización muy fea, duro mucho y estuve como un montón de tiempo en recuperación y drogandome todo los días. Luego un día algo paso y tuve que voler a ir con el doctor de algún nombre muy largo'/>
+              <TimeLineItem conditionTitle='Apendicitis' date_of_diagnosis='32-Ene-54'/>
+            </TimeLine>
+          </Box>
+        </VStack>
       </Flex>
     </Container>
 
