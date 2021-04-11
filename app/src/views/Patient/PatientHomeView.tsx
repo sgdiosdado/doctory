@@ -17,9 +17,9 @@ export const PatientHomeView = () => {
     location: 'Matamoros, Tamaulipas'
   };
   const timeLineConditions:conditionTimeLine[] = [
-    {title:'Apendicitis', date:'12-Feb-22',  description:'Fue una operación de emergencia, en la mañana me lo detectaron y después de un estudio urgente fue necesaria la operación'},
-    {title:'Rinoplastia', date:'12-Feb-23', description:'En realidad nada más acomodaron el tabique'},
-    {title:'Un título más largo Un título más largoUn título más largo', date:'12-Feb-23'},
+    {id:'1', title:'Apendicitis', date:'12-Feb-22',  description:'Fue una operación de emergencia, en la mañana me lo detectaron y después de un estudio urgente fue necesaria la operación'},
+    {id:'2', title:'Rinoplastia', date:'12-Feb-23', description:'En realidad nada más acomodaron el tabique'},
+    {id:'3', title:'Un título más largo Un título más largoUn título más largo', date:'12-Feb-23'},
   ];
 
   return (
@@ -45,9 +45,9 @@ export const PatientHomeView = () => {
             w={'100%'}
           >
             <TimeLine>
-              {timeLineConditions.map((condition, index) => (
+              {timeLineConditions.map(condition => (
                 <TimeLineItem 
-                  key={'timeLineItem-'+index}
+                  key={condition.id}
                   conditionTitle={condition.title}
                   date_of_diagnosis={condition.date}
                   conditionDescription={condition.description}

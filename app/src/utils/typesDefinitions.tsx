@@ -9,6 +9,7 @@ export type userInformation = {
 }
 
 export type conditionTimeLine = {
+  id: string,
   title: string,
   date: string, 
   description?: string,
