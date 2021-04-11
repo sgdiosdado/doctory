@@ -11,10 +11,12 @@ type presentationCardPropsTypes = {
 export const PresetationCard = ({userData, avatar}:presentationCardPropsTypes) => {
   
   return (
-    <Box>
+    <Box
+      p='2em'
+    >
       <HStack maxW={'100%'}>
         <Box maxW={{base:'35%', md:'30%'}}>
-        <Image maxH={'30em'} src={avatar}/>
+        <Image maxH={'15em'} src={avatar}/>
         </Box>
         <Box maxW={{base:'60%', md:'70%'}}
           textAlign='left' 

@@ -8,6 +8,12 @@ export type userInformation = {
   alergies?: [string],
 }
 
+export type conditionTimeLine = {
+  title: string,
+  date: string, 
+  description?: string,
+}
+
 export type timeLineItemProps = {
   conditionTitle: string,
   date_of_diagnosis: string,

@@ -1,10 +1,11 @@
-import { Box, Container, Flex, Text, VStack } from '@chakra-ui/layout'
-import React from 'react'
-import { PresetationCard } from '../../components/PresentationCard'
-import { userInformation } from '../../utils/typesDefinitions'
-import avatar from '../../assets/PowerPeople_Emma.png'
-import { TimeLine } from '../../components/TimeLine/TimeLine'
-import { TimeLineItem } from '../../components/TimeLine/TimeLineItem'
+import { Box, Container, Flex, Text, VStack } from '@chakra-ui/layout';
+import React from 'react';
+import { PresetationCard } from '../../components/PresentationCard';
+import { userInformation, conditionTimeLine } from '../../utils/typesDefinitions';
+import avatar from '../../assets/PowerPeople_Emma.png';
+import { TimeLine } from '../../components/TimeLine/TimeLine';
+import { TimeLineItem } from '../../components/TimeLine/TimeLineItem';
+import { AddButton } from '../../components/TimeLine/AddButton';
 
 export const PacientHomeView = () => {
 
@@ -14,7 +15,12 @@ export const PacientHomeView = () => {
     dob: '14-dic-1998',
     email: 'sergio@doctory.com',
     location: 'Matamoros, Tamaulipas'
-  }
+  };
+  const timeLineConditions:conditionTimeLine[] = [
+    {title:'Apendicitis', date:'12-Feb-22',  description:'Fue una operación de emergencia, en la mañana me lo detectaron y después de un estudio urgente fue necesaria la operación'},
+    {title:'Rinoplastia', date:'12-Feb-23', description:'En realidad nada más acomodaron el tabique'},
+    {title:'Un título más largo Un título más largoUn título más largo', date:'12-Feb-23'},
+  ];
 
   return (
     <Container
@@ -29,7 +35,7 @@ export const PacientHomeView = () => {
         flexGrow={1}
         align={'flex-start'}
         justify={'center'}
-        py={12}
+        pt={12}
         w={'100%'}
       >
         <VStack>
@@ -39,12 +45,23 @@ export const PacientHomeView = () => {
             w={'100%'}
           >
             <TimeLine>
-              <TimeLineItem conditionTitle='Apendicitis Apendicitis Apendicitis Apendicitis Apendicitis Apendicitis Apendicitis Apendicitis' date_of_diagnosis='32-Ene-54'/>
-              <TimeLineItem conditionTitle='Apendicitis' date_of_diagnosis='32-Ene-54' conditionDescription='Fue una hospitalización muy fea, duro mucho y estuve como un montón de tiempo en recuperación y drogandome todo los días. Luego un día algo paso y tuve que voler a ir con el doctor de algún nombre muy largo'/>
-              <TimeLineItem conditionTitle='Apendicitis' date_of_diagnosis='32-Ene-54'/>
+              {timeLineConditions.map(condition => (
+                <TimeLineItem 
+                  conditionTitle={condition.title}
+                  date_of_diagnosis={condition.date}
+                  conditionDescription={condition.description}
+                />
+              ))}
             </TimeLine>
           </Box>
         </VStack>
+          <Box 
+            position='fixed'
+            bottom='2em'
+            right='2em'
+          >
+            <AddButton />
+          </Box>
       </Flex>
     </Container>
 

@@ -28,7 +28,7 @@ export const Navbar = ({userType}:any) => {
   return (
     <Box>
       <Flex
-        bg={useColorModeValue('primary.400','primary.800')}
+        bg={useColorModeValue('primary.500','primary.800')}
         color='white'
         minH={'60px'}
         py={{ base: 2 }}
