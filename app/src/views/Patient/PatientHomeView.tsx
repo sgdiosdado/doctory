@@ -7,7 +7,7 @@ import { TimeLine } from '../../components/TimeLine/TimeLine';
 import { TimeLineItem } from '../../components/TimeLine/TimeLineItem';
 import { AddButton } from '../../components/TimeLine/AddButton';
 
-export const PacientHomeView = () => {
+export const PatientHomeView = () => {
 
   const userData: userInformation = {
     name: 'Sergio Gabriel',
@@ -45,8 +45,9 @@ export const PacientHomeView = () => {
             w={'100%'}
           >
             <TimeLine>
-              {timeLineConditions.map(condition => (
+              {timeLineConditions.map((condition, index) => (
                 <TimeLineItem 
+                  key={'timeLineItem-'+index}
                   conditionTitle={condition.title}
                   date_of_diagnosis={condition.date}
                   conditionDescription={condition.description}
