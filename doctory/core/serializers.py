@@ -10,7 +10,7 @@ from .models import BackgroundSubtype, BackgroundType, Condition, Patient, User
 
 
 class SignupSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(required=True, validators=[UniqueValidator(queryset=User.objects.all())])
+    email = serializers.EmailField(required=True, validators=[UniqueValidator(queryset=User.objects.all(), message='This email is already in use')])
     password1 = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
 
@@ -49,7 +49,7 @@ class LoginSerializer(serializers.Serializer):
         password = data.get('password', None)
         user = authenticate(email=email, password=password)
         if user is None:
-            raise serializers.ValidationError('A user with this email and password is not found.')
+            raise serializers.ValidationError({'credentials': ['A user with this email and password is not found.']})
         update_last_login(None, user)
         token_key = Token.objects.get(user=user)
         return {'token': token_key}
@@ -60,6 +60,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = User
         fields = ['email', 'first_name', 'last_name', 'type', 'location', 'sex']
         read_only_fields = ['email']
+
     def validate(self, data):
         if 'sex' in SexTypes:
             raise serializers.ValidationError({'sex': ['Invalid type']})

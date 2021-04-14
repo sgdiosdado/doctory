@@ -15,19 +15,13 @@ import {
 import { useForm } from 'react-hook-form';
 import { usePasswordValidation } from '../../hooks/usePasswordValidation';
 import { ValidPasswordChecklist } from './validPasswordChecklist';
-
-type FormData = {
-  email: string
-  firstName: string
-  lastName: string
-  password1: string
-  password2: string
-}
+import { SignUpData, FunctionOk, FunctionError } from '../../http/types';
+import { http } from '../../http/client';
 
 export const SignUpView = () => {
   const MB = 4
 
-  const { register, handleSubmit, errors } = useForm<FormData>();
+  const { register, handleSubmit, errors } = useForm<SignUpData>();
 
   const [password, setPassword] = useState<string>('');
 
@@ -41,8 +35,19 @@ export const SignUpView = () => {
     hasLowerCase,
     hasSpecialChar } = usePasswordValidation({ password });
 
-  const onSubmit = (values: FormData) => {
+  const onSubmit = (values: SignUpData) => {
     console.log(values);
+    const ok: FunctionOk = (statusCode, data) => {
+      // TODO: Implement redirect
+      console.log('Redirecting to home page...')
+      console.log(data)
+      // setAlert(defaultAlert)
+    }
+    const error: FunctionError = (statusCode, error) => {
+      console.log(error);
+      // setAlert({ status: 'error', title: 'Ups!', description: loginError.credentials[0], show: true })
+    }
+    http.signup(values, ok, error);
   }
 
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -80,33 +85,33 @@ export const SignUpView = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
               <FormControl
                 mb={MB}
-                isInvalid={Boolean(errors.firstName)}>
-                <FormLabel htmlFor='firstName'>Nombre</FormLabel>
+                isInvalid={Boolean(errors.first_name)}>
+                <FormLabel htmlFor='first_name'>Nombre</FormLabel>
                 <Input
-                  name='firstName'
+                  name='first_name'
                   type='text'
                   autoComplete='on'
                   placeholder='Juan'
                   ref={register({ required: 'El nombre es obligatorio' })}
                 />
                 <FormErrorMessage>
-                  {errors.firstName && errors.firstName.message}
+                  {errors.first_name && errors.first_name.message}
                 </FormErrorMessage>
               </FormControl>
 
               <FormControl
                 mb={MB}
-                isInvalid={Boolean(errors.lastName)}>
-                <FormLabel htmlFor='lastName'>Apellido</FormLabel>
+                isInvalid={Boolean(errors.last_name)}>
+                <FormLabel htmlFor='last_name'>Apellido</FormLabel>
                 <Input
-                  name='lastName'
+                  name='last_name'
                   type='text'
                   autoComplete='on'
                   placeholder='Pérez'
                   ref={register({ required: 'El apellido es obligatorio' })}
                 />
                 <FormErrorMessage>
-                  {errors.lastName && errors.lastName.message}
+                  {errors.last_name && errors.last_name.message}
                 </FormErrorMessage>
               </FormControl>
 
