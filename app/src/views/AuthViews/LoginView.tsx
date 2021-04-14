@@ -22,6 +22,8 @@ import { http } from '../../http/client';
 import { useForm } from 'react-hook-form';
 import { FunctionError, LoginData, LoginError  } from '../../http/types';
 import { FunctionOk } from '../../http/types';
+import { useHistory } from 'react-router-dom';
+import { routes } from '../../routes/routes';
 
 type AlertData = {
   status: AlertStatus;
@@ -33,14 +35,15 @@ type AlertData = {
 export const LoginView = () => {
   const defaultAlert:AlertData = { status: 'info', title: '', description: '', show: false }
   const { register, handleSubmit, errors } = useForm<LoginData>();
+  const history = useHistory()
 
   const [alert, setAlert] = useState(defaultAlert)
 
   const onSubmit = (values: LoginData) => {
     const ok: FunctionOk = (statusCode, data) => {
-      // TODO: Implement redirect
       console.log('Redirecting to home page...')
       setAlert(defaultAlert)
+      history.push(routes.patientHome.path)
     }
     const error: FunctionError = (statusCode, error) => {
       console.log(error);
