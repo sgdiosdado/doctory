@@ -14,7 +14,7 @@ services:
 
   doctory:
     build: ./doctory
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:8000 --nostatic
     volumes:
       - ./doctory:/doctory
     ports:
