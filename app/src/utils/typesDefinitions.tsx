@@ -5,7 +5,7 @@ export type userInformation = {
   email: string,
   location?: string,
   bloodType?: string,
-  alergies?: [string],
+  alergies?: string[],
 }
 
 export type timeLineItemProps = {

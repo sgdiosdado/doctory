@@ -8,6 +8,7 @@ import { FaCamera } from 'react-icons/fa';
 
 import { userInformation } from '../../utils/typesDefinitions';
 import avatar from '../../assets/PowerPeople_Emma.png';
+import { AddIcon } from '@chakra-ui/icons';
 
 
 export const ProfileView = () => {
@@ -15,6 +16,8 @@ export const ProfileView = () => {
   const [alergies, setAlrgies] = useState(['']);
 
   const onSubmit = (values: userInformation) => {
+    console.log(values);
+    values.alergies = alergies;
     console.log(values);
     // http.postProfile(values, ok, error); //TODO
   }
@@ -26,11 +29,10 @@ export const ProfileView = () => {
     }
     return true;
   } 
-  // console.log(errors.dob);
   
-  const addAlergieField = () => {
+  
+  const addAlergyField = () => {
     setAlrgies((a) => [...a, '']);
-    console.log(alergies);
   }
 
   const handleAlergieInputChange = (e: ChangeEvent<HTMLInputElement>, index: number) => {
@@ -84,6 +86,7 @@ export const ProfileView = () => {
         bg={useColorModeValue('white', 'gray.700')}
         boxShadow={'lg'}
         p={8}
+        mb={12}
       >
        
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -218,14 +221,16 @@ export const ProfileView = () => {
               <Button
                 size='sm'
                 variant="outline"
-                onClick={addAlergieField}
+                onClick={addAlergyField}
+                leftIcon={<AddIcon/>}
               >Agregar</Button>
               </div>
             </HStack>
 
           </FormControl>
-
-          <Button type="submit">Entrar</Button>
+          <Stack  w={'100%'} align={'center'}>
+            <Button colorScheme='primary' type="submit">Guardar</Button>
+          </Stack>
         </form>
       </Box>
     </VStack>
