@@ -30,8 +30,8 @@ import { connectionErrorToast } from '../../utils/connectionErrorToast';
 export const PatientHomeView = () => {
 
   const userData: userInformation = {
-    name: 'Sergio Gabriel',
-    lname: 'Diosdado Castelazo',
+    first_name: 'Sergio Gabriel',
+    last_name: 'Diosdado Castelazo',
     dob: '14-dic-1998',
     email: 'sergio@doctory.com',
     location: 'Matamoros, Tamaulipas'

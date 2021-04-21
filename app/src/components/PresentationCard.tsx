@@ -11,14 +11,13 @@ type presentationCardPropsTypes = {
 export const PresetationCard = ({userData, avatar}:presentationCardPropsTypes) => {
   
   return (
-    <Box
-      p='2em'
-    >
+    <Box>
       <HStack maxW={'100%'}>
-        <Box maxW={{base:'35%', md:'30%'}}>
-        <Image maxH={'15em'} src={avatar}/>
+        <Box maxW={{base:'30%', md:'20%'}}>
+          <Image borderRadius="full" maxH={'15em'} src={avatar}/>
         </Box>
-        <Box maxW={{base:'60%', md:'70%'}}
+        <Box 
+          maxW={{base:'60%', md:'70%'}}
           textAlign='left' 
           fontSize={{base:'sm', md:'xl'}}
           whiteSpace='nowrap' 
@@ -28,7 +27,7 @@ export const PresetationCard = ({userData, avatar}:presentationCardPropsTypes) =
             overflow='hidden' 
             fontSize={{base:'md', md:'3xl'}}
           >
-            {userData.name + ' ' + userData.lname}
+            {userData.first_name + ' ' + userData.first_name}
           </Text>
           <Text>{userData.dob} </Text>
           <Text textOverflow='ellipsis' overflow='hidden' >
