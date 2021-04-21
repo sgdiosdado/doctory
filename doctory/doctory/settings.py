@@ -70,6 +70,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
