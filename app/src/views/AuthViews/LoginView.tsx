@@ -40,9 +40,9 @@ export const LoginView = () => {
   const [alert, setAlert] = useState(defaultAlert)
 
   const onSubmit = (values: LoginData) => {
+    setAlert(defaultAlert)
     const ok: FunctionOk = (statusCode, data) => {
       console.log('Redirecting to home page...')
-      setAlert(defaultAlert)
       history.push(routes.patientHome.path)
     }
     const error: FunctionError = (statusCode, error) => {
