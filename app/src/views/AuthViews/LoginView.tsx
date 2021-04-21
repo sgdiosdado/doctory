@@ -40,13 +40,11 @@ export const LoginView = () => {
   const [alert, setAlert] = useState(defaultAlert)
 
   const onSubmit = (values: LoginData) => {
+    setAlert(defaultAlert)
     const ok: FunctionOk = (statusCode, data) => {
-      console.log('Redirecting to home page...')
-      setAlert(defaultAlert)
       history.push(routes.patientHome.path)
     }
     const error: FunctionError = (statusCode, error) => {
-      console.log(error);
       const loginError = error as LoginError;
       setAlert({ status: 'error', title: 'Ups!', description: loginError.credentials[0], show: true })
     }
