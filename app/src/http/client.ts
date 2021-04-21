@@ -5,7 +5,8 @@ const defaultOk:FunctionOk = (status, data) => {return};
 const defaultError:FunctionError = (status, errors) => {return};
 
 class Http {
-  private url = 'http://localhost:8000'
+  // private url = 'http://localhost:8000'
+  private url = document.location.origin
 
   public async login(fields:LoginData, ok:FunctionOk=defaultOk, error:FunctionError=defaultError) {
     const res = await fetch(`${this.url}/api/v1/login/`, {
