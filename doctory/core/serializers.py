@@ -56,6 +56,9 @@ class LoginSerializer(serializers.Serializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+    # blood_type = serializers.CharField(max_length)
+    # alergies = serializers.ListField(child=serializers.CharField(), source='more__alergies')
+    
     class Meta:
         model = User
         fields = ['email', 'first_name', 'last_name', 'type', 'location', 'sex']

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { DateTime } from "luxon";
 
@@ -9,18 +9,40 @@ import { FaCamera } from 'react-icons/fa';
 import { userInformation } from '../../utils/typesDefinitions';
 import avatar from '../../assets/PowerPeople_Emma.png';
 import { AddIcon } from '@chakra-ui/icons';
-
+import { FunctionOk, FunctionError } from '../../http/types';
+import { http } from '../../http/client';
 
 export const ProfileView = () => {
   const { register, handleSubmit, errors } = useForm<userInformation>();
   const [alergies, setAlrgies] = useState(['']);
+  const [data, setData] = useState<userInformation>({
+    first_name: '',
+    last_name: '',
+    dob: '',
+    email: '',
+  });
 
   const onSubmit = (values: userInformation) => {
     console.log(values);
     values.alergies = alergies;
     console.log(values);
-    // http.postProfile(values, ok, error); //TODO
+    
+    
+    http.getProfileInfo(ok, error);
   }
+  const error: FunctionError = (statusCode, error) => {
+    
+  }
+
+  const ok: FunctionOk = (_, data) => {
+    console.log(data);
+    setData(data as userInformation);
+    
+  }
+  
+  useEffect(() => {
+    http.getProfileInfo(ok, error);
+  }, [])
 
   const isDateValid = (date: string) => {
     const dob = DateTime.fromISO(date);
@@ -42,6 +64,7 @@ export const ProfileView = () => {
       return newAlergies;
     })
   }
+
 
   const BulletPoint = () => (
     <Box 
@@ -100,6 +123,7 @@ export const ProfileView = () => {
               type='text'
               autoComplete='on'
               placeholder='Juan'
+              defaultValue={data.first_name}
               ref={register({ required: 'El nombre es obligatorio' })}
             />
             <FormErrorMessage>
@@ -117,6 +141,7 @@ export const ProfileView = () => {
               type='text'
               autoComplete='on'
               placeholder='Pérez'
+              defaultValue={data.last_name}
               ref={register({ required: 'El apellido es obligatorio' })}
             />
             <FormErrorMessage>
@@ -134,6 +159,8 @@ export const ProfileView = () => {
               type='email'
               autoComplete='on'
               placeholder='ejemplo@gmail.com'
+              disabled={true}
+              defaultValue={data.email}
               ref={register({
                 required: 'El correo electrónico es obligatorio',
                 pattern: {
@@ -157,6 +184,7 @@ export const ProfileView = () => {
               name='dob'
               type='date'
               autoComplete='on'
+              defaultValue={data.dob}
               ref={register({
                 required: 'La fecha es obligatoria',
                 validate: value => isDateValid(value) || 'La fecha no es válida',
@@ -177,6 +205,7 @@ export const ProfileView = () => {
               type='text'
               autoComplete='on'
               placeholder='Monterrey, Nuevo León'
+              defaultValue={data.location}
               ref={register({ required: false })}
             />
           </FormControl>
@@ -190,6 +219,7 @@ export const ProfileView = () => {
               type='text'
               autoComplete='on'
               placeholder='O+'
+              defaultValue={data.bloodType}
               ref={register({ required: false })}
             />
           </FormControl>

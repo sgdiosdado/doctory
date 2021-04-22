@@ -26,6 +26,16 @@ export type BackgroundSubtypeData = {
   description: string;
 }
 
+export type UserInformationData = {
+  first_name: string,
+  last_name: string,
+  dob: string,
+  email: string,
+  location?: string,
+  bloodType?: string,
+  alergies?: string[],
+}
+
 export type FunctionOk = (statusCode: number, data: Object | Array<Object>) => void;
 export type FunctionError = (statusCode: number, errors: Object) => void;
 
