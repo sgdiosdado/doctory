@@ -15,6 +15,7 @@ class User(AbstractUser):
     type = ChoiceArrayField(models.CharField(max_length=50, choices=UserTypes.choices), default=set_default_user_type)
     location = models.CharField(max_length=200, null=True, blank=True)
     sex = models.CharField(max_length=10, choices=SexTypes.choices, default=set_default_sex_type)
+    dob = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     updated_at = AutoDateTimeField(default=timezone.now, editable=False)
 

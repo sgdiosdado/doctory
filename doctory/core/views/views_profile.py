@@ -2,9 +2,10 @@ from rest_framework import permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from core.models import Patient
-from core.serializers import ProfileSerializer
+from core.models import Patient, User
+from core.serializers import ProfileSerializer, UserProfileSerializer, PatientProfileSerializer, MedicProfileSerializer
 from core.utils import standard_response
+from core.utils import UserTypes
 
 class Profile(APIView):
     """
@@ -20,11 +21,11 @@ class Profile(APIView):
         Return profile's information
         """
         try:
-            patient = Patient.objects.get(id=request.user.id)
-            serializer = ProfileSerializer(patient)
+            user = User.objects.get(id=request.user.id)
+            serializer = ProfileSerializer(user)
             res = standard_response(data=serializer.data)
             return Response(res)
-        except Patient.DoesNotExist:
+        except User.DoesNotExist:
             res = standard_response(errors={'user': 'Not found'})
             return Response(res, status=status.HTTP_404_NOT_FOUND)
     
@@ -32,16 +33,41 @@ class Profile(APIView):
         """
         Put user's profile information
         """
+
         try:
-            patient = Patient.objects.get(id=request.user.id)
-            serializer = ProfileSerializer(patient, data=request.data) #partial=True
-            if serializer.is_valid():
-                serializer.save(patient=request.user)
-                res = standard_response(data=serializer.data)
-                return Response(res)
-            res = standard_response(errors=serializer.errors)
-            return Response(res, status=status.HTTP_400_BAD_REQUEST)
-        except Patient.DoesNotExist:
+            res = {}
+            user = User.objects.get(id=request.user.id)
+            user_serializer = UserProfileSerializer(user, data=request.data)
+            # # valdidar que sea paceinte
+            if UserTypes.PATIENT in user.type and 'patient' in request.data:
+                patient_serializer = PatientProfileSerializer(user.patientmore, data=request.data['patient'])
+                if not patient_serializer.is_valid():
+                    res = standard_response(errors=patient_serializer.errors)
+                    return Response(res, status=status.HTTP_400_BAD_REQUEST)
+                patient_serializer.save(patientmore=request.user.patientmore)
+                res['patient'] = patient_serializer.data
+            
+            # # valdidar que sea medico
+            if UserTypes.MEDIC in user.type and 'medic' in request.data:
+                medic_serializer = MedicProfileSerializer(user.medicmore, data=request.data['medic'])
+                if not medic_serializer.is_valid():
+                    res = standard_response(errors=medic_serializer.errors)
+                    return Response(res, status=status.HTTP_400_BAD_REQUEST)
+                medic_serializer.save(medicmore=request.user.medicmore)
+                res['medic'] = medic_serializer.data
+                    
+
+            if not user_serializer.is_valid():
+                res = standard_response(errors=user_serializer.errors)
+                return Response(res, status=status.HTTP_400_BAD_REQUEST) 
+
+            user_serializer.save(user=request.user)
+
+            user_data = user_serializer.data
+            res = standard_response(data={**user_data, **res})
+            return Response(res)
+
+        except User.DoesNotExist:
             res = standard_response(errors={'user': 'Not found'})
             return Response(res, status=status.HTTP_404_NOT_FOUND)
     
