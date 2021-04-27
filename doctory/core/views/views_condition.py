@@ -20,7 +20,7 @@ class ListConditions(APIView):
         """
         Return a list of all conditions of patient
         """
-        conditions = ConditionSerializer(Condition.objects.filter(patient=request.user), many=True)
+        conditions = ConditionSerializer(Condition.objects.filter(patient=request.user).order_by('-date_of_diagnosis'), many=True)
         res = standard_response(data=conditions.data)
         return Response(res)
  

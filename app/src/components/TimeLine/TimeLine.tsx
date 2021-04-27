@@ -7,7 +7,7 @@ import { useMediaQuery } from '@chakra-ui/media-query'
 
 export const TimeLine:FC = ({children}) => {
 
-  const [isMobile] = useMediaQuery(`(max-width: ${theme.breakpoints.md}`);
+  const [isDesktop] = useMediaQuery(`(min-width: ${theme.breakpoints.md}`);
 
   return (
     <Container
@@ -32,7 +32,7 @@ export const TimeLine:FC = ({children}) => {
             backgroundColor: useColorModeValue('primary.500','primary.800'),
             content:'""',
             position: 'absolute',
-            left: `${isMobile? '-.1em': 'calc(50% - .1em)'}`, //(50% - 1/2(with))
+            left: `${isDesktop? 'calc(50% - .1em)' : '-.1em'}`, //(50% - 1/2(with))
             width: '.2em',  //line with
             height: '100%',
           }

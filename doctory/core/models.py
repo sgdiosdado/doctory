@@ -120,7 +120,7 @@ class Condition(models.Model):
     background_subtype = models.ForeignKey(BackgroundSubtype, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
-    date_of_diagnosis = models.DateTimeField()
+    date_of_diagnosis = models.DateField()
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     updated_at = AutoDateTimeField(default=timezone.now, editable=False)
 
