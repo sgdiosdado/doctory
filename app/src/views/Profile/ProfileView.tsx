@@ -1,48 +1,70 @@
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { DateTime } from "luxon";
 
-import { Avatar, AvatarBadge, Button, FormControl, FormErrorMessage, FormLabel, Input, useColorModeValue } from "@chakra-ui/react"
+import { Avatar, AvatarBadge, Button, FormControl, FormErrorMessage, FormLabel, Input, Select, useColorModeValue } from "@chakra-ui/react"
 import { Box, Container, Flex, Heading, HStack, Stack, VStack } from '@chakra-ui/layout';
 import { FaCamera } from 'react-icons/fa';
 
-import { userInformation } from '../../utils/typesDefinitions';
+import { sexTypes, userInformation, userTypes } from '../../utils/typesDefinitions';
 import avatar from '../../assets/PowerPeople_Emma.png';
 import { AddIcon } from '@chakra-ui/icons';
-import { FunctionOk, FunctionError } from '../../http/types';
+import { FunctionError, FunctionOk } from '../../http/types';
 import { http } from '../../http/client';
 
 export const ProfileView = () => {
-  const { register, handleSubmit, errors } = useForm<userInformation>();
-  const [alergies, setAlrgies] = useState(['']);
+  const { register, handleSubmit, errors, setValue } = useForm<userInformation>();
+  const [alergies, setAlergies] = useState(['']);
+  const [specialties, setSpecialties] = useState(['']);
   const [data, setData] = useState<userInformation>({
     first_name: '',
     last_name: '',
     dob: '',
     email: '',
+    sex: '',
+    type: [''],
   });
-
-  const onSubmit = (values: userInformation) => {
-    console.log(values);
-    values.alergies = alergies;
-    console.log(values);
-    
-    
-    http.getProfileInfo(ok, error);
-  }
+  
   const error: FunctionError = (statusCode, error) => {
-    
-  }
-
-  const ok: FunctionOk = (_, data) => {
-    console.log(data);
-    setData(data as userInformation);
+    console.log(statusCode, error);
     
   }
   
+  const ok = useCallback(
+    (_, data) => {
+      const userData = data as userInformation;
+      const {patient, medic} = userData;
+      setValue('sex', userData.sex)
+      setData(userData);
+      if (userData.type.includes(userTypes.PATIENT) && patient) {
+        register('patient.alergies');
+        setValue('patient.alergies', patient.alergies);
+        setAlergies(patient.alergies);
+      }
+      if (userData.type.includes(userTypes.MEDIC) && medic) {
+        register('medic.specialties');
+        setValue('medic.specialties', medic.specialties);
+        setSpecialties(medic.specialties);
+      }
+    },
+    [setValue, register],
+  )
+
   useEffect(() => {
     http.getProfileInfo(ok, error);
-  }, [])
+  }, [ok])
+  
+
+  const onSubmit = (values: userInformation) => {
+    console.log(values);
+    http.putProfileInfo(values, ()=>{}, error)
+    // values.alergies = alergies;
+    // console.log(values);
+    
+    
+    // http.getProfileInfo(ok, error);
+  }
+  
 
   const isDateValid = (date: string) => {
     const dob = DateTime.fromISO(date);
@@ -51,17 +73,16 @@ export const ProfileView = () => {
     }
     return true;
   } 
-  
-  
-  const addAlergyField = () => {
-    setAlrgies((a) => [...a, '']);
-  }
+    
+  const addAlergyField = () => setAlergies((a) => [...a, '']);
+  const addSpecialtyField = () => setSpecialties((s) => [...s, '']);
 
-  const handleAlergieInputChange = (e: ChangeEvent<HTMLInputElement>, index: number) => {
-    setAlrgies(algs => {
-      let newAlergies = [...algs];
-      newAlergies[index] = e.target.value;
-      return newAlergies;
+  const handleValueArrChange = (e: ChangeEvent<HTMLInputElement>, index: number, name:string,  setArrValue: Dispatch<SetStateAction<string[]>>) => {
+    setArrValue(values => {
+      let newValues = [...values];
+      newValues[index] = e.target.value;
+      setValue(name, newValues);
+      return newValues;
     })
   }
 
@@ -93,9 +114,7 @@ export const ProfileView = () => {
       w={'100%'}
     >
     <VStack w={'100%'}>
-      {/* <Stack  w={'100%'} align={'left'}> */}
-        <Heading fontSize={'3xl'}>Editar Perfil</Heading>
-      {/* </Stack> */}
+      <Heading fontSize={'3xl'}>Editar Perfil</Heading>
       <Stack mb={4} w={'100%'} align={'center'}>
         <Avatar src={avatar} size="2xl">
           <AvatarBadge boxSize=".8em" borderColor="transparent" bg="white" _hover={{color:'gray.500'}}>
@@ -117,7 +136,7 @@ export const ProfileView = () => {
             mb={4}
             isRequired
             isInvalid={Boolean(errors.first_name)}>
-            <FormLabel htmlFor='first_name'>Nombre</FormLabel>
+            <FormLabel htmlFor='first_name'>Nombre(s)</FormLabel>
             <Input
               name='first_name'
               type='text'
@@ -135,7 +154,7 @@ export const ProfileView = () => {
             mb={4}
             isRequired
             isInvalid={Boolean(errors.last_name)}>
-            <FormLabel htmlFor='last_name'>Apellido</FormLabel>
+            <FormLabel htmlFor='last_name'>Apellidos</FormLabel>
             <Input
               name='last_name'
               type='text'
@@ -157,17 +176,10 @@ export const ProfileView = () => {
             <Input
               name='email'
               type='email'
-              autoComplete='on'
-              placeholder='ejemplo@gmail.com'
               disabled={true}
-              defaultValue={data.email}
-              ref={register({
-                required: 'El correo electrónico es obligatorio',
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                  message: 'Ingresa un correo electrónico válido',
-                },
-                })}
+              placeholder='ejemplo@gmail.com'
+              value={data.email}
+              ref={register}
             />
             
             <FormErrorMessage>
@@ -190,10 +202,25 @@ export const ProfileView = () => {
                 validate: value => isDateValid(value) || 'La fecha no es válida',
                })}
             />
-            
             <FormErrorMessage>
             {errors.dob && errors.dob.message}
             </FormErrorMessage>
+          </FormControl>
+
+          <FormControl
+            mb={4}>
+            <FormLabel htmlFor='sex'>Sexo</FormLabel>
+              <Select
+                as='select'
+                name='sex'
+                onChange= {(e) => setValue('sex', e.target.value)}
+                ref={register}
+              >
+                <option value={sexTypes.NOT_SPECIFIED}>Sin especificar</option>
+                <option value={sexTypes.FEMALE}>Mujer</option>
+                <option value={sexTypes.MALE}>Hombre</option>
+                <option value={sexTypes.OTHER}>Otro</option>
+              </Select>
           </FormControl>
           
           <FormControl
@@ -206,24 +233,71 @@ export const ProfileView = () => {
               autoComplete='on'
               placeholder='Monterrey, Nuevo León'
               defaultValue={data.location}
-              ref={register({ required: false })}
+              ref={register}
             />
           </FormControl>
           
-          <FormControl
-            mb={4}
-          >
-            <FormLabel htmlFor='bloodType'>Tipo de Sangre</FormLabel>
-            <Input
-              name='bloodType'
-              type='text'
-              autoComplete='on'
-              placeholder='O+'
-              defaultValue={data.bloodType}
-              ref={register({ required: false })}
-            />
-          </FormControl>
-          
+          {data.type.includes(userTypes.MEDIC) &&
+            <FormControl mb={4}>
+              <FormLabel htmlFor='license'>Cédula Profesional</FormLabel>
+              <Input
+                name='medic.license'
+                type='text'
+                placeholder='12345678'
+                defaultValue={data.medic? data.medic.license : ''}
+                ref={register}
+              />
+            </FormControl>
+          }
+
+          {data.type.includes(userTypes.MEDIC) && 
+            <FormControl mb={4} >
+              <FormLabel htmlFor='specialty'>Especialidad(s)</FormLabel>
+              {specialties.map((specialty,index) => (
+                <HStack
+                  mb={2}
+                  key={'specialty-'+index}
+                >
+                  {BulletPoint()}
+                  <Input
+                    value={specialty}
+                    onChange={e => handleValueArrChange(e, index, 'medic.specialties', setSpecialties)}
+                    size='sm'
+                    type='text'
+                    placeholder='Cirujano'
+                  />
+                </HStack>
+              ))}
+
+              <HStack>
+                {BulletPoint()}
+                <div>
+                <Button
+                  size='sm'
+                  variant="outline"
+                  onClick={addSpecialtyField}
+                  leftIcon={<AddIcon/>}
+                >Agregar</Button>
+                </div>
+              </HStack>
+            </FormControl>
+          }
+
+          {data.type.includes(userTypes.PATIENT) &&
+            <FormControl mb={4}>
+              <FormLabel htmlFor='blood_type'>Tipo de Sangre</FormLabel>
+              <Input
+                name='patient.blood_type'
+                type='text'
+                autoComplete='on'
+                placeholder='O+'
+                defaultValue={data.patient? data.patient.blood_type : ''}
+                ref={register}
+              />
+            </FormControl>
+          }
+
+          {data.type.includes(userTypes.PATIENT) && 
           <FormControl
             mb={4}
           >
@@ -236,9 +310,8 @@ export const ProfileView = () => {
                 {BulletPoint()}
                 <Input
                   value={alergie}
-                  onChange={e => handleAlergieInputChange(e, index)}
+                  onChange={e => handleValueArrChange(e, index, 'patient.alergies', setAlergies)}
                   size='sm'
-                  name='location'
                   type='text'
                   placeholder='Pólen'
                 />
@@ -256,8 +329,8 @@ export const ProfileView = () => {
               >Agregar</Button>
               </div>
             </HStack>
-
           </FormControl>
+          }
           <Stack  w={'100%'} align={'center'}>
             <Button colorScheme='primary' type="submit">Guardar</Button>
           </Stack>

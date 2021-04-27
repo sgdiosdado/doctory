@@ -1,11 +1,31 @@
+export const userTypes = {
+  PATIENT: 'PAT',
+  MEDIC: 'MED',
+}
+
+export const sexTypes = {
+  MALE: 'M',
+  FEMALE: 'F',
+  OTHER: 'O',
+  NOT_SPECIFIED: 'U',
+}
+
 export type userInformation = {
   first_name: string,
   last_name: string,
-  dob: string,
   email: string,
   location?: string,
-  bloodType?: string,
-  alergies?: string[],
+  dob?: string,
+  sex?: string,
+  patient?: {
+    blood_type: string,
+    alergies: string[],
+  }
+  medic?: {
+    license: string,
+    specialties: string[],
+  },
+  type: string[],
 }
 
 export type timeLineItemProps = {

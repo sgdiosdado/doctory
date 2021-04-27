@@ -1,5 +1,6 @@
 import { UserInformationData, LoginData, FunctionOk, FunctionError, SignUpData, ConditionData } from './types';
 import { getToken, setToken } from '../utils/token';
+import { userInformation } from '../utils/typesDefinitions';
 
 const defaultOk:FunctionOk = (status, data) => {return};
 const defaultError:FunctionError = (status, errors) => {return};
@@ -144,19 +145,20 @@ class Http {
     error(res.status, data.errors);
   }
 
-  public async putProfileInfo(fields:UserInformationData, ok:FunctionOk=defaultOk, error:FunctionError=defaultError) {
+  public async putProfileInfo(fields:userInformation, ok:FunctionOk=defaultOk, error:FunctionError=defaultError) {
     const res = await fetch(`${this.url}/api/v1/profile/`, {
       method: 'PUT',
       headers: {
-        'Authorization': `Token ${getToken()}`
+        'Authorization': `Token ${getToken()}`,
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(fields)
     });
     const data = await res.json();
-    if(res.status === 201) {
+    if(res.status === 200) {
       ok(res.status, data.data);
     }
-    error(res.status, data.errors);
+    error(res.status, data.errors,);
   }
 }
 

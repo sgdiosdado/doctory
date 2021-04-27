@@ -55,10 +55,11 @@ class LoginSerializer(serializers.Serializer):
         return {'token': token_key}
 
 
-class SpecialtySerializer(serializers.Serializer):
+class SpecialtySerializer(serializers.ModelSerializer):
     class Meta:
         model = Specialty
-        fields = ['name']
+        fields = ['id','name']
+        # read_only_fields = ['id']
 
 
 class MedicProfileSerializer(serializers.ModelSerializer):
@@ -66,6 +67,7 @@ class MedicProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = MedicMore
         fields = ['license', 'specialties']
+        
 
 
 class PatientProfileSerializer(serializers.ModelSerializer):
