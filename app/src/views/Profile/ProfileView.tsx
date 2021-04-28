@@ -27,11 +27,9 @@ export const ProfileView = () => {
   
   const error: FunctionError = (statusCode, error) => {
     console.log(statusCode, error);
-    
   }
   
-  const ok = useCallback(
-    (_, data) => {
+  const ok = useCallback((_, data) => {
       const userData = data as userInformation;
       const {patient, medic} = userData;
       setValue('sex', userData.sex)
@@ -58,20 +56,11 @@ export const ProfileView = () => {
   const onSubmit = (values: userInformation) => {
     console.log(values);
     http.putProfileInfo(values, ()=>{}, error)
-    // values.alergies = alergies;
-    // console.log(values);
-    
-    
-    // http.getProfileInfo(ok, error);
   }
   
-
   const isDateValid = (date: string) => {
     const dob = DateTime.fromISO(date);
-    if(!dob.isValid || (dob > DateTime.now()) ) {
-      return false;
-    }
-    return true;
+    return (dob.isValid && (dob < DateTime.now()));
   } 
     
   const addAlergyField = () => setAlergies((a) => [...a, '']);
@@ -105,7 +94,7 @@ export const ProfileView = () => {
     d={'flex'}
     flexGrow={1}
     mx={{base:'1em', md:'2em'}}
-  >
+    >
     <Flex
       flexGrow={1}
       align={'flex-start'}
@@ -338,8 +327,6 @@ export const ProfileView = () => {
       </Box>
     </VStack>
     </Flex>
-  
   </Container>
-
   )
 }
