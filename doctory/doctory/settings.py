@@ -25,7 +25,7 @@ SECRET_KEY = 'y1ar^6-_o+3@r=bajv#x=(+9r(0f1@ewd8qkayq83+7w+_mu$a'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = environ['DEBUG']
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = [environ['ALLOWED_HOSTS']]
 
 AUTH_USER_MODEL = 'core.User'
 
