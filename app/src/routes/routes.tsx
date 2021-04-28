@@ -12,22 +12,19 @@ type route = {
 
 const patientPaths: {[name:string]: route} = {
   patientHome: {path: '/pat/home', component: PatientHomeView},
-  patientStudies: {path: '/pat/studies', component: NotfoundPage}, // TODO: Studies component
-  patientProfile: {path: '/pat/profile', component: NotfoundPage}, // TODO: Profile component (check if will be the same for doctor?¿)
-  patientShareHistory: {path: '/pat/profile', component: NotfoundPage}, //TODO: Profile component (check if will be the same for doctor?¿)
+  patientProfile: {path: '/pat/profile', component: NotfoundPage},
 }
 
 const doctorPaths: {[name:string]: route} = {
   doctorLanding: {path: '/med/landing', component: DoctorLandingView},
-  doctorpatients: {path: '/med/patients', component: NotfoundPage}, // TODO: Doctors view on patients component 
-  // TODO: check which others paths are required
+  doctorpatients: {path: '/med/patients', component: NotfoundPage },
 }
 
 const generalPaths: {[name:string]: route} = {
   default: { path: '/', component: Landing },
   login: { path: '/login', component: LoginView },
   signin: { path: '/signup', component: SignUpView },
-  contact: { path: '/contact', component: NotfoundPage }, // TODO: Contanct component
+  contact: { path: '/contact', component: NotfoundPage },
   notFound: {path: '/404', component: NotfoundPage },
 }
 
