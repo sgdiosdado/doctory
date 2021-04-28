@@ -54,6 +54,7 @@ export const ProfileView = () => {
       setSpecialties(medic.specialties);
     }
     setIsLoading(false);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[setValue, register])
 
   useEffect(() => {
