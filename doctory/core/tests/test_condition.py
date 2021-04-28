@@ -30,7 +30,7 @@ class ListConditionsTests(APITestCase):
         data = {
             'name': 'Diabetes',
             'description': 'Diabetes type 2',
-            'date_of_diagnosis': '2017-01-18T00:00',
+            'date_of_diagnosis': '2017-01-18',
             'background_subtype': 2
             }
         response = self.client.post(self.url, data)
@@ -45,7 +45,7 @@ class ListConditionsTests(APITestCase):
         data = {
             'name': 'Diabetes',
             'description': 'Diabetes type 2',
-            'date_of_diagnosis': '2017-01-18T00:00',
+            'date_of_diagnosis': '2017-01-18',
             }
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -75,7 +75,7 @@ class ConditionDetailTests(APITestCase):
         dummy_condition = {
             'name': 'Condition 1',
             'description': 'Some description',
-            'date_of_diagnosis': '2017-01-18T00:00',
+            'date_of_diagnosis': '2017-01-18',
             'background_subtype': 2
             }
         serializer = ConditionSerializer(data=dummy_condition)
@@ -98,7 +98,7 @@ class ConditionDetailTests(APITestCase):
         dummy_condition = {
             'name': 'Condition 2',
             'description': 'Some other description',
-            'date_of_diagnosis': '2017-12-20T00:00',
+            'date_of_diagnosis': '2017-12-20',
             'background_subtype': 3
             }
         serializer = ConditionSerializer(data=dummy_condition)
@@ -116,7 +116,7 @@ class ConditionDetailTests(APITestCase):
         data = {
             'name': 'Condition 1',
             'description': 'Some updated description',
-            'date_of_diagnosis': '2017-01-18T00:00',
+            'date_of_diagnosis': '2017-01-18',
             'background_subtype': 2
             }
         response = self.client.put(self.url, data)
@@ -144,7 +144,7 @@ class ConditionDetailTests(APITestCase):
         dummy_condition = {
             'name': 'Condition 2',
             'description': 'Some other description',
-            'date_of_diagnosis': '2017-12-20T00:00',
+            'date_of_diagnosis': '2017-12-20',
             'background_subtype': 3
             }
         serializer = ConditionSerializer(data=dummy_condition)
@@ -154,7 +154,7 @@ class ConditionDetailTests(APITestCase):
         data = {
             'name': 'Condition 2',
             'description': 'Some updated description',
-            'date_of_diagnosis': '2017-01-18T00:00',
+            'date_of_diagnosis': '2017-01-18',
             'background_subtype': 3
             }
         response = self.client.put(reverse('condition', kwargs={'condition_id': condition.id}), data)
@@ -177,7 +177,7 @@ class ConditionDetailTests(APITestCase):
         dummy_condition = {
             'name': 'Condition 2',
             'description': 'Some other description',
-            'date_of_diagnosis': '2017-12-20T00:00',
+            'date_of_diagnosis': '2017-12-20',
             'background_subtype': 3
             }
         serializer = ConditionSerializer(data=dummy_condition)

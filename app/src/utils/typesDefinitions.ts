@@ -1,11 +1,13 @@
-export type userInformation = {
-  name: string,
-  lname: string,
-  dob: string,
-  email: string,
-  location?: string,
-  bloodType?: string,
-  alergies?: [string],
+export const userTypes = {
+  PATIENT: 'PAT',
+  MEDIC: 'MED',
+}
+
+export const sexTypes = {
+  MALE: 'M',
+  FEMALE: 'F',
+  OTHER: 'O',
+  NOT_SPECIFIED: 'U',
 }
 
 export type timeLineItemProps = {

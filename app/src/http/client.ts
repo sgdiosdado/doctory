@@ -1,4 +1,4 @@
-import { LoginData, FunctionOk, FunctionError, SignUpData, ConditionData } from './types';
+import { userInformation, LoginData, FunctionOk, FunctionError, SignUpData, ConditionData } from './types';
 import { getToken, setToken } from '../utils/token';
 
 const defaultOk:FunctionOk = (status, data) => {return};
@@ -130,6 +130,53 @@ class Http {
         connectionError();
       }
     }
+
+  public async getProfileInfo(
+    ok:FunctionOk=defaultOk, 
+    error:FunctionError=defaultError, 
+    connectionError=()=>{}) {
+    try {
+      const res = await fetch(`${this.url}/api/v1/profile/`, {
+        headers: {
+          'Authorization': `Token ${getToken()}`
+        },
+      });
+      const data = await res.json();
+      if(res.status === 200) {
+        ok(res.status, data.data);
+        return;
+      }
+      error(res.status, data.errors);
+    } catch (err) {
+      connectionError();
+    }
+  }
+
+  public async putProfileInfo(
+    fields:userInformation, 
+    ok:FunctionOk=defaultOk, 
+    error:FunctionError=defaultError, 
+    connectionError=()=>{}) {
+      try {
+        const res = await fetch(`${this.url}/api/v1/profile/`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Token ${getToken()}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(fields)
+        });
+        const data = await res.json();
+
+        if(res.status === 200) {
+          ok(res.status, data.data);
+          return;
+        }
+        error(res.status, data.errors,);
+      } catch (error) {
+        connectionError();
+      }
+  }
 }
 
 export const http = new Http();

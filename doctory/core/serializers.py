@@ -6,7 +6,7 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 from django.contrib.auth.password_validation import validate_password
-from .models import BackgroundSubtype, BackgroundType, Condition, Patient, User
+from .models import BackgroundSubtype, BackgroundType, Condition, MedicMore, PatientMore, User, Specialty
 
 
 class SignupSerializer(serializers.ModelSerializer):
@@ -55,16 +55,42 @@ class LoginSerializer(serializers.Serializer):
         return {'token': token_key}
 
 
-class ProfileSerializer(serializers.ModelSerializer):
+class SpecialtySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Specialty
+        fields = ['id','name']
+
+
+class MedicProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MedicMore
+        fields = ['license', 'specialties']
+
+
+class PatientProfileSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = PatientMore
+        fields = ['blood_type', 'allergies']
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = User
-        fields = ['email', 'first_name', 'last_name', 'type', 'location', 'sex']
+        fields = ['email', 'first_name', 'last_name', 'type', 'location', 'sex', 'dob']
         read_only_fields = ['email']
 
-    def validate(self, data):
-        if 'sex' in SexTypes:
-            raise serializers.ValidationError({'sex': ['Invalid type']})
-        return data
+
+class ProfileSerializer(serializers.ModelSerializer):
+    patient = PatientProfileSerializer(source='patientmore')
+    medic = MedicProfileSerializer(source='medicmore')
+
+    class Meta:
+        FIELDS = ['email', 'first_name', 'last_name', 'type', 'location', 'sex', 'dob', 'patient', 'medic']
+        model = User
+        fields = FIELDS
+        read_only_fields = FIELDS
 
 
 class ConditionSerializer(serializers.ModelSerializer):
