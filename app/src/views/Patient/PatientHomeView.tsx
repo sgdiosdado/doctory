@@ -29,7 +29,7 @@ import { connectionErrorToast } from '../../utils/connectionErrorToast';
 
 export const PatientHomeView = () => {
 
-  const userData: userInformation = {
+  const userData: any = {
     first_name: 'Sergio Gabriel',
     last_name: 'Diosdado Castelazo',
     dob: '14-dic-1998',
@@ -92,6 +92,7 @@ export const PatientHomeView = () => {
         <Text fontSize='4xl'>Historia Médica</Text>
         <PresetationCard userData={userData} avatar={avatar} />
         <Box
+          w='100%'
           maxW={{base: '100%', md: '75%'}}
         >
           <TimeLine>

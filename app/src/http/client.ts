@@ -132,33 +132,53 @@ class Http {
       }
     }
 
-  public async getProfileInfo(ok:FunctionOk=defaultOk, error:FunctionError=defaultError) {
-    const res = await fetch(`${this.url}/api/v1/profile/`, {
-      headers: {
-        'Authorization': `Token ${getToken()}`
-      },
-    });
-    const data = await res.json();
-    if(res.status === 200) {
-      ok(res.status, data.data);
+  public async getProfileInfo(
+    ok:FunctionOk=defaultOk, 
+    error:FunctionError=defaultError, 
+    connectionError=()=>{}) {
+    try {
+      const res = await fetch(`${this.url}/api/v1/profile/`, {
+        headers: {
+          'Authorization': `Token ${getToken()}`
+        },
+      });
+      const data = await res.json();
+      if(res.status === 200) {
+        ok(res.status, data.data);
+        return;
+      }
+      error(res.status, data.errors);
+    } catch (err) {
+      connectionError();
     }
-    error(res.status, data.errors);
   }
 
-  public async putProfileInfo(fields:userInformation, ok:FunctionOk=defaultOk, error:FunctionError=defaultError) {
-    const res = await fetch(`${this.url}/api/v1/profile/`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Token ${getToken()}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(fields)
-    });
-    const data = await res.json();
-    if(res.status === 200) {
-      ok(res.status, data.data);
-    }
-    error(res.status, data.errors,);
+  public async putProfileInfo(
+    fields:userInformation, 
+    ok:FunctionOk=defaultOk, 
+    error:FunctionError=defaultError, 
+    connectionError=()=>{}) {
+      try {
+        const res = await fetch(`${this.url}/api/v1/profile/`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Token ${getToken()}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(fields)
+        });
+        const data = await res.json();
+        console.log(res);
+        console.log(res.status);
+        
+        if(res.status === 200) {
+          ok(res.status, data.data);
+          return;
+        }
+        error(res.status, data.errors,);
+      } catch (error) {
+        connectionError();
+      }
   }
 }
 

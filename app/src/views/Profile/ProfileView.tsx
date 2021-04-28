@@ -2,20 +2,25 @@ import React, { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, u
 import { useForm } from 'react-hook-form';
 import { DateTime } from "luxon";
 
-import { Avatar, AvatarBadge, Button, FormControl, FormErrorMessage, FormLabel, Input, Select, useColorModeValue } from "@chakra-ui/react"
+import { Avatar, AvatarBadge, Button, FormControl, FormErrorMessage, FormLabel, Input, Select, theme, useColorModeValue, useMediaQuery, useToast } from "@chakra-ui/react"
 import { Box, Container, Flex, Heading, HStack, Stack, VStack } from '@chakra-ui/layout';
 import { FaCamera } from 'react-icons/fa';
 
-import { sexTypes, userInformation, userTypes } from '../../utils/typesDefinitions';
+import { sexTypes, userTypes } from '../../utils/typesDefinitions';
 import avatar from '../../assets/PowerPeople_Emma.png';
 import { AddIcon } from '@chakra-ui/icons';
-import { FunctionError, FunctionOk } from '../../http/types';
+import { FunctionError, FunctionOk, userInformation } from '../../http/types';
 import { http } from '../../http/client';
+import { connectionErrorToast } from '../../utils/connectionErrorToast';
 
 export const ProfileView = () => {
   const { register, handleSubmit, errors, setValue } = useForm<userInformation>();
-  const [alergies, setAlergies] = useState(['']);
+  const [isLoading, setIsLoading] = useState(true)
+  const [alergiesArray, setAlergiesArray] = useState(['']);
+  const [alergiesObject, setAlergiesObject] = useState<{id: number, value: string}[]>([{id:0,value:''},]);
+  const [lastKnownAlergiesId, setLastKnownAlergiesId] = useState(1)
   const [specialties, setSpecialties] = useState(['']);
+  const toast = useToast();
   const [data, setData] = useState<userInformation>({
     first_name: '',
     last_name: '',
@@ -24,9 +29,19 @@ export const ProfileView = () => {
     sex: '',
     type: [''],
   });
-  
-  const error: FunctionError = (statusCode, error) => {
-    console.log(statusCode, error);
+
+  const [isDesktop] = useMediaQuery(`(min-width: ${theme.breakpoints.md}`); 
+
+  const parseArrayToAlergiesObject = (allergies:string[] = ['']) => {
+    let localLastKownID = lastKnownAlergiesId;
+    const res = allergies.map(allergy => {
+      return {
+        id: localLastKownID++,
+        value: allergy
+      }
+    })    
+    setLastKnownAlergiesId(localLastKownID);
+    return res;
   }
   
   const ok = useCallback((_, data) => {
@@ -37,34 +52,65 @@ export const ProfileView = () => {
       if (userData.type.includes(userTypes.PATIENT) && patient) {
         register('patient.alergies');
         setValue('patient.alergies', patient.alergies);
-        setAlergies(patient.alergies);
+        setAlergiesArray(patient.alergies);
+        setAlergiesObject(parseArrayToAlergiesObject(patient.alergies));
+        
+        
       }
       if (userData.type.includes(userTypes.MEDIC) && medic) {
         register('medic.specialties');
         setValue('medic.specialties', medic.specialties);
         setSpecialties(medic.specialties);
       }
+      setIsLoading(false);
     },
     [setValue, register],
   )
 
   useEffect(() => {
-    http.getProfileInfo(ok, error);
+    http.getProfileInfo(ok);
   }, [ok])
   
 
+
   const onSubmit = (values: userInformation) => {
-    console.log(values);
-    http.putProfileInfo(values, ()=>{}, error)
+    setIsLoading(true);
+    if (data.type.includes(userTypes.PATIENT)) {
+      setValue('patient.alergies', alergiesObject.map(x => x.value));
+    }
+
+    const ok:FunctionOk = () => {
+      setIsLoading(false);
+    }
+    const error:FunctionError = (_, error) => {
+      setIsLoading(false);
+      console.log('error', error);
+    }
+    const connectionError = () => {
+      setIsLoading(false);
+      toast(connectionErrorToast(isDesktop));
+    }
+    
+    http.putProfileInfo(values, ok, error, connectionError);
   }
   
   const isDateValid = (date: string) => {
     const dob = DateTime.fromISO(date);
     return (dob.isValid && (dob < DateTime.now()));
   } 
-    
-  const addAlergyField = () => setAlergies((a) => [...a, '']);
+  
+
   const addSpecialtyField = () => setSpecialties((s) => [...s, '']);
+  console.log(lastKnownAlergiesId);
+  
+  const addAlergyField = () => {
+    setAlergiesObject(obj => {
+      const newValue = {id: lastKnownAlergiesId, value: ''};
+      setLastKnownAlergiesId(x => x+1);
+      return [...obj, newValue];
+    })
+  }
+  
 
   const handleValueArrChange = (e: ChangeEvent<HTMLInputElement>, index: number, name:string,  setArrValue: Dispatch<SetStateAction<string[]>>) => {
     setArrValue(values => {
@@ -73,6 +119,18 @@ export const ProfileView = () => {
       setValue(name, newValues);
       return newValues;
     })
+  }
+  console.log(alergiesObject);
+  
+  const handleAllergieArrChange = (e: ChangeEvent<HTMLInputElement>, allergy:{id:number, value:string} ) => {
+    let allergyId = alergiesObject.findIndex(x => x.id === allergy.id);
+    setAlergiesObject(allergies => {    
+      let newValues = [...allergies];
+      newValues[allergyId] = {...allergy, value:e.target.value};
+      return newValues
+    })
+    console.log("escribi");
+    
   }
 
 
@@ -245,7 +303,7 @@ export const ProfileView = () => {
               {specialties.map((specialty,index) => (
                 <HStack
                   mb={2}
-                  key={'specialty-'+index}
+                  key={'specialty-'+index} // TODO: 
                 >
                   {BulletPoint()}
                   <Input
@@ -291,22 +349,21 @@ export const ProfileView = () => {
             mb={4}
           >
             <FormLabel htmlFor='alergies'>Alergias</FormLabel>
-            {alergies.map((alergie,index) => (
+            {alergiesObject.map((allergy) => (
               <HStack
                 mb={2}
-                key={'alergie-'+index}
+                key={allergy.id}
               >
                 {BulletPoint()}
                 <Input
-                  value={alergie}
-                  onChange={e => handleValueArrChange(e, index, 'patient.alergies', setAlergies)}
+                  value={allergy.value}
+                  onChange={e => handleAllergieArrChange(e, allergy)}
                   size='sm'
                   type='text'
                   placeholder='Pólen'
                 />
               </HStack>
             ))}
-
             <HStack>
               {BulletPoint()}
               <div>
@@ -320,8 +377,14 @@ export const ProfileView = () => {
             </HStack>
           </FormControl>
           }
-          <Stack  w={'100%'} align={'center'}>
-            <Button colorScheme='primary' type="submit">Guardar</Button>
+          <Stack  w={'100%'} align='flex-end'>
+            <Button 
+              isLoading={isLoading}
+              colorScheme='primary'
+              type="submit"
+            >
+              Guardar
+            </Button>
           </Stack>
         </form>
       </Box>

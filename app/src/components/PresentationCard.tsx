@@ -4,7 +4,7 @@ import { Box, HStack, Text } from '@chakra-ui/layout'
 import {userInformation} from '../utils/typesDefinitions'
 
 type presentationCardPropsTypes = {
-  userData: userInformation,
+  userData: any,
   avatar?: string,
 }
 

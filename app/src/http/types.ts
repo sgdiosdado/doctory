@@ -12,6 +12,24 @@ export type SignUpData = {
   password2: string;
 }
 
+export type userInformation = {
+  first_name: string,
+  last_name: string,
+  email: string,
+  location?: string,
+  dob?: string,
+  sex?: string,
+  patient?: {
+    blood_type: string,
+    alergies: string[],
+  }
+  medic?: {
+    license: string,
+    specialties: string[],
+  },
+  type: string[],
+}
+
 export type ConditionData = {
   id?: number;
   name: string;
@@ -24,16 +42,6 @@ export type BackgroundSubtypeData = {
   id?: number;
   name: string;
   description: string;
-}
-
-export type UserInformationData = {
-  first_name: string,
-  last_name: string,
-  dob: string,
-  email: string,
-  location?: string,
-  bloodType?: string,
-  alergies?: string[],
 }
 
 export type FunctionOk = (statusCode: number, data: Object | Array<Object>) => void;
