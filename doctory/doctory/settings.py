@@ -23,10 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'y1ar^6-_o+3@r=bajv#x=(+9r(0f1@ewd8qkayq83+7w+_mu$a'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = environ['DEBUG']
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['localhost']
 
 AUTH_USER_MODEL = 'core.User'
 
@@ -106,7 +105,7 @@ DATABASES = {
         'NAME': environ['POSTGRES_DB'],
         'USER': environ['POSTGRES_USER'],
         'PASSWORD': environ['POSTGRES_PASSWORD'],
-        'HOST': 'db',
+        'HOST': environ['HOST'],
         'PORT': 5432,
     }
 }
