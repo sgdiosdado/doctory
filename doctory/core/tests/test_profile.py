@@ -38,12 +38,12 @@ class PatientProfileTests(APITestCase):
         """
         Ensure it can update Patient's profile
         """
-        new_alergies = ['Polén', 'Penicilina']
+        new_allergies = ['Polén', 'Penicilina']
         new_fields = {
             'location': 'Monterrey',
             'sex': SexTypes.OTHER,
             'patient': {
-                'alergies': new_alergies,
+                'allergies': new_allergies,
                 'blood_type': 'O+'
                 },
             }
@@ -54,20 +54,20 @@ class PatientProfileTests(APITestCase):
         patient_data = response.data['data']['patient']
         self.assertEqual(location, new_fields['location'])
         self.assertEqual(sex, new_fields['sex'])
-        self.assertEqual(patient_data['alergies'], new_alergies)
+        self.assertEqual(patient_data['allergies'], new_allergies)
         self.assertEqual(patient_data['blood_type'], new_fields['patient']['blood_type'])
 
     def test_put_wrong_patient_user_profile(self):
         """
         Ensure it can fail when updatieng patient with invalid payload
         """
-        new_alergies = ['Polén', 'Penicilina']
+        new_allergies = ['Polén', 'Penicilina']
         new_fields = {
             'location': 'Monterrey',
             'sex': SexTypes.OTHER,
             'patient': {
-                'alergies': new_alergies,
-                'blood_type': new_alergies
+                'allergies': new_allergies,
+                'blood_type': new_allergies
                 },
             }
         response = self.client.put(self.url, new_fields, format='json')
@@ -162,7 +162,7 @@ class MedicProfileTests(APITestCase):
         new_fields = {
             'location': 'Monterrey',
             'patient':  {
-                'alergies': ['Gatos']
+                'allergies': ['Gatos']
                 },
             }
         response = self.client.put(self.url, new_fields, format='json')

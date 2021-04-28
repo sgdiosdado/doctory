@@ -1,6 +1,5 @@
-import { UserInformationData, LoginData, FunctionOk, FunctionError, SignUpData, ConditionData } from './types';
+import { userInformation, LoginData, FunctionOk, FunctionError, SignUpData, ConditionData } from './types';
 import { getToken, setToken } from '../utils/token';
-import { userInformation } from '../utils/typesDefinitions';
 
 const defaultOk:FunctionOk = (status, data) => {return};
 const defaultError:FunctionError = (status, errors) => {return};
@@ -168,9 +167,7 @@ class Http {
           body: JSON.stringify(fields)
         });
         const data = await res.json();
-        console.log(res);
-        console.log(res.status);
-        
+
         if(res.status === 200) {
           ok(res.status, data.data);
           return;

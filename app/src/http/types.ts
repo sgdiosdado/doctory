@@ -21,7 +21,7 @@ export type userInformation = {
   sex?: string,
   patient?: {
     blood_type: string,
-    alergies: string[],
+    allergies: string[],
   }
   medic?: {
     license: string,

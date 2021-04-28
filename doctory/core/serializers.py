@@ -59,22 +59,19 @@ class SpecialtySerializer(serializers.ModelSerializer):
     class Meta:
         model = Specialty
         fields = ['id','name']
-        # read_only_fields = ['id']
 
 
 class MedicProfileSerializer(serializers.ModelSerializer):
-    # specialties = SpecialtySerializer(many=True)
     class Meta:
         model = MedicMore
         fields = ['license', 'specialties']
-        
 
 
 class PatientProfileSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = PatientMore
-        fields = ['blood_type', 'alergies']
+        fields = ['blood_type', 'allergies']
 
 
 class UserProfileSerializer(serializers.ModelSerializer):

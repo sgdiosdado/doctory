@@ -1,25 +1,23 @@
 import React, { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
-import { DateTime } from "luxon";
-
 import { Avatar, AvatarBadge, Button, FormControl, FormErrorMessage, FormLabel, Input, Select, theme, useColorModeValue, useMediaQuery, useToast } from "@chakra-ui/react"
 import { Box, Container, Flex, Heading, HStack, Stack, VStack } from '@chakra-ui/layout';
 import { FaCamera } from 'react-icons/fa';
-
 import { sexTypes, userTypes } from '../../utils/typesDefinitions';
 import avatar from '../../assets/PowerPeople_Emma.png';
 import { AddIcon } from '@chakra-ui/icons';
 import { FunctionError, FunctionOk, userInformation } from '../../http/types';
 import { http } from '../../http/client';
 import { connectionErrorToast } from '../../utils/connectionErrorToast';
+import { isValidDate } from '../../utils/utils';
 
 export const ProfileView = () => {
   const { register, handleSubmit, errors, setValue } = useForm<userInformation>();
   const [isLoading, setIsLoading] = useState(true)
-  const [alergiesArray, setAlergiesArray] = useState(['']);
-  const [alergiesObject, setAlergiesObject] = useState<{id: number, value: string}[]>([{id:0,value:''},]);
-  const [lastKnownAlergiesId, setLastKnownAlergiesId] = useState(1)
+  const [allergiesObject, setAllergiesObject] = useState<{id: number, value: string}[]>([{id:0,value:''},]);
+  const [lastKnownAllergiesId, setLastKnownAllergiesId] = useState(1)
   const [specialties, setSpecialties] = useState(['']);
+  const [isDesktop] = useMediaQuery(`(min-width: ${theme.breakpoints.md}`); 
   const toast = useToast();
   const [data, setData] = useState<userInformation>({
     first_name: '',
@@ -30,42 +28,33 @@ export const ProfileView = () => {
     type: [''],
   });
 
-  const [isDesktop] = useMediaQuery(`(min-width: ${theme.breakpoints.md}`); 
-
-  const parseArrayToAlergiesObject = (allergies:string[] = ['']) => {
-    let localLastKownID = lastKnownAlergiesId;
-    const res = allergies.map(allergy => {
-      return {
+  const ok = useCallback((_, data) => {
+    
+    const parseArrayToAllergiesObject = (allergies:string[] = ['']) => {
+      let localLastKownID = lastKnownAllergiesId;
+      const res = allergies.map(allergy => ({
         id: localLastKownID++,
         value: allergy
-      }
-    })    
-    setLastKnownAlergiesId(localLastKownID);
-    return res;
-  }
-  
-  const ok = useCallback((_, data) => {
-      const userData = data as userInformation;
-      const {patient, medic} = userData;
-      setValue('sex', userData.sex)
-      setData(userData);
-      if (userData.type.includes(userTypes.PATIENT) && patient) {
-        register('patient.alergies');
-        setValue('patient.alergies', patient.alergies);
-        setAlergiesArray(patient.alergies);
-        setAlergiesObject(parseArrayToAlergiesObject(patient.alergies));
-        
-        
-      }
-      if (userData.type.includes(userTypes.MEDIC) && medic) {
-        register('medic.specialties');
-        setValue('medic.specialties', medic.specialties);
-        setSpecialties(medic.specialties);
-      }
-      setIsLoading(false);
-    },
-    [setValue, register],
-  )
+      }));    
+      setLastKnownAllergiesId(localLastKownID);
+      return res;
+    }
+    const userData = data as userInformation;
+    const {patient, medic} = userData;
+    setValue('sex', userData.sex)
+    setData(userData);
+    
+    if (userData.type.includes(userTypes.PATIENT)) {
+      register('patient.allergies');
+      setAllergiesObject(parseArrayToAllergiesObject(patient.allergies || ['']));
+    }
+    if (userData.type.includes(userTypes.MEDIC)) {
+      register('medic.specialties');
+      setValue('medic.specialties', medic.specialties);
+      setSpecialties(medic.specialties);
+    }
+    setIsLoading(false);
+  },[setValue, register])
 
   useEffect(() => {
     http.getProfileInfo(ok);
@@ -76,9 +65,8 @@ export const ProfileView = () => {
   const onSubmit = (values: userInformation) => {
     setIsLoading(true);
     if (data.type.includes(userTypes.PATIENT)) {
-      setValue('patient.alergies', alergiesObject.map(x => x.value));
+      values.patient && (values.patient.allergies = allergiesObject.map(x => x.value).filter(y => y !== ''));
     }
-
     const ok:FunctionOk = () => {
       setIsLoading(false);
     }
@@ -89,24 +77,16 @@ export const ProfileView = () => {
     const connectionError = () => {
       setIsLoading(false);
       toast(connectionErrorToast(isDesktop));
-    }
-    
+    }  
     http.putProfileInfo(values, ok, error, connectionError);
   }
-  
-  const isDateValid = (date: string) => {
-    const dob = DateTime.fromISO(date);
-    return (dob.isValid && (dob < DateTime.now()));
-  } 
-  
 
   const addSpecialtyField = () => setSpecialties((s) => [...s, '']);
-  console.log(lastKnownAlergiesId);
   
-  const addAlergyField = () => {
-    setAlergiesObject(obj => {
-      const newValue = {id: lastKnownAlergiesId, value: ''};
-      setLastKnownAlergiesId(x => x+1);
+  const addAllergyField = () => {
+    setAllergiesObject(obj => {
+      const newValue = {id: lastKnownAllergiesId, value: ''};
+      setLastKnownAllergiesId(x => x+1);
       return [...obj, newValue];
     })
   }
@@ -120,17 +100,14 @@ export const ProfileView = () => {
       return newValues;
     })
   }
-  console.log(alergiesObject);
   
-  const handleAllergieArrChange = (e: ChangeEvent<HTMLInputElement>, allergy:{id:number, value:string} ) => {
-    let allergyId = alergiesObject.findIndex(x => x.id === allergy.id);
-    setAlergiesObject(allergies => {    
+  const handleAllergieChange = (e: ChangeEvent<HTMLInputElement>, allergy:{id:number, value:string} ) => {
+    let allergyId = allergiesObject.findIndex(x => x.id === allergy.id);
+    setAllergiesObject(allergies => {    
       let newValues = [...allergies];
       newValues[allergyId] = {...allergy, value:e.target.value};
       return newValues
     })
-    console.log("escribi");
-    
   }
 
 
@@ -246,7 +223,7 @@ export const ProfileView = () => {
               defaultValue={data.dob}
               ref={register({
                 required: 'La fecha es obligatoria',
-                validate: value => isDateValid(value) || 'La fecha no es válida',
+                validate: value => isValidDate(value) || 'La fecha no es válida',
                })}
             />
             <FormErrorMessage>
@@ -348,8 +325,8 @@ export const ProfileView = () => {
           <FormControl
             mb={4}
           >
-            <FormLabel htmlFor='alergies'>Alergias</FormLabel>
-            {alergiesObject.map((allergy) => (
+            <FormLabel htmlFor='allergies'>Alergias</FormLabel>
+            {allergiesObject.map((allergy) => (
               <HStack
                 mb={2}
                 key={allergy.id}
@@ -357,7 +334,7 @@ export const ProfileView = () => {
                 {BulletPoint()}
                 <Input
                   value={allergy.value}
-                  onChange={e => handleAllergieArrChange(e, allergy)}
+                  onChange={e => handleAllergieChange(e, allergy)}
                   size='sm'
                   type='text'
                   placeholder='Pólen'
@@ -370,7 +347,8 @@ export const ProfileView = () => {
               <Button
                 size='sm'
                 variant="outline"
-                onClick={addAlergyField}
+                disabled={allergiesObject[allergiesObject.length-1].value === ''}
+                onClick={addAllergyField}
                 leftIcon={<AddIcon/>}
               >Agregar</Button>
               </div>

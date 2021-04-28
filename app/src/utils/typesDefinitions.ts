@@ -10,24 +10,6 @@ export const sexTypes = {
   NOT_SPECIFIED: 'U',
 }
 
-export type userInformation = {
-  first_name: string,
-  last_name: string,
-  email: string,
-  location?: string,
-  dob?: string,
-  sex?: string,
-  patient?: {
-    blood_type: string,
-    alergies: string[],
-  }
-  medic?: {
-    license: string,
-    specialties: string[],
-  },
-  type: string[],
-}
-
 export type timeLineItemProps = {
   conditionTitle: string,
   date_of_diagnosis: string,

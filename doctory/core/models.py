@@ -65,7 +65,7 @@ class PatientMore(models.Model):
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     updated_at = AutoDateTimeField(default=timezone.now, editable=False)
     blood_type = models.CharField(max_length=10, blank=True, null=True)
-    alergies = ArrayField(models.CharField(max_length=100, blank=True), blank=True, null=True)
+    allergies = ArrayField(models.CharField(max_length=100, blank=True), blank=True, null=True)
     def __str__(self):
         return self.user.email
 
