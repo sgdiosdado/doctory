@@ -18,12 +18,11 @@ export const AppRouter = () => {
         </Box>
         <Box h='100%' width='100%' d='flex' flexGrow={1} flexDirection={'column'} bg={useColorModeValue('gray.100', 'gray.800')}>
           <Switch>
-            <Route exact path={routes.default.path} component={routes.default.component} />
-            <Route exact path={routes.login.path} component={routes.login.component} />
-            <Route exact path={routes.signin.path} component={routes.signin.component} />
-            <Route exact path={routes.patientHome.path} component={routes.patientHome.component} />
-            {/* <Route exact path={paths.contact.path} component={} /> TODO: create contact component */}
-            <Route path={routes.notFound.path} component={routes.notFound.component} />
+            {
+              Object.keys(routes).map(k => (
+                <Route key={k} exact={k !== '404'} path={routes[k].path} component={routes[k].component}/>
+              ))
+            }
             <Redirect to={routes.notFound.path} />
           </Switch>
           <Footer />
