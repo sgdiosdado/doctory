@@ -12,6 +12,20 @@ export type SignUpData = {
   password2: string;
 }
 
+export type ConditionData = {
+  id?: number;
+  name: string;
+  description: string;
+  date_of_diagnosis: string;
+  background_subtype: string | number;
+}
+
+export type BackgroundSubtypeData = {
+  id?: number;
+  name: string;
+  description: string;
+}
+
 export type FunctionOk = (statusCode: number, data: Object | Array<Object>) => void;
 export type FunctionError = (statusCode: number, errors: Object) => void;
 

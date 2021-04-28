@@ -35,8 +35,7 @@ export const TimeLineItem = ({conditionTitle, date_of_diagnosis, conditionDescri
         ':nth-of-type(odd) .timeline-item-content .circle':{
           right: 'auto',
           left: '-2.5em', //distance form card to circle (paddingRight from card + half of circle's with)
-        },
-
+        }
       }}
     >
       <VStack
@@ -109,7 +108,7 @@ export const TimeLineItem = ({conditionTitle, date_of_diagnosis, conditionDescri
           h='1em'
           right= {`${isMobile? 'unset':'-2.5em'}`} //distance form card to circle (paddingRight from card + half of circle's with)
           left={`${isMobile? '-2.5em':'unset'}`}
-          zIndex='100' // circle on top from line
+          zIndex='1' // circle on top from line
         />
       </VStack>
     </Box>
