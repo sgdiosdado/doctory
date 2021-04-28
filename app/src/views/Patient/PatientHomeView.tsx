@@ -39,7 +39,7 @@ export const PatientHomeView = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const [isDesktop] = useMediaQuery(`(min-width: ${theme.breakpoints.md}`); 
+  const [isMobile] = useMediaQuery(`(max-width: ${theme.breakpoints.md}`); 
 
   const [backgroundSubtypes, setBackgroundSubtype] = useState<BackgroundSubtypeData[]>([])
   
@@ -53,14 +53,21 @@ export const PatientHomeView = () => {
       conds.sort((x, y) => x.date_of_diagnosis < y.date_of_diagnosis ? 1 : -1)
       setConditions(conds)
       onClose();
+      toast({
+        title: 'Condición creada',
+        description: 'Se ha añadido una nueva condición a tu historia clínica',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+        position: 'top',
+        variant: 'left-accent'
+      });
     }
     const error:FunctionError = (statusCode, error) => {
       console.log(error);
     }
-    const connectionError = () => {
-      toast(connectionErrorToast(isDesktop));
-    }
-    http.newCondition(values, ok, error, connectionError);
+
+    http.newCondition(values, ok, error, () => toast(connectionErrorToast()));
   }
   
   useEffect(() => {
@@ -101,7 +108,7 @@ export const PatientHomeView = () => {
       </VStack>
       
       <Drawer 
-        placement={isDesktop ? 'right' : 'bottom'}
+        placement={isMobile ? 'bottom' : 'right'}
         isOpen={isOpen}
         onClose={onClose}>
           <DrawerOverlay>
