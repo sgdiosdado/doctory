@@ -5,8 +5,7 @@ const defaultOk:FunctionOk = (status, data) => {return};
 const defaultError:FunctionError = (status, errors) => {return};
 
 class Http {
-  private url = 'http://localhost:8000'
-  // private url = document.location.origin
+  private url = process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : document.location.origin;
 
   public async login(
     fields:LoginData,
