@@ -12,7 +12,6 @@ type route = {
 
 const patientPaths: {[name:string]: route} = {
   patientHome: {path: '/pat/home', component: PatientHomeView},
-  patientNewCondition: {path: '/pat/new-condition', component: NotfoundPage}, // TODO: NewCondition component
   patientStudies: {path: '/pat/studies', component: NotfoundPage}, // TODO: Studies component
   patientProfile: {path: '/pat/profile', component: NotfoundPage}, // TODO: Profile component (check if will be the same for doctor?¿)
   patientShareHistory: {path: '/pat/profile', component: NotfoundPage}, //TODO: Profile component (check if will be the same for doctor?¿)
