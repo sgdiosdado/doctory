@@ -1,9 +1,13 @@
 build:
   docker:
-    web: doctory/Dockerfile
+    doctory: doctory/Dockerfile
+    app: app/Dockerfile
+    #web: nginx
 run:
-  web: python manage.py runserver 0.0.0.0:$PORT --nostatic
+  doctory: python manage.py runserver 0.0.0.0:8000
+  app: yarn build
+  # web: nginx start
 release:
-  image: web
+  image: doctory
   command: 
     - chmod u+x ./release.sh && ./release.sh

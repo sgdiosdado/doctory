@@ -8,7 +8,7 @@ import {
 import { getToken, setToken } from '../utils/token';
 
 class Http {
-  private url = process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : document.location.origin;
+  private url = process.env.REACT_APP_HOST_IP_ADDRESS;
 
   public async login(fields:LoginData) {
     const res = await fetch(`${this.url}/api/v1/login/`, {

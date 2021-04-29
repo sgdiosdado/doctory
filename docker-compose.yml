@@ -12,7 +12,7 @@ services:
 
   doctory:
     build: ./doctory
-    command: python manage.py runserver 0.0.0.0:8000 --nostatic
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./doctory:/doctory
     ports:
@@ -32,6 +32,8 @@ services:
       - ./app:/app
     ports:
       - "3000:3000"
+    env_file:
+      - .env
 
 volumes:
   pgdata:

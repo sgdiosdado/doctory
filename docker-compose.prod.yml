@@ -1,0 +1,37 @@
+version: "3.8"
+   
+services:
+  doctory:
+    build: ./doctory
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./doctory:/doctory
+    ports:
+      - "8000:8000"
+    env_file:
+      - .prod.env
+
+  app:
+    build: ./app
+    command: yarn build
+    volumes:
+      - ./app:/app
+      - build:/app/build
+    ports:
+      - "3000:3000"
+    env_file:
+      - .prod.env
+  
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:8080"
+    volumes:
+      - ./webserver/nginx-proxy.conf:/etc/nginx/conf.d/default.conf:ro
+      - build:/var/www/app
+    depends_on:
+      - doctory
+      - app
+
+volumes:
+  build:
