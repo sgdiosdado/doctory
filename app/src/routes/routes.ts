@@ -4,6 +4,7 @@ import { DoctorLandingView } from "../views/Doctor/DoctorLandingView";
 import { Landing } from "../views/Landing/Landing";
 import { NotfoundPage } from "../views/NotFoundPage/NotfoundPage";
 import { PatientHomeView } from "../views/Patient/PatientHomeView";
+import { ProfileView } from "../views/Profile/ProfileView";
 
 type route = {
   path: string,
@@ -12,7 +13,7 @@ type route = {
 
 const patientPaths: { [name: string]: route } = {
   patientHome: { path: '/pat/home', component: PatientHomeView },
-  patientProfile: { path: '/pat/profile', component: NotfoundPage },
+  patientProfile: { path: '/pat/profile', component: ProfileView },
 }
 
 const doctorPaths: { [name: string]: route } = {
