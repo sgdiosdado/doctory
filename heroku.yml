@@ -6,6 +6,4 @@ run:
 release:
   image: web
   command: 
-    - python manage.py migrate
-    - python manage.py loaddata 0001_BackgroundTypes.json
-    - python manage.py loaddata 0001_BackgroundSubtypes.json
+    - chmod u+x ./release.sh && ./release.sh
