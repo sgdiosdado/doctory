@@ -16,7 +16,8 @@ import {
   DrawerContent,
   DrawerCloseButton,
   Button,
-  useBreakpointValue
+  useBreakpointValue,
+  ToastPosition
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { BackgroundSubtypeData, ConditionData, FunctionError, FunctionOk, userInformation } from '../../http/types';
@@ -26,14 +27,6 @@ import { connectionErrorToast } from '../../utils/connectionErrorToast';
 
 
 export const PatientHomeView = () => {
-
-  // const userData: any = {
-  //   first_name: 'Sergio Gabriel',
-  //   last_name: 'Diosdado Castelazo',
-  //   dob: '14-dic-1998',
-  //   email: 'sergio@doctory.com',
-  //   location: 'Matamoros, Tamaulipas'
-  // }
   const [userData, setUserData] = useState<userInformation>({
     first_name: '',
     last_name: '',
@@ -50,6 +43,7 @@ export const PatientHomeView = () => {
   const [conditions, setConditions] = useState<ConditionData[]>([])
 
   const toast = useToast();
+  const toastPosition = useBreakpointValue({base:'top', md:'top-right'});
 
   const onSubmit = (values:ConditionData) => {
     const ok:FunctionOk = (_, data) => {
@@ -63,14 +57,14 @@ export const PatientHomeView = () => {
         status: 'success',
         duration: 5000,
         isClosable: true,
-        position: 'top',
+        position: toastPosition as ToastPosition,
       });
     }
     const error:FunctionError = (statusCode, error) => {
       console.log(error);
     }
 
-    http.newCondition(values, ok, error, () => toast(connectionErrorToast()));
+    http.newCondition(values, ok, error, () => toast(connectionErrorToast(toastPosition)));
   }
   
   useEffect(() => {

@@ -155,7 +155,7 @@ export const ProfileView = () => {
   }
 
   const onChangePassword = (values:ChangePasswordData) => {
-    const ok = (statusCode, data) => {
+    const ok = (_:number, data:{token:string}) => {
       setToken(data.token)
       onClose()
       toast({
