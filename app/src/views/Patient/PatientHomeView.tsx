@@ -16,9 +16,8 @@ import {
   DrawerContent,
   DrawerCloseButton,
   Button,
-  useMediaQuery
+  useBreakpointValue
 } from '@chakra-ui/react';
-import theme from '@chakra-ui/theme'
 import { AddIcon } from '@chakra-ui/icons';
 import { BackgroundSubtypeData, ConditionData, FunctionError, FunctionOk, userInformation } from '../../http/types';
 import { http } from '../../http/client';
@@ -46,8 +45,6 @@ export const PatientHomeView = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const [isMobile] = useMediaQuery(`(max-width: ${theme.breakpoints.md}`); 
-
   const [backgroundSubtypes, setBackgroundSubtype] = useState<BackgroundSubtypeData[]>([])
   
   const [conditions, setConditions] = useState<ConditionData[]>([])
@@ -67,7 +64,6 @@ export const PatientHomeView = () => {
         duration: 5000,
         isClosable: true,
         position: 'top',
-        variant: 'left-accent'
       });
     }
     const error:FunctionError = (statusCode, error) => {
@@ -124,7 +120,7 @@ export const PatientHomeView = () => {
       </VStack>
       
       <Drawer 
-        placement={isMobile ? 'bottom' : 'right'}
+        placement={useBreakpointValue({base: 'bottom', lg: 'right'})}
         isOpen={isOpen}
         onClose={onClose}>
           <DrawerOverlay>

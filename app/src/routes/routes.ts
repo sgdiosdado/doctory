@@ -13,7 +13,6 @@ type route = {
 
 const patientPaths: { [name: string]: route } = {
   patientHome: { path: '/pat/home', component: PatientHomeView },
-  patientProfile: { path: '/pat/profile', component: ProfileView },
 }
 
 const doctorPaths: { [name: string]: route } = {
@@ -24,7 +23,8 @@ const doctorPaths: { [name: string]: route } = {
 const generalPaths: { [name: string]: route } = {
   default: { path: '/', component: Landing },
   login: { path: '/login', component: LoginView },
-  signin: { path: '/signup', component: SignUpView },
+  signup: { path: '/signup', component: SignUpView },
+  profile: {path: '/profile', component: ProfileView},
   contact: { path: '/contact', component: NotfoundPage },
   notFound: { path: '/404', component: NotfoundPage },
 }

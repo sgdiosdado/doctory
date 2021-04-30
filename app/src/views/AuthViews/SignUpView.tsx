@@ -193,6 +193,7 @@ export const SignUpView = () => {
                   {errors.password2 && errors.password2.message}
                 </FormErrorMessage>
               </FormControl>
+              
               <Button
                 onClick={_ => setInitialPassword(true)}
                 type='submit'>

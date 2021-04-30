@@ -7,5 +7,4 @@ export const connectionErrorToast = () => ({
   duration: 5000,
   isClosable: true,
   position: 'top',
-  variant: 'left-accent'
 } as UseToastOptions)

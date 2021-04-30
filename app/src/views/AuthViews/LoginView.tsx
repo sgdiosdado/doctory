@@ -12,7 +12,10 @@ import {
   Heading,
   useColorModeValue,
   useToast,
+  Divider,
+  Text
 } from '@chakra-ui/react';
+import { Link } from "react-router-dom";
 import { http } from '../../http/client';
 import { useForm } from 'react-hook-form';
 import { FunctionError, LoginData, LoginError  } from '../../http/types';
@@ -101,10 +104,17 @@ export const LoginView = () => {
               />
             </FormControl>
             <Stack spacing={8}>
-              <ChakraLink>¿Olvidó la contraseña?</ChakraLink>
               <Button type="submit">Entrar</Button>
             </Stack>
           </form>
+          <Divider my={4}/>
+          <Box textAlign={'center'} >
+            <ChakraLink 
+              as={Link}
+              to={routes.signup.path}>
+                <Text color={useColorModeValue('primary.500', 'primary.300')}>Crear una nueva cuenta</Text>
+            </ChakraLink>
+          </Box>
         </Box>
         <ChakraLink as={Link} to={routes.signin.path}>
           ¿Aún sin cuenta? Crear una cuenta
