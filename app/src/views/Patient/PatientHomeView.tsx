@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Text, VStack } from '@chakra-ui/layout';
 import { PresetationCard } from '../../components/PresentationCard';
-import { userInformation } from '../../utils/typesDefinitions';
 import avatar from '../../assets/PowerPeople_Emma.png';
 import { TimeLine } from '../../components/TimeLine/TimeLine';
 import { TimeLineItem } from '../../components/TimeLine/TimeLineItem';
@@ -21,7 +20,7 @@ import {
 } from '@chakra-ui/react';
 import theme from '@chakra-ui/theme'
 import { AddIcon } from '@chakra-ui/icons';
-import { BackgroundSubtypeData, ConditionData, FunctionError, FunctionOk } from '../../http/types';
+import { BackgroundSubtypeData, ConditionData, FunctionError, FunctionOk, userInformation } from '../../http/types';
 import { http } from '../../http/client';
 import { useToast } from "@chakra-ui/react"
 import { connectionErrorToast } from '../../utils/connectionErrorToast';
@@ -29,13 +28,21 @@ import { connectionErrorToast } from '../../utils/connectionErrorToast';
 
 export const PatientHomeView = () => {
 
-  const userData: any = {
-    first_name: 'Sergio Gabriel',
-    last_name: 'Diosdado Castelazo',
-    dob: '14-dic-1998',
-    email: 'sergio@doctory.com',
-    location: 'Matamoros, Tamaulipas'
-  }
+  // const userData: any = {
+  //   first_name: 'Sergio Gabriel',
+  //   last_name: 'Diosdado Castelazo',
+  //   dob: '14-dic-1998',
+  //   email: 'sergio@doctory.com',
+  //   location: 'Matamoros, Tamaulipas'
+  // }
+  const [userData, setUserData] = useState<userInformation>({
+    first_name: '',
+    last_name: '',
+    dob: '',
+    email: '',
+    sex: '',
+    type: [''],
+  })
 
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -70,6 +77,14 @@ export const PatientHomeView = () => {
     http.newCondition(values, ok, error, () => toast(connectionErrorToast()));
   }
   
+  useEffect(() => {
+    const ok:FunctionOk = (_, data) => {
+      const user = data as userInformation;
+      setUserData(user);
+    }
+    http.getProfileInfo(ok)
+  }, [])
+
   useEffect(() => {
     const ok:FunctionOk = (statusCode, data) => {
       const bs = data as BackgroundSubtypeData[];

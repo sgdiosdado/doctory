@@ -12,13 +12,14 @@ import {
   useColorModeValue,
   Container,
   useToast,
+  Link as ChakraLink,
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form';
 import { usePasswordValidation } from '../../hooks/usePasswordValidation';
 import { ValidPasswordChecklist } from './validPasswordChecklist';
 import { SignUpData, FunctionOk, FunctionError } from '../../http/types';
 import { http } from '../../http/client';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { routes } from '../../routes/routes';
 import { connectionErrorToast } from '../../utils/connectionErrorToast';
 
@@ -198,6 +199,11 @@ export const SignUpView = () => {
                 Registrar
               </Button>
             </form>
+          </Box>
+          <Box display='flex' justifyContent='center'>
+            <ChakraLink as={Link} to={routes.login.path}>
+              ¿Ya con cuenta? Inicie Sesión
+            </ChakraLink>
           </Box>
         </Stack>
       </Flex>

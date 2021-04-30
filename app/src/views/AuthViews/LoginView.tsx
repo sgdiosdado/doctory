@@ -17,7 +17,7 @@ import { http } from '../../http/client';
 import { useForm } from 'react-hook-form';
 import { FunctionError, LoginData, LoginError  } from '../../http/types';
 import { FunctionOk } from '../../http/types';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { routes } from '../../routes/routes';
 import { connectionErrorToast } from '../../utils/connectionErrorToast';
 
@@ -106,7 +106,11 @@ export const LoginView = () => {
             </Stack>
           </form>
         </Box>
+        <ChakraLink as={Link} to={routes.signin.path}>
+          ¿Aún sin cuenta? Crear una cuenta
+        </ChakraLink>
       </Stack>
+     
     </Flex>
   );
 }
