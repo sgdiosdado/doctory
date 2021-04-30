@@ -1,10 +1,10 @@
 import React from 'react'
 import { Image } from '@chakra-ui/image'
 import { Box, HStack, Text } from '@chakra-ui/layout'
-import {userInformation} from '../utils/typesDefinitions'
+import { userInformation } from '../http/types'
 
 type presentationCardPropsTypes = {
-  userData: any,
+  userData: userInformation,
   avatar?: string,
 }
 
@@ -27,12 +27,16 @@ export const PresetationCard = ({userData, avatar}:presentationCardPropsTypes) =
             overflow='hidden' 
             fontSize={{base:'md', md:'3xl'}}
           >
-            {userData.first_name + ' ' + userData.first_name}
+            {userData.first_name + ' ' + userData.last_name}
           </Text>
-          <Text>{userData.dob} </Text>
-          <Text textOverflow='ellipsis' overflow='hidden' >
-            {userData.location}
-          </Text>
+          {userData.dob &&
+            <Text>{userData.dob} </Text>
+          }
+          {userData.location &&
+            <Text textOverflow='ellipsis' overflow='hidden' >
+              {userData.location}
+            </Text>
+          }
           <Text textOverflow='ellipsis' overflow='hidden' >
             {userData.email}
           </Text>

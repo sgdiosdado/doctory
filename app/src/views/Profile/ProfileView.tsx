@@ -1,15 +1,36 @@
 import React, { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
+import { 
+  Box,
+  Container,
+  Flex,
+  Heading,
+  HStack,
+  Stack,
+  VStack,
+} from '@chakra-ui/layout';
+import { 
+  Avatar,
+  AvatarBadge,
+  Button,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  Select,
+  ToastPosition,
+  useBreakpointValue,
+  useColorModeValue,
+  useToast,
+} from "@chakra-ui/react"
 import { useForm } from 'react-hook-form';
-import { Avatar, AvatarBadge, Button, FormControl, FormErrorMessage, FormLabel, Input, Select, theme, useColorModeValue, useMediaQuery, useToast } from "@chakra-ui/react"
-import { Box, Container, Flex, Heading, HStack, Stack, VStack } from '@chakra-ui/layout';
 import { FaCamera } from 'react-icons/fa';
-import { sexTypes, userTypes } from '../../utils/typesDefinitions';
-import avatar from '../../assets/PowerPeople_Emma.png';
 import { AddIcon } from '@chakra-ui/icons';
-import { FunctionError, FunctionOk, userInformation } from '../../http/types';
+import avatar from '../../assets/PowerPeople_Emma.png';
 import { http } from '../../http/client';
-import { connectionErrorToast } from '../../utils/connectionErrorToast';
+import { FunctionError, FunctionOk, userInformation } from '../../http/types';
 import { isValidDate } from '../../utils/utils';
+import { sexTypes, userTypes } from '../../utils/typesDefinitions';
+import { connectionErrorToast } from '../../utils/connectionErrorToast';
 
 export const ProfileView = () => {
   const { register, handleSubmit, errors, setValue } = useForm<userInformation>();
@@ -17,7 +38,7 @@ export const ProfileView = () => {
   const [allergiesObject, setAllergiesObject] = useState<{id: number, value: string}[]>([{id:0,value:''},]);
   const [lastKnownAllergiesId, setLastKnownAllergiesId] = useState(1)
   const [specialties, setSpecialties] = useState(['']);
-  const [isDesktop] = useMediaQuery(`(min-width: ${theme.breakpoints.md}`); 
+  const toastPosition = useBreakpointValue({base:'top', md:'top-right'});
   const toast = useToast();
   const [data, setData] = useState<userInformation>({
     first_name: '',
@@ -31,6 +52,8 @@ export const ProfileView = () => {
   const ok = useCallback((_, data) => {
     
     const parseArrayToAllergiesObject = (allergies:string[] = ['']) => {
+      if (!allergies || allergies.length === 0) allergies = [''];
+      
       let localLastKownID = lastKnownAllergiesId;
       const res = allergies.map(allergy => ({
         id: localLastKownID++,
@@ -46,12 +69,12 @@ export const ProfileView = () => {
     
     if (userData.type.includes(userTypes.PATIENT)) {
       register('patient.allergies');
-      setAllergiesObject(parseArrayToAllergiesObject(patient.allergies || ['']));
+      setAllergiesObject(parseArrayToAllergiesObject(patient && patient.allergies));
     }
     if (userData.type.includes(userTypes.MEDIC)) {
       register('medic.specialties');
-      setValue('medic.specialties', medic.specialties);
-      setSpecialties(medic.specialties);
+      setValue('medic.specialties', medic? medic.specialties : ['']);
+      setSpecialties(medic? medic.specialties : ['']);
     }
     setIsLoading(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -67,9 +90,21 @@ export const ProfileView = () => {
     setIsLoading(true);
     if (data.type.includes(userTypes.PATIENT)) {
       values.patient && (values.patient.allergies = allergiesObject.map(x => x.value).filter(y => y !== ''));
+      console.log(allergiesObject);
+      
     }
     const ok:FunctionOk = () => {
       setIsLoading(false);
+      
+      toast({
+        // title: 'Guardado',
+        description: '¡Tu información se ha guardado con éxito!',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+        position: toastPosition as ToastPosition,
+        variant: 'left-accent'
+      })
     }
     const error:FunctionError = (_, error) => {
       setIsLoading(false);
@@ -77,7 +112,7 @@ export const ProfileView = () => {
     }
     const connectionError = () => {
       setIsLoading(false);
-      toast(connectionErrorToast(isDesktop));
+      toast(connectionErrorToast());
     }  
     http.putProfileInfo(values, ok, error, connectionError);
   }
@@ -138,10 +173,10 @@ export const ProfileView = () => {
       pt={12}
       w={'100%'}
     >
-    <VStack w={'100%'}>
+    <VStack w={'100%'} mb={12} >
       <Heading fontSize={'3xl'}>Editar Perfil</Heading>
-      <Stack mb={4} w={'100%'} align={'center'}>
-        <Avatar src={avatar} size="2xl">
+      <Stack w={'100%'} align={'center'}>
+        <Avatar src={avatar} size="2xl" mb={4}>
           <AvatarBadge boxSize=".8em" borderColor="transparent" bg="white" _hover={{color:'gray.500'}}>
             <FaCamera />
           </AvatarBadge>
@@ -153,7 +188,6 @@ export const ProfileView = () => {
         bg={useColorModeValue('white', 'gray.700')}
         boxShadow={'lg'}
         p={8}
-        mb={12}
       >
        
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -348,7 +382,7 @@ export const ProfileView = () => {
               <Button
                 size='sm'
                 variant="outline"
-                disabled={allergiesObject[allergiesObject.length-1].value === ''}
+                disabled={allergiesObject[allergiesObject.length-1] && allergiesObject[allergiesObject.length-1].value === ''}
                 onClick={addAllergyField}
                 leftIcon={<AddIcon/>}
               >Agregar</Button>

@@ -22,7 +22,7 @@ export type userInformation = {
   patient?: {
     blood_type: string,
     allergies: string[],
-  }
+  },
   medic?: {
     license: string,
     specialties: string[],
