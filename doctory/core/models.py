@@ -16,6 +16,8 @@ class User(AbstractUser):
     location = models.CharField(max_length=200, null=True, blank=True)
     sex = models.CharField(max_length=10, choices=SexTypes.choices, default=set_default_sex_type)
     dob = models.DateField(null=True, blank=True)
+    medics = models.ManyToManyField('self', symmetrical=False, through='PatientMedic', related_name='patients')
+    
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     updated_at = AutoDateTimeField(default=timezone.now, editable=False)
 
@@ -26,6 +28,11 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+
+class PatientMedic(models.Model):
+    medic = models.ForeignKey(User, related_name='medic', on_delete=CASCADE)
+    patient = models.ForeignKey(User, related_name='patient', on_delete=CASCADE)
 
 
 class Patient(User):
