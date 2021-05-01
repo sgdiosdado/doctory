@@ -1,4 +1,4 @@
-import { userInformation, LoginData, FunctionOk, FunctionError, SignUpData, ConditionData } from './types';
+import { userInformation, LoginData, FunctionOk, FunctionError, SignUpData, ConditionData, ChangePasswordData } from './types';
 import { getToken, setToken } from '../utils/token';
 
 const defaultOk:FunctionOk = (status, data) => {return};
@@ -171,7 +171,33 @@ class Http {
           ok(res.status, data.data);
           return;
         }
-        error(res.status, data.errors,);
+        error(res.status, data.errors);
+      } catch (error) {
+        connectionError();
+      }
+  }
+
+  public async updatePassword(
+    fields:ChangePasswordData, 
+    ok:FunctionOk=defaultOk, 
+    error:FunctionError=defaultError, 
+    connectionError=()=>{}) {
+      try {
+        const res = await fetch(`${this.url}/api/v1/change-password/`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Token ${getToken()}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(fields)
+        });
+        const data = await res.json();
+
+        if(res.status === 200) {
+          ok(res.status, data.data);
+          return;
+        }
+        error(res.status, data.errors);
       } catch (error) {
         connectionError();
       }

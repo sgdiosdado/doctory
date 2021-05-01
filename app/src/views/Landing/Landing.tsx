@@ -70,7 +70,7 @@ const landingImage = useBreakpointValue({ base: DoctorWithPhoneImage, md: Doctor
                 Administra tu historia clínica y compartela con tu doctor
               </Text>
               <Box textAlign='center' w={['90%', '50%']} >
-                <Link to={routes.signin.path}>
+                <Link to={routes.signup.path}>
                   <Button size={'md'} isFullWidth colorScheme={'primary'} >
                     Unirse
                   </Button>
@@ -116,7 +116,7 @@ const landingImage = useBreakpointValue({ base: DoctorWithPhoneImage, md: Doctor
           {/**************  Call to Action Section **************/}
           <Box d={'flex'} justifyContent='center' w={'100%'}>
             <Box textAlign='center' w='sm' >
-              <Link to={routes.signin.path}>
+              <Link to={routes.signup.path}>
                 <Button size={'lg'} isFullWidth colorScheme={'primary'} >
                   Unirse
                 </Button>

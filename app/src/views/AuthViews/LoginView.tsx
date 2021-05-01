@@ -12,12 +12,16 @@ import {
   Heading,
   useColorModeValue,
   useToast,
+  Divider,
+  Text,
+  useBreakpointValue,
+  ToastPosition
 } from '@chakra-ui/react';
+import { Link, useHistory } from "react-router-dom";
 import { http } from '../../http/client';
 import { useForm } from 'react-hook-form';
 import { FunctionError, LoginData, LoginError  } from '../../http/types';
 import { FunctionOk } from '../../http/types';
-import { Link, useHistory } from 'react-router-dom';
 import { routes } from '../../routes/routes';
 import { connectionErrorToast } from '../../utils/connectionErrorToast';
 
@@ -26,6 +30,7 @@ export const LoginView = () => {
   const { register, handleSubmit, errors } = useForm<LoginData>();
   const history = useHistory()
   const toast = useToast();
+  const toastPosition = useBreakpointValue({base:'top', md:'top-right'});
   
   const onSubmit = (values: LoginData) => {
     
@@ -41,11 +46,10 @@ export const LoginView = () => {
         status: 'error',
         duration: 5000,
         isClosable: true,
-        position: 'top',
-        variant: 'left-accent'
+        position: toastPosition as ToastPosition,
       });
     }
-    http.login(values, ok, error, () => toast(connectionErrorToast()));
+    http.login(values, ok, error, () => toast(connectionErrorToast(toastPosition)));
   }
 
   return (
@@ -101,14 +105,18 @@ export const LoginView = () => {
               />
             </FormControl>
             <Stack spacing={8}>
-              <ChakraLink>¿Olvidó la contraseña?</ChakraLink>
               <Button type="submit">Entrar</Button>
             </Stack>
           </form>
+          <Divider my={4}/>
+          <Box textAlign={'center'} >
+            <ChakraLink 
+              as={Link}
+              to={routes.signup.path}>
+                <Text color={useColorModeValue('primary.500', 'primary.300')}>Crear una nueva cuenta</Text>
+            </ChakraLink>
+          </Box>
         </Box>
-        <ChakraLink as={Link} to={routes.signin.path}>
-          ¿Aún sin cuenta? Crear una cuenta
-        </ChakraLink>
       </Stack>
      
     </Flex>

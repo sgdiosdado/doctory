@@ -12,6 +12,11 @@ export type SignUpData = {
   password2: string;
 }
 
+export type ChangePasswordData = {
+  password1: string;
+  password2: string;
+}
+
 export type userInformation = {
   first_name: string,
   last_name: string,

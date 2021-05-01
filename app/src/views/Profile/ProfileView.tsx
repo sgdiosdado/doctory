@@ -1,14 +1,6 @@
 import React, { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
-import { 
-  Box,
-  Container,
-  Flex,
-  Heading,
-  HStack,
-  Stack,
-  VStack,
-} from '@chakra-ui/layout';
-import { 
+import { useForm } from 'react-hook-form';
+import {
   Avatar,
   AvatarBadge,
   Button,
@@ -17,23 +9,39 @@ import {
   FormLabel,
   Input,
   Select,
-  ToastPosition,
-  useBreakpointValue,
   useColorModeValue,
   useToast,
+  Box,
+  Container,
+  Flex,
+  Heading,
+  HStack,
+  Stack,
+  VStack,
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  useDisclosure,
+  useBreakpointValue,
+  ToastPosition,
 } from "@chakra-ui/react"
-import { useForm } from 'react-hook-form';
-import { FaCamera } from 'react-icons/fa';
-import { AddIcon } from '@chakra-ui/icons';
 import avatar from '../../assets/PowerPeople_Emma.png';
-import { http } from '../../http/client';
-import { FunctionError, FunctionOk, userInformation } from '../../http/types';
-import { isValidDate } from '../../utils/utils';
+import { AddIcon } from '@chakra-ui/icons';
+import { FaCamera } from 'react-icons/fa';
 import { sexTypes, userTypes } from '../../utils/typesDefinitions';
+import { ChangePasswordData, FunctionError, FunctionOk, userInformation } from '../../http/types';
+import { http } from '../../http/client';
+import { isValidDate } from '../../utils/utils';
 import { connectionErrorToast } from '../../utils/connectionErrorToast';
+import { ChangePasswordForm } from './ChangePasswordForm';
+import { setToken } from '../../utils/token';
 
 export const ProfileView = () => {
-  const { register, handleSubmit, errors, setValue } = useForm<userInformation>();
+  
   const [isLoading, setIsLoading] = useState(true)
   const [allergiesObject, setAllergiesObject] = useState<{id: number, value: string}[]>([{id:0,value:''},]);
   const [lastKnownAllergiesId, setLastKnownAllergiesId] = useState(1)
@@ -49,6 +57,8 @@ export const ProfileView = () => {
     type: [''],
   });
 
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { register, handleSubmit, errors, setValue } = useForm<userInformation>();
   const ok = useCallback((_, data) => {
     
     const parseArrayToAllergiesObject = (allergies:string[] = ['']) => {
@@ -79,12 +89,16 @@ export const ProfileView = () => {
     setIsLoading(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[setValue, register])
+  
+  const connectionError = () => {
+    setIsLoading(false);
+    toast(connectionErrorToast());
+  }  
 
   useEffect(() => {
-    http.getProfileInfo(ok);
+    http.getProfileInfo(ok, () => {setIsLoading(false);}, connectionError);
+    //eslint-disable-next-line
   }, [ok])
-  
-
 
   const onSubmit = (values: userInformation) => {
     setIsLoading(true);
@@ -97,23 +111,17 @@ export const ProfileView = () => {
       setIsLoading(false);
       
       toast({
-        // title: 'Guardado',
         description: '¡Tu información se ha guardado con éxito!',
         status: 'success',
         duration: 5000,
         isClosable: true,
         position: toastPosition as ToastPosition,
-        variant: 'left-accent'
       })
     }
     const error:FunctionError = (_, error) => {
       setIsLoading(false);
       console.log('error', error);
     }
-    const connectionError = () => {
-      setIsLoading(false);
-      toast(connectionErrorToast());
-    }  
     http.putProfileInfo(values, ok, error, connectionError);
   }
 
@@ -126,7 +134,6 @@ export const ProfileView = () => {
       return [...obj, newValue];
     })
   }
-  
 
   const handleValueArrChange = (e: ChangeEvent<HTMLInputElement>, index: number, name:string,  setArrValue: Dispatch<SetStateAction<string[]>>) => {
     setArrValue(values => {
@@ -146,6 +153,21 @@ export const ProfileView = () => {
     })
   }
 
+  const onChangePassword = (values:ChangePasswordData) => {
+    const ok = (_:number, data:{token:string}) => {
+      setToken(data.token)
+      onClose()
+      toast({
+        title: 'Contraseña actualizada',
+        description: 'Tu contraseña se ha cambiado exitosamente. Los otros equipos dónde utilices doctory tendrán que volver a iniciar sesión.',
+        status: 'success',
+        duration: 10000,
+        isClosable: true,
+        position: toastPosition as ToastPosition,
+      })
+    }
+    http.updatePassword(values, ok, ()=>{}, connectionError)
+  }
 
   const BulletPoint = () => (
     <Box 
@@ -166,18 +188,48 @@ export const ProfileView = () => {
     flexGrow={1}
     mx={{base:'1em', md:'2em'}}
     >
+      <Drawer
+        placement={useBreakpointValue({base: 'bottom', lg: 'right'})}
+        isOpen={isOpen}
+        onClose={onClose}
+        >
+        <DrawerOverlay>
+          <DrawerContent>
+            <DrawerCloseButton/>
+            <DrawerHeader>
+              Actualizar contraseña
+            </DrawerHeader>
+
+            <DrawerBody>
+              <ChangePasswordForm formId='change-password-form' onSubmit={onChangePassword}/>
+            </DrawerBody>
+
+            <DrawerFooter>
+              <Button
+                type='submit'
+                form='change-password-form'
+                colorScheme='primary'>Cambiar contraseña</Button>
+            </DrawerFooter>
+
+          </DrawerContent>
+        </DrawerOverlay>
+      </Drawer>
     <Flex
       flexGrow={1}
       align={'flex-start'}
       justify={'center'}
-      pt={12}
+      py={12}
       w={'100%'}
     >
     <VStack w={'100%'} mb={12} >
       <Heading fontSize={'3xl'}>Editar Perfil</Heading>
       <Stack w={'100%'} align={'center'}>
         <Avatar src={avatar} size="2xl" mb={4}>
-          <AvatarBadge boxSize=".8em" borderColor="transparent" bg="white" _hover={{color:'gray.500'}}>
+          <AvatarBadge
+            boxSize=".8em"
+            borderColor="transparent"
+            bg="white"
+            _hover={{color:'gray.500'}}>
             <FaCamera />
           </AvatarBadge>
         </Avatar>
@@ -244,6 +296,12 @@ export const ProfileView = () => {
             <FormErrorMessage>
               {errors.email && errors.email.message}
             </FormErrorMessage>
+          </FormControl>
+
+          <FormControl
+            mb={4}>
+            <FormLabel>Contraseña</FormLabel>
+            <Button onClick={onOpen} variant='link' colorScheme='primary'>Cambiar contraseña</Button>
           </FormControl>
           
           <FormControl

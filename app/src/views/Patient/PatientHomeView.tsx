@@ -16,9 +16,9 @@ import {
   DrawerContent,
   DrawerCloseButton,
   Button,
-  useMediaQuery
+  useBreakpointValue,
+  ToastPosition
 } from '@chakra-ui/react';
-import theme from '@chakra-ui/theme'
 import { AddIcon } from '@chakra-ui/icons';
 import { BackgroundSubtypeData, ConditionData, FunctionError, FunctionOk, userInformation } from '../../http/types';
 import { http } from '../../http/client';
@@ -27,14 +27,6 @@ import { connectionErrorToast } from '../../utils/connectionErrorToast';
 
 
 export const PatientHomeView = () => {
-
-  // const userData: any = {
-  //   first_name: 'Sergio Gabriel',
-  //   last_name: 'Diosdado Castelazo',
-  //   dob: '14-dic-1998',
-  //   email: 'sergio@doctory.com',
-  //   location: 'Matamoros, Tamaulipas'
-  // }
   const [userData, setUserData] = useState<userInformation>({
     first_name: '',
     last_name: '',
@@ -46,13 +38,12 @@ export const PatientHomeView = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const [isMobile] = useMediaQuery(`(max-width: ${theme.breakpoints.md}`); 
-
   const [backgroundSubtypes, setBackgroundSubtype] = useState<BackgroundSubtypeData[]>([])
   
   const [conditions, setConditions] = useState<ConditionData[]>([])
 
   const toast = useToast();
+  const toastPosition = useBreakpointValue({base:'top', md:'top-right'});
 
   const onSubmit = (values:ConditionData) => {
     const ok:FunctionOk = (_, data) => {
@@ -66,15 +57,14 @@ export const PatientHomeView = () => {
         status: 'success',
         duration: 5000,
         isClosable: true,
-        position: 'top',
-        variant: 'left-accent'
+        position: toastPosition as ToastPosition,
       });
     }
     const error:FunctionError = (statusCode, error) => {
       console.log(error);
     }
 
-    http.newCondition(values, ok, error, () => toast(connectionErrorToast()));
+    http.newCondition(values, ok, error, () => toast(connectionErrorToast(toastPosition)));
   }
   
   useEffect(() => {
@@ -124,7 +114,7 @@ export const PatientHomeView = () => {
       </VStack>
       
       <Drawer 
-        placement={isMobile ? 'bottom' : 'right'}
+        placement={useBreakpointValue({base: 'bottom', lg: 'right'})}
         isOpen={isOpen}
         onClose={onClose}>
           <DrawerOverlay>

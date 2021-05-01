@@ -4,7 +4,7 @@ from .views.views_condition import ListConditions, ConditionDetail
 from .views.views_background import ListBackgroundSubtypes, ListBackgroundTypes
 from .views.views_specialty import ListSpecialties
 from .views.views_profile import Profile
-from core.views.views_authentication import Signup, Login
+from core.views.views_authentication import Signup, Login, ChangePassword
 
 urlpatterns = [
     path('conditions/', ListConditions.as_view(), name='conditions'),
@@ -15,4 +15,5 @@ urlpatterns = [
     path('signup/', Signup.as_view(), name='signup'),
     path('login/', Login.as_view(), name='login'),
     path('profile/', Profile.as_view(), name='profile'),
+    path('change-password/', ChangePassword.as_view(), name='change_password'),
 ]

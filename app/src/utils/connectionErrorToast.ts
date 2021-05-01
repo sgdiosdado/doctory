@@ -1,11 +1,10 @@
 import { UseToastOptions } from "@chakra-ui/react";
 
-export const connectionErrorToast = () => ({
+export const connectionErrorToast = (position='top') => ({
   title: 'Error de conexión',
   description: 'Comprueba tu conexión de internet e intenta de nuevo.',
   status: 'error',
   duration: 5000,
   isClosable: true,
-  position: 'top',
-  variant: 'left-accent'
+  position,
 } as UseToastOptions)

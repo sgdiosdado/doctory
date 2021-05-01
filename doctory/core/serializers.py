@@ -93,6 +93,20 @@ class ProfileSerializer(serializers.ModelSerializer):
         read_only_fields = FIELDS
 
 
+class ChangePasswordSerializer(serializers.Serializer):
+    password1 = serializers.CharField()
+    password2 = serializers.CharField()
+
+    def validate(self, data):
+        """
+        Validates that passwords match
+        """
+        print(data)
+        if data['password1'] != data['password2']:
+            raise serializers.ValidationError({'passwords': ['Passwords don\'t match']})
+        return data
+
+
 class ConditionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Condition
