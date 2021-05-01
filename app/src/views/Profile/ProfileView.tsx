@@ -116,7 +116,6 @@ export const ProfileView = () => {
         duration: 5000,
         isClosable: true,
         position: toastPosition as ToastPosition,
-        variant: 'left-accent'
       })
     }
     const error:FunctionError = (_, error) => {
@@ -209,7 +208,6 @@ export const ProfileView = () => {
               <Button
                 type='submit'
                 form='change-password-form'
-                leftIcon={<AddIcon/>}
                 colorScheme='primary'>Cambiar contraseña</Button>
             </DrawerFooter>
 
@@ -301,10 +299,8 @@ export const ProfileView = () => {
           </FormControl>
 
           <FormControl
-            mb={4}
-            isRequired
-            isInvalid={Boolean(errors.email)}>
-            <FormLabel htmlFor='email'>Contraseña</FormLabel>
+            mb={4}>
+            <FormLabel>Contraseña</FormLabel>
             <Button onClick={onOpen} variant='link' colorScheme='primary'>Cambiar contraseña</Button>
           </FormControl>
           
