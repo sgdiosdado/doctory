@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Box, Text, VStack } from '@chakra-ui/layout';
 import { PresetationCard } from '../../components/PresentationCard';
 import avatar from '../../assets/PowerPeople_Emma.png';
@@ -29,9 +29,13 @@ import { useToast } from "@chakra-ui/react"
 import { useMutation, useQuery } from 'react-query';
 import { ConditionsTimeLine } from './ConditionsTimeLine';
 import { ConditionsTable } from './ConditionsTable';
+// import { connectionErrorToast } from '../../utils/connectionErrorToast';
+import { UserContext } from '../../provider/AuthProvider';
 
 
 export const PatientHomeView = () => {
+  const { authContext } = useContext(UserContext);
+
   const [userData, setUserData] = useState<userInformation>({
     first_name: '',
     last_name: '',

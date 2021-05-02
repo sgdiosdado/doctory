@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   Flex,
   Box,
@@ -23,9 +23,16 @@ import { useForm } from 'react-hook-form';
 import { LoginData } from '../../http/types';
 import { routes } from '../../routes/routes';
 import { useMutation } from 'react-query';
+// import { connectionErrorToast } from '../../utils/connectionErrorToast';
+import { UserContext } from '../../provider/AuthProvider';
 
 
 export const LoginView = () => {
+
+
+export const LoginView = () => {
+  const { authContext, login } = useContext(UserContext);
+  const { register, handleSubmit, errors } = useForm<LoginData>();
   const history = useHistory()
   
   const toast = useToast();
