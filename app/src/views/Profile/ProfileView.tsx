@@ -142,6 +142,9 @@ export const ProfileView = () => {
 
   const onSubmit = (values: userInformation) => {
     setIsLoading(true);
+    if (data.type.includes(userTypes.PATIENT)) {
+      values.patient && (values.patient.allergies = allergiesObject.map(x => x.value).filter(y => y !== ''));
+    }
     mutate(values);
   }
 
