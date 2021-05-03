@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { Box, Text, VStack } from '@chakra-ui/layout';
 import { PresetationCard } from '../../components/PresentationCard';
 import avatar from '../../assets/PowerPeople_Emma.png';
-import { TimeLine } from '../../components/TimeLine/TimeLine';
-import { TimeLineItem } from '../../components/TimeLine/TimeLineItem';
 import { AddButton } from '../../components/TimeLine/AddButton';
 import { NewConditionForm } from './NewConditionForm';
 import {
@@ -17,13 +15,20 @@ import {
   DrawerCloseButton,
   Button,
   useBreakpointValue,
-  ToastPosition
+  ToastPosition,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { BackgroundSubtypeData, ConditionData, userInformation } from '../../http/types';
 import { http } from '../../http/client';
 import { useToast } from "@chakra-ui/react"
 import { useMutation, useQuery } from 'react-query';
+import { ConditionsTimeLine } from './ConditionsTimeLine';
+import { ConditionsTable } from './ConditionsTable';
 
 
 export const PatientHomeView = () => {
@@ -95,21 +100,27 @@ export const PatientHomeView = () => {
     <>
       <VStack>
         <Text fontSize='4xl'>Historia Médica</Text>
-        <PresetationCard userData={userData} avatar={avatar} />
+        <PresetationCard userData={userData} avatar={avatar}/>
         <Box
           w='100%'
-          maxW={{base: '100%', md: '75%'}}
+          pt='2rem'
+          maxW={{base: '100%', md: '75%', lg: '50%'}}
         >
-          <TimeLine>
-            {conditions.map(condition => (
-              <TimeLineItem 
-                key={condition.id}
-                conditionTitle={condition.name}
-                date_of_diagnosis={condition.date_of_diagnosis}
-                conditionDescription={condition.description}
-              />
-            ))}
-          </TimeLine>
+          <Tabs isFitted>
+            <TabList>
+              <Tab>Línea del tiempo</Tab>
+              <Tab>Tabla</Tab>
+            </TabList>
+
+            <TabPanels>
+              <TabPanel>
+                <ConditionsTimeLine conditions={conditions}/>
+              </TabPanel>
+              <TabPanel overflowX={{base: 'scroll', lg: 'visible'}}>
+                <ConditionsTable conditions={conditions}/>
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
         </Box>
       </VStack>
       

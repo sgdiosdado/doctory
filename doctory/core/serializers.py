@@ -107,9 +107,10 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 
 class ConditionSerializer(serializers.ModelSerializer):
+    background_subtype_name = serializers.CharField(source='background_subtype.name', read_only=True)
     class Meta:
         model = Condition
-        fields = ['id', 'name', 'description', 'patient', 'date_of_diagnosis', 'background_subtype']
+        fields = ['id', 'name', 'description', 'patient', 'date_of_diagnosis', 'background_subtype', 'background_subtype_name']
         read_only_fields = ['id', 'patient']
     
     def validate(self, data): 
