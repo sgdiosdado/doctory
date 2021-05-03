@@ -1,10 +1,7 @@
 import React from 'react'
 import { Image } from '@chakra-ui/image'
 import { Box, HStack, Text } from '@chakra-ui/layout'
-<<<<<<< HEAD
 import { userInformation } from '../http/types'
-=======
->>>>>>> dd61765... Add new production docker compose and config files
 
 type presentationCardPropsTypes = {
   userData: userInformation,
