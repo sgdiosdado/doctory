@@ -20,36 +20,38 @@ import {
 import { Link, useHistory } from "react-router-dom";
 import { http } from '../../http/client';
 import { useForm } from 'react-hook-form';
-import { FunctionError, LoginData, LoginError  } from '../../http/types';
-import { FunctionOk } from '../../http/types';
+import { LoginData } from '../../http/types';
 import { routes } from '../../routes/routes';
-import { connectionErrorToast } from '../../utils/connectionErrorToast';
+import { useMutation } from 'react-query';
 
 
 export const LoginView = () => {
-  const { register, handleSubmit, errors } = useForm<LoginData>();
   const history = useHistory()
+  
   const toast = useToast();
   const toastPosition = useBreakpointValue({base:'top', md:'top-right'});
+  const { register, handleSubmit, errors } = useForm<LoginData>();
+  
+  const onSuccess = () => {
+    history.push(routes.patientHome.path)
+  }
+  
+  const onError = (data:Error) => {
+    if(data.message === 'Failed to fetch') data.message = 'Comprueba tu conexión a internet e intenta de nuevo.'
+    toast({
+      title: 'Ups!',
+      description: data.message,
+      status: 'error',
+      duration: 5000,
+      isClosable: true,
+      position: toastPosition as ToastPosition,
+    });
+  }
+
+  const { mutate } = useMutation('login', (values:LoginData) => http.login(values), {onSuccess, onError})
   
   const onSubmit = (values: LoginData) => {
-    
-    const ok: FunctionOk = (statusCode, data) => {
-      history.push(routes.patientHome.path)
-    }
-
-    const error: FunctionError = (statusCode, error) => {
-      const loginError = error as LoginError;
-      toast({
-        title: 'Ups!',
-        description: Object.values(loginError)[0],
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-        position: toastPosition as ToastPosition,
-      });
-    }
-    http.login(values, ok, error, () => toast(connectionErrorToast(toastPosition)));
+    mutate(values);
   }
 
   return (

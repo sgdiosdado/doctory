@@ -49,7 +49,7 @@ class LoginSerializer(serializers.Serializer):
         password = data.get('password', None)
         user = authenticate(email=email, password=password)
         if user is None:
-            raise serializers.ValidationError({'credentials': ['A user with this email and password is not found.']})
+            raise serializers.ValidationError({'credentials': 'A user with this email and password is not found.'})
         update_last_login(None, user)
         token_key = Token.objects.get(user=user)
         return {'token': token_key}
@@ -101,7 +101,6 @@ class ChangePasswordSerializer(serializers.Serializer):
         """
         Validates that passwords match
         """
-        print(data)
         if data['password1'] != data['password2']:
             raise serializers.ValidationError({'passwords': ['Passwords don\'t match']})
         return data

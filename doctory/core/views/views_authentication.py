@@ -16,7 +16,7 @@ class Signup(APIView):
         if serializer.is_valid():
             user = serializer.save()
             token = Token.objects.get(user=user)
-            res = standard_response(data={'token': token.key})
+            res = standard_response(data={'token': token.key, 'types': user.type})
             return Response(res, status=status.HTTP_201_CREATED)
         res = standard_response(errors=serializer.errors)
         return Response(res, status=status.HTTP_400_BAD_REQUEST)
@@ -30,7 +30,8 @@ class Login(APIView):
         """
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
-            res = standard_response(data=serializer.data)
+            data = {**serializer.data, 'types': Token.objects.get(key=serializer.data['token']).user.type}
+            res = standard_response(data=data)
             return Response(res)
         res = standard_response(errors=serializer.errors)
         return Response(res, status=status.HTTP_400_BAD_REQUEST)

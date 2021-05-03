@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Box, Text, VStack } from '@chakra-ui/layout';
 import { PresetationCard } from '../../components/PresentationCard';
 import avatar from '../../assets/PowerPeople_Emma.png';
@@ -20,10 +20,10 @@ import {
   ToastPosition
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
-import { BackgroundSubtypeData, ConditionData, FunctionError, FunctionOk, userInformation } from '../../http/types';
+import { BackgroundSubtypeData, ConditionData, userInformation } from '../../http/types';
 import { http } from '../../http/client';
 import { useToast } from "@chakra-ui/react"
-import { connectionErrorToast } from '../../utils/connectionErrorToast';
+import { useMutation, useQuery } from 'react-query';
 
 
 export const PatientHomeView = () => {
@@ -45,51 +45,51 @@ export const PatientHomeView = () => {
   const toast = useToast();
   const toastPosition = useBreakpointValue({base:'top', md:'top-right'});
 
-  const onSubmit = (values:ConditionData) => {
-    const ok:FunctionOk = (_, data) => {
-      const conds = [...conditions, data as ConditionData]
-      conds.sort((x, y) => x.date_of_diagnosis < y.date_of_diagnosis ? 1 : -1)
-      setConditions(conds)
-      onClose();
-      toast({
-        title: 'Condición creada',
-        description: 'Se ha añadido una nueva condición a tu historia clínica',
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-        position: toastPosition as ToastPosition,
-      });
-    }
-    const error:FunctionError = (statusCode, error) => {
-      console.log(error);
-    }
-
-    http.newCondition(values, ok, error, () => toast(connectionErrorToast(toastPosition)));
+  const onSuccessNewCondition = (data:ConditionData) => {
+    const conds = [...conditions, data]
+    conds.sort((x, y) => x.date_of_diagnosis < y.date_of_diagnosis ? 1 : -1)
+    setConditions(conds)
+    onClose();
+    toast({
+      title: 'Condición creada',
+      description: 'Se ha añadido una nueva condición a tu historia clínica',
+      status: 'success',
+      duration: 5000,
+      isClosable: true,
+      position: toastPosition as ToastPosition,
+    });
   }
   
-  useEffect(() => {
-    const ok:FunctionOk = (_, data) => {
-      const user = data as userInformation;
-      setUserData(user);
-    }
-    http.getProfileInfo(ok)
-  }, [])
+  const onError = (data:Error) => {
+    if(data.message === 'Failed to fetch') data.message = 'Comprueba tu conexión a internet e intenta de nuevo.'
+    toast({
+      title: 'Ups!',
+      description: data.message,
+      status: 'error',
+      duration: 5000,
+      isClosable: true,
+      position: toastPosition as ToastPosition,
+    });
+  }
 
-  useEffect(() => {
-    const ok:FunctionOk = (statusCode, data) => {
-      const bs = data as BackgroundSubtypeData[];
-      setBackgroundSubtype(bs)
-    }
-    http.backgroundSubtypes(ok)
-  }, [])
+  const { mutate: mutateNewCondition } = useMutation('newCondition', (values:ConditionData) => http.newCondition(values), {onSuccess: onSuccessNewCondition, onError})
 
-  useEffect(() => {
-    const ok:FunctionOk = (statusCode, data) => {
-      const conds = data as ConditionData[];
-      setConditions(conds)
-    }
-    http.conditions(ok)
-  }, [])
+  const onSubmit = (values:ConditionData) => {
+    mutateNewCondition(values);
+  }
+
+  useQuery('conditions', () => http.conditions(), {
+    onSuccess: (data:ConditionData[]) => setConditions(data),
+    onError
+  })
+  useQuery('profile', () => http.getProfileInfo(), {
+    onSuccess: (data:userInformation) => setUserData(data),
+    onError
+  })
+  useQuery('background-subtypes', () => http.backgroundSubtypes(), {
+    onSuccess: (data:BackgroundSubtypeData[]) => setBackgroundSubtype(data),
+    onError
+  })
 
   return (
     <>
