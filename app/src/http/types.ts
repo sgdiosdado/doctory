@@ -48,10 +48,3 @@ export type BackgroundSubtypeData = {
   name: string;
   description: string;
 }
-
-export type FunctionOk = (statusCode: number, data: Object | Array<Object>) => void;
-export type FunctionError = (statusCode: number, errors: Object) => void;
-
-export type LoginError = {
-  credentials: Array<string>;
-}

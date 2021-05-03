@@ -13,24 +13,46 @@ import {
   Container,
   useToast,
   Link as ChakraLink,
+  useBreakpointValue,
+  ToastPosition,
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form';
 import { usePasswordValidation } from '../../hooks/usePasswordValidation';
 import { ValidPasswordChecklist } from './validPasswordChecklist';
-import { SignUpData, FunctionOk, FunctionError } from '../../http/types';
+import { SignUpData } from '../../http/types';
 import { http } from '../../http/client';
 import { Link, useHistory } from 'react-router-dom';
 import { routes } from '../../routes/routes';
-import { connectionErrorToast } from '../../utils/connectionErrorToast';
+import { useMutation } from 'react-query';
 
 export const SignUpView = () => {
   const history = useHistory()
 
   const toast = useToast()
-
-  const MB = 4
-
+  const toastPosition = useBreakpointValue({base:'top', md:'top-right'});
   const { register, handleSubmit, errors } = useForm<SignUpData>();
+
+  const onSuccess = () => {
+    history.push(routes.patientHome.path)
+  }
+  
+  const onError = (data:Error) => {
+    if(data.message === 'Failed to fetch') data.message = 'Comprueba tu conexión a internet e intenta de nuevo.'
+    toast({
+      title: 'Ups!',
+      description: data.message,
+      status: 'error',
+      duration: 5000,
+      isClosable: true,
+      position: toastPosition as ToastPosition,
+    });
+  }
+
+  const { mutate } = useMutation('signup', (values:SignUpData) => http.signup(values), {onSuccess, onError})
+  
+  const onSubmit = (values: SignUpData) => {
+    mutate(values);
+  }
 
   const [password, setPassword] = useState<string>('');
 
@@ -43,30 +65,13 @@ export const SignUpView = () => {
     hasUpperCase,
     hasLowerCase,
     hasSpecialChar } = usePasswordValidation({ password });
-  
-
-  const onSubmit = (values: SignUpData) => {
-    const ok: FunctionOk = (statusCode, data) => {
-      history.push(routes.patientHome.path)
-    }
-    const error: FunctionError = (statusCode, error) => {
-      toast({
-        title: 'Ups!',
-        description: Object.entries(error)[0][1],
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-        position: 'top',
-        variant: 'left-accent'
-      })
-    }
-    http.signup(values, ok, error, () => toast(connectionErrorToast()));
-  }
 
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
     setInitialPassword(true);
   }
+  
+  const MB = 4
 
   return (
     <Container

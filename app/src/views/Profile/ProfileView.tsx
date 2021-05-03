@@ -1,4 +1,4 @@
-import React, { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
+import React, { ChangeEvent, Dispatch, SetStateAction, useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import {
   Avatar,
@@ -33,12 +33,12 @@ import avatar from '../../assets/PowerPeople_Emma.png';
 import { AddIcon } from '@chakra-ui/icons';
 import { FaCamera } from 'react-icons/fa';
 import { sexTypes, userTypes } from '../../utils/typesDefinitions';
-import { ChangePasswordData, FunctionError, FunctionOk, userInformation } from '../../http/types';
+import { ChangePasswordData, userInformation } from '../../http/types';
 import { http } from '../../http/client';
 import { isValidDate } from '../../utils/utils';
-import { connectionErrorToast } from '../../utils/connectionErrorToast';
 import { ChangePasswordForm } from './ChangePasswordForm';
 import { setToken } from '../../utils/token';
+import { useMutation, useQuery } from 'react-query';
 
 export const ProfileView = () => {
   
@@ -59,6 +59,19 @@ export const ProfileView = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { register, handleSubmit, errors, setValue } = useForm<userInformation>();
+
+  const onError = (data:Error) => {
+    if(data.message === 'Failed to fetch') data.message = 'Comprueba tu conexión a internet e intenta de nuevo.'
+    toast({
+      title: 'Ups!',
+      description: data.message,
+      status: 'error',
+      duration: 5000,
+      isClosable: true,
+      position: toastPosition as ToastPosition,
+    });
+  }
+
   const ok = useCallback((_, data) => {
     
     const parseArrayToAllergiesObject = (allergies:string[] = ['']) => {
@@ -89,27 +102,15 @@ export const ProfileView = () => {
     setIsLoading(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[setValue, register])
-  
-  const connectionError = () => {
-    setIsLoading(false);
-    toast(connectionErrorToast());
-  }  
 
-  useEffect(() => {
-    http.getProfileInfo(ok, () => {setIsLoading(false);}, connectionError);
-    //eslint-disable-next-line
-  }, [ok])
+  useQuery('profile', () => http.getProfileInfo(), {
+    onSuccess: (data:userInformation) => ok(null, data),
+    onError,
+    onSettled: () => setIsLoading(false)
+  })
 
-  const onSubmit = (values: userInformation) => {
-    setIsLoading(true);
-    if (data.type.includes(userTypes.PATIENT)) {
-      values.patient && (values.patient.allergies = allergiesObject.map(x => x.value).filter(y => y !== ''));
-      console.log(allergiesObject);
-      
-    }
-    const ok:FunctionOk = () => {
-      setIsLoading(false);
-      
+  const { mutate } = useMutation('updateProfile', (values:userInformation) => http.updateProfile(values), {
+    onSuccess: () => {
       toast({
         description: '¡Tu información se ha guardado con éxito!',
         status: 'success',
@@ -117,12 +118,31 @@ export const ProfileView = () => {
         isClosable: true,
         position: toastPosition as ToastPosition,
       })
-    }
-    const error:FunctionError = (_, error) => {
-      setIsLoading(false);
-      console.log('error', error);
-    }
-    http.putProfileInfo(values, ok, error, connectionError);
+    },
+    onError,
+    onSettled: () => setIsLoading(false)
+  });
+
+  const { mutate: mutatePassword } = useMutation('changePassword', (values:ChangePasswordData) => http.updatePassword(values), {
+    onSuccess: ({ token }:{token:string}) => {
+      setToken(token)
+      onClose()
+      toast({
+        title: 'Contraseña actualizada',
+        description: 'Tu contraseña se ha cambiado exitosamente. Los otros equipos dónde utilices doctory tendrán que volver a iniciar sesión.',
+        status: 'success',
+        duration: 10000,
+        isClosable: true,
+        position: toastPosition as ToastPosition,
+      })
+    },
+    onError,
+    onSettled: () => setIsLoading(false)
+  });
+
+  const onSubmit = (values: userInformation) => {
+    setIsLoading(true);
+    mutate(values);
   }
 
   const addSpecialtyField = () => setSpecialties((s) => [...s, '']);
@@ -154,19 +174,7 @@ export const ProfileView = () => {
   }
 
   const onChangePassword = (values:ChangePasswordData) => {
-    const ok = (_:number, data:{token:string}) => {
-      setToken(data.token)
-      onClose()
-      toast({
-        title: 'Contraseña actualizada',
-        description: 'Tu contraseña se ha cambiado exitosamente. Los otros equipos dónde utilices doctory tendrán que volver a iniciar sesión.',
-        status: 'success',
-        duration: 10000,
-        isClosable: true,
-        position: toastPosition as ToastPosition,
-      })
-    }
-    http.updatePassword(values, ok, ()=>{}, connectionError)
+    mutatePassword(values);
   }
 
   const BulletPoint = () => (

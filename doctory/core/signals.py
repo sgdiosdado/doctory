@@ -36,11 +36,16 @@ def create_token(sender, instance, created, **kwargs):
 
 
 @receiver(pre_save, sender=User)
+@receiver(pre_save, sender=Medic)
+@receiver(pre_save, sender=Patient)
 def update_token(sender, instance, **kwargs):
     if instance:
-        new_password = instance.password
-        old_password = User.objects.get(pk=instance.pk).password
+        try:
+            new_password = instance.password
+            old_password = User.objects.get(pk=instance.pk).password
 
-        if new_password != old_password:
-            Token.objects.get(user=instance).delete()
-            Token.objects.create(user=instance)
+            if new_password != old_password:
+                Token.objects.get(user=instance).delete()
+                Token.objects.create(user=instance)
+        except User.DoesNotExist:
+            pass
