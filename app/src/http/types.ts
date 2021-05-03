@@ -41,6 +41,7 @@ export type ConditionData = {
   description: string;
   date_of_diagnosis: string;
   background_subtype: string | number;
+  background_subtype_name: string;
 }
 
 export type BackgroundSubtypeData = {
