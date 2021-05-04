@@ -10,6 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { BackgroundSubtypeData, ConditionData } from '../../http/types';
 import { useForm } from 'react-hook-form';
+import { isValidDate } from '../../utils/utils';
 
 type NewConditionProps = {
   formId: string;
@@ -19,11 +20,6 @@ type NewConditionProps = {
 
 export const NewConditionForm = ({ formId, onSubmit, backgroundSubtypes }: NewConditionProps) => {
   const { register, handleSubmit, errors } = useForm<ConditionData>();
-  
-  const isValidDate = (value:string) => {
-    const date_of_diagnosis = Date.parse(value);
-    return date_of_diagnosis < Date.now();
-  }
 
   return (
     <Stack>

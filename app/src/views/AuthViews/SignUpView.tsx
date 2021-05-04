@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useState, useContext } from 'react'
 import {
   Flex,
   Box,
@@ -12,24 +12,49 @@ import {
   useColorModeValue,
   Container,
   useToast,
+  Link as ChakraLink,
+  useBreakpointValue,
+  ToastPosition,
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form';
 import { usePasswordValidation } from '../../hooks/usePasswordValidation';
 import { ValidPasswordChecklist } from './validPasswordChecklist';
-import { SignUpData, FunctionOk, FunctionError } from '../../http/types';
+import { SignUpData } from '../../http/types';
 import { http } from '../../http/client';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { routes } from '../../routes/routes';
-import { connectionErrorToast } from '../../utils/connectionErrorToast';
+import { useMutation } from 'react-query';
+import { UserContext } from '../../provider/AuthProvider';
 
 export const SignUpView = () => {
   const history = useHistory()
-
+  const { login } = useContext(UserContext);
   const toast = useToast()
-
-  const MB = 4
-
+  const toastPosition = useBreakpointValue({base:'top', md:'top-right'});
   const { register, handleSubmit, errors } = useForm<SignUpData>();
+
+  const onSuccess = () => {
+    login(type)
+    history.push(routes.home.path)
+  }
+  
+  const onError = (data:Error) => {
+    if(data.message === 'Failed to fetch') data.message = 'Comprueba tu conexión a internet e intenta de nuevo.'
+    toast({
+      title: 'Ups!',
+      description: data.message,
+      status: 'error',
+      duration: 5000,
+      isClosable: true,
+      position: toastPosition as ToastPosition,
+    });
+  }
+
+  const { mutate } = useMutation('signup', (values:SignUpData) => http.signup(values), {onSuccess, onError})
+  
+  const onSubmit = (values: SignUpData) => {
+    mutate(values);
+  }
 
   const [password, setPassword] = useState<string>('');
 
@@ -42,30 +67,13 @@ export const SignUpView = () => {
     hasUpperCase,
     hasLowerCase,
     hasSpecialChar } = usePasswordValidation({ password });
-  
-
-  const onSubmit = (values: SignUpData) => {
-    const ok: FunctionOk = (statusCode, data) => {
-      history.push(routes.patientHome.path)
-    }
-    const error: FunctionError = (statusCode, error) => {
-      toast({
-        title: 'Ups!',
-        description: Object.entries(error)[0][1],
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-        position: 'top',
-        variant: 'left-accent'
-      })
-    }
-    http.signup(values, ok, error, () => toast(connectionErrorToast()));
-  }
 
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
     setInitialPassword(true);
   }
+  
+  const MB = 4
 
   return (
     <Container
@@ -192,12 +200,18 @@ export const SignUpView = () => {
                   {errors.password2 && errors.password2.message}
                 </FormErrorMessage>
               </FormControl>
+              
               <Button
                 onClick={_ => setInitialPassword(true)}
                 type='submit'>
                 Registrar
               </Button>
             </form>
+          </Box>
+          <Box display='flex' justifyContent='center'>
+            <ChakraLink as={Link} to={routes.login.path}>
+              ¿Ya con cuenta? Inicie Sesión
+            </ChakraLink>
           </Box>
         </Stack>
       </Flex>

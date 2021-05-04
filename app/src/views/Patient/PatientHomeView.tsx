@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Box, Text, VStack } from '@chakra-ui/layout';
 import { PresetationCard } from '../../components/PresentationCard';
-import { userInformation } from '../../utils/typesDefinitions';
 import avatar from '../../assets/PowerPeople_Emma.png';
-import { TimeLine } from '../../components/TimeLine/TimeLine';
-import { TimeLineItem } from '../../components/TimeLine/TimeLineItem';
 import { AddButton } from '../../components/TimeLine/AddButton';
 import { NewConditionForm } from './NewConditionForm';
 import {
@@ -17,98 +14,118 @@ import {
   DrawerContent,
   DrawerCloseButton,
   Button,
-  useMediaQuery
+  useBreakpointValue,
+  ToastPosition,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel
 } from '@chakra-ui/react';
-import theme from '@chakra-ui/theme'
 import { AddIcon } from '@chakra-ui/icons';
-import { BackgroundSubtypeData, ConditionData, FunctionError, FunctionOk } from '../../http/types';
+import { BackgroundSubtypeData, ConditionData, userInformation } from '../../http/types';
 import { http } from '../../http/client';
 import { useToast } from "@chakra-ui/react"
-import { connectionErrorToast } from '../../utils/connectionErrorToast';
-
+import { useMutation, useQuery } from 'react-query';
+import { ConditionsTimeLine } from './ConditionsTimeLine';
+import { ConditionsTable } from './ConditionsTable';
 
 export const PatientHomeView = () => {
 
-  const userData: userInformation = {
-    name: 'Sergio Gabriel',
-    lname: 'Diosdado Castelazo',
-    dob: '14-dic-1998',
-    email: 'sergio@doctory.com',
-    location: 'Matamoros, Tamaulipas'
-  }
+  const [userData, setUserData] = useState<userInformation>({
+    first_name: '',
+    last_name: '',
+    dob: '',
+    email: '',
+    sex: '',
+    type: [''],
+  })
 
   const { isOpen, onOpen, onClose } = useDisclosure()
-
-  const [isMobile] = useMediaQuery(`(max-width: ${theme.breakpoints.md}`); 
 
   const [backgroundSubtypes, setBackgroundSubtype] = useState<BackgroundSubtypeData[]>([])
   
   const [conditions, setConditions] = useState<ConditionData[]>([])
 
   const toast = useToast();
+  const toastPosition = useBreakpointValue({base:'top', md:'top-right'});
 
-  const onSubmit = (values:ConditionData) => {
-    const ok:FunctionOk = (_, data) => {
-      const conds = [...conditions, data as ConditionData]
-      conds.sort((x, y) => x.date_of_diagnosis < y.date_of_diagnosis ? 1 : -1)
-      setConditions(conds)
-      onClose();
-      toast({
-        title: 'Condición creada',
-        description: 'Se ha añadido una nueva condición a tu historia clínica',
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-        position: 'top',
-        variant: 'left-accent'
-      });
-    }
-    const error:FunctionError = (statusCode, error) => {
-      console.log(error);
-    }
-
-    http.newCondition(values, ok, error, () => toast(connectionErrorToast()));
+  const onSuccessNewCondition = (data:ConditionData) => {
+    const conds = [...conditions, data]
+    conds.sort((x, y) => x.date_of_diagnosis < y.date_of_diagnosis ? 1 : -1)
+    setConditions(conds)
+    onClose();
+    toast({
+      title: 'Condición creada',
+      description: 'Se ha añadido una nueva condición a tu historia clínica',
+      status: 'success',
+      duration: 5000,
+      isClosable: true,
+      position: toastPosition as ToastPosition,
+    });
   }
   
-  useEffect(() => {
-    const ok:FunctionOk = (statusCode, data) => {
-      const bs = data as BackgroundSubtypeData[];
-      setBackgroundSubtype(bs)
-    }
-    http.backgroundSubtypes(ok)
-  }, [])
+  const onError = (data:Error) => {
+    if(data.message === 'Failed to fetch') data.message = 'Comprueba tu conexión a internet e intenta de nuevo.'
+    toast({
+      title: 'Ups!',
+      description: data.message,
+      status: 'error',
+      duration: 5000,
+      isClosable: true,
+      position: toastPosition as ToastPosition,
+    });
+  }
 
-  useEffect(() => {
-    const ok:FunctionOk = (statusCode, data) => {
-      const conds = data as ConditionData[];
-      setConditions(conds)
-    }
-    http.conditions(ok)
-  }, [])
+  const { mutate: mutateNewCondition } = useMutation('newCondition', (values:ConditionData) => http.newCondition(values), {onSuccess: onSuccessNewCondition, onError})
+
+  const onSubmit = (values:ConditionData) => {
+    mutateNewCondition(values);
+  }
+
+  useQuery('conditions', () => http.conditions(), {
+    onSuccess: (data:ConditionData[]) => setConditions(data),
+    onError
+  })
+  useQuery('profile', () => http.getProfileInfo(), {
+    onSuccess: (data:userInformation) => setUserData(data),
+    onError
+  })
+  useQuery('background-subtypes', () => http.backgroundSubtypes(), {
+    onSuccess: (data:BackgroundSubtypeData[]) => setBackgroundSubtype(data),
+    onError
+  })
 
   return (
     <>
       <VStack>
         <Text fontSize='4xl'>Historia Médica</Text>
-        <PresetationCard userData={userData} avatar={avatar} />
+        <PresetationCard userData={userData} avatar={avatar}/>
         <Box
-          maxW={{base: '100%', md: '75%'}}
+          w='100%'
+          pt='2rem'
+          maxW={{base: '100%', md: '75%', lg: '50%'}}
         >
-          <TimeLine>
-            {conditions.map(condition => (
-              <TimeLineItem 
-                key={condition.id}
-                conditionTitle={condition.name}
-                date_of_diagnosis={condition.date_of_diagnosis}
-                conditionDescription={condition.description}
-              />
-            ))}
-          </TimeLine>
+          <Tabs isFitted>
+            <TabList>
+              <Tab>Línea del tiempo</Tab>
+              <Tab>Tabla</Tab>
+            </TabList>
+
+            <TabPanels>
+              <TabPanel>
+                <ConditionsTimeLine conditions={conditions}/>
+              </TabPanel>
+              <TabPanel overflowX={{base: 'scroll', lg: 'visible'}}>
+                <ConditionsTable conditions={conditions}/>
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
         </Box>
       </VStack>
       
       <Drawer 
-        placement={isMobile ? 'bottom' : 'right'}
+        placement={useBreakpointValue({base: 'bottom', lg: 'right'})}
         isOpen={isOpen}
         onClose={onClose}>
           <DrawerOverlay>

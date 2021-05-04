@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   Flex,
   Box,
@@ -12,40 +12,49 @@ import {
   Heading,
   useColorModeValue,
   useToast,
+  Divider,
+  Text,
+  useBreakpointValue,
+  ToastPosition
 } from '@chakra-ui/react';
+import { Link, useHistory } from "react-router-dom";
 import { http } from '../../http/client';
 import { useForm } from 'react-hook-form';
-import { FunctionError, LoginData, LoginError  } from '../../http/types';
-import { FunctionOk } from '../../http/types';
-import { useHistory } from 'react-router-dom';
+import { LoginData } from '../../http/types';
 import { routes } from '../../routes/routes';
-import { connectionErrorToast } from '../../utils/connectionErrorToast';
+import { useMutation } from 'react-query';
+import { UserContext } from '../../provider/AuthProvider';
 
 
 export const LoginView = () => {
+  const { login } = useContext(UserContext);
   const { register, handleSubmit, errors } = useForm<LoginData>();
   const history = useHistory()
+  
   const toast = useToast();
+  const toastPosition = useBreakpointValue({base:'top', md:'top-right'});
+  
+  const onSuccess = (type: string[]) => {
+    login(type)
+    history.push(routes.home.path)
+  }
+  
+  const onError = (data:Error) => {
+    if(data.message === 'Failed to fetch') data.message = 'Comprueba tu conexión a internet e intenta de nuevo.'
+    toast({
+      title: 'Ups!',
+      description: data.message,
+      status: 'error',
+      duration: 5000,
+      isClosable: true,
+      position: toastPosition as ToastPosition,
+    });
+  }
+
+  const { mutate } = useMutation('login', (values:LoginData) => http.login(values), {onSuccess, onError})
   
   const onSubmit = (values: LoginData) => {
-    
-    const ok: FunctionOk = (statusCode, data) => {
-      history.push(routes.patientHome.path)
-    }
-
-    const error: FunctionError = (statusCode, error) => {
-      const loginError = error as LoginError;
-      toast({
-        title: 'Ups!',
-        description: Object.values(loginError)[0],
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-        position: 'top',
-        variant: 'left-accent'
-      });
-    }
-    http.login(values, ok, error, () => toast(connectionErrorToast()));
+    mutate(values);
   }
 
   return (
@@ -101,12 +110,20 @@ export const LoginView = () => {
               />
             </FormControl>
             <Stack spacing={8}>
-              <ChakraLink>¿Olvidó la contraseña?</ChakraLink>
               <Button type="submit">Entrar</Button>
             </Stack>
           </form>
+          <Divider my={4}/>
+          <Box textAlign={'center'} >
+            <ChakraLink 
+              as={Link}
+              to={routes.signup.path}>
+                <Text color={useColorModeValue('primary.500', 'primary.300')}>Crear una nueva cuenta</Text>
+            </ChakraLink>
+          </Box>
         </Box>
       </Stack>
+     
     </Flex>
   );
 }

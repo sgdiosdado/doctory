@@ -7,7 +7,6 @@ import {
     Button,
     Stack,
     Collapse,
-    useColorModeValue,
     useBreakpointValue,
     useDisclosure,
   } from '@chakra-ui/react'
@@ -28,8 +27,6 @@ export const Navbar = ({userType}:any) => {
   return (
     <Box>
       <Flex
-        bg={useColorModeValue('primary.500','primary.800')}
-        color='white'
         minH={'60px'}
         py={{ base: 2 }}
         px={{ base: 4 }}
@@ -56,9 +53,7 @@ export const Navbar = ({userType}:any) => {
               fontFamily={'heading'}
               fontSize={'1em'}
               fontWeight={'bold'}
-              color='white'
             >
-              {/* TODO: replace for logo */}
               Doctory
             </Text>
           </Link>

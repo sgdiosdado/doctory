@@ -15,6 +15,8 @@ class User(AbstractUser):
     type = ChoiceArrayField(models.CharField(max_length=50, choices=UserTypes.choices), default=set_default_user_type)
     location = models.CharField(max_length=200, null=True, blank=True)
     sex = models.CharField(max_length=10, choices=SexTypes.choices, default=set_default_sex_type)
+    dob = models.DateField(null=True, blank=True)
+    
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     updated_at = AutoDateTimeField(default=timezone.now, editable=False)
 
@@ -37,6 +39,10 @@ class Patient(User):
     def more(self):
         return self.patientmore
     
+    @property
+    def medics(self):
+        return self.patientmore.medics
+    
     def save(self, *args, **kwargs):
         if not self.pk:
             self.type = [UserTypes.PATIENT]
@@ -52,21 +58,15 @@ class Medic(User):
     @property
     def more(self):
         return self.medicmore
+    
+    @property
+    def patients(self):
+        return self.medicmore.patients
 
     def save(self, *args, **kwargs):
         if not self.pk:
             self.type = [UserTypes.MEDIC]
         return super().save(*args, **kwargs)
-
-
-class PatientMore(models.Model):
-    user = OneToOneField(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(default=timezone.now, editable=False)
-    updated_at = AutoDateTimeField(default=timezone.now, editable=False)
-    blood_type = models.CharField(max_length=10, blank=True, null=True)
-    alergies = ArrayField(models.CharField(max_length=100, blank=True), blank=True, null=True)
-    def __str__(self):
-        return self.user.email
 
 
 class Specialty(models.Model):
@@ -88,6 +88,22 @@ class MedicMore(models.Model):
     def __str__(self):
         return self.user.email
 
+
+class PatientMore(models.Model):
+    user = OneToOneField(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(default=timezone.now, editable=False)
+    updated_at = AutoDateTimeField(default=timezone.now, editable=False)
+    blood_type = models.CharField(max_length=10, blank=True, null=True)
+    allergies = ArrayField(models.CharField(max_length=100, blank=True), blank=True, null=True)
+    medics = models.ManyToManyField(MedicMore, symmetrical=False, through='PatientMedic', related_name='patients')
+
+    def __str__(self):
+        return self.user.email
+
+
+class PatientMedic(models.Model):
+    medic = models.ForeignKey(MedicMore, on_delete=CASCADE)
+    patient = models.ForeignKey(PatientMore, on_delete=CASCADE)
 
 class MedicSpecialty(models.Model):
     medic = models.ForeignKey(MedicMore, on_delete=models.CASCADE)

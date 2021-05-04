@@ -20,13 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'y1ar^6-_o+3@r=bajv#x=(+9r(0f1@ewd8qkayq83+7w+_mu$a'
+SECRET_KEY = environ['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = environ['DJANGO_DEBUG']
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = environ['DJANGO_ALLOWED_HOSTS'].split(' ')
 
 AUTH_USER_MODEL = 'core.User'
 
@@ -72,9 +71,7 @@ MIDDLEWARE = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-]
+CORS_ALLOWED_ORIGINS = environ['DJANGO_CORS_ALLOWED_ORIGINS'].split(' ')
 
 ROOT_URLCONF = 'doctory.urls'
 
@@ -103,10 +100,10 @@ WSGI_APPLICATION = 'doctory.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': environ['POSTGRES_DB'],
-        'USER': environ['POSTGRES_USER'],
-        'PASSWORD': environ['POSTGRES_PASSWORD'],
-        'HOST': 'db',
+        'NAME': environ['DATABASE_DB'],
+        'USER': environ['DATABASE_USER'],
+        'PASSWORD': environ['DATABASE_PASSWORD'],
+        'HOST': environ['DATABASE_HOST'],
         'PORT': 5432,
     }
 }
