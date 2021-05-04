@@ -33,7 +33,7 @@ export const SignUpView = () => {
   const toastPosition = useBreakpointValue({base:'top', md:'top-right'});
   const { register, handleSubmit, errors } = useForm<SignUpData>();
 
-  const onSuccess = () => {
+  const onSuccess = (type:string[]) => {
     login(type)
     history.push(routes.home.path)
   }

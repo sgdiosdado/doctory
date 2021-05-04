@@ -17,16 +17,3 @@ export type timeLineItemProps = {
   conditionSubtype?: string,
   conditionDescription?: string,
 }
-
-export type doctorInformation = {
-  name: string,
-  lname: string,
-  user: string,
-  honorific: string,
-}
-
-export type patientInformation = {
-  id: string,
-  name: string,
-  lname: string,
-}
