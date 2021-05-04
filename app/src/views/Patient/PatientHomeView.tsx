@@ -30,8 +30,8 @@ import { useMutation, useQuery } from 'react-query';
 import { ConditionsTimeLine } from './ConditionsTimeLine';
 import { ConditionsTable } from './ConditionsTable';
 
-
 export const PatientHomeView = () => {
+
   const [userData, setUserData] = useState<userInformation>({
     first_name: '',
     last_name: '',

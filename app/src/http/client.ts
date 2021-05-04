@@ -10,6 +10,18 @@ import { getToken, setToken } from '../utils/token';
 class Http {
   private url = process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : document.location.origin;
 
+  public async getUserType() {
+    const res = await fetch(`${this.url}/api/v1/type/`, {
+      headers: {
+        'Authorization': `Token ${getToken()}`
+      }
+    });
+    const data = await res.json();
+
+    if(res.status === 200) return data.data.types;
+    return null;
+  }
+
   public async login(fields:LoginData) {
     const res = await fetch(`${this.url}/api/v1/login/`, {
       method: 'POST',
@@ -20,7 +32,10 @@ class Http {
     });
     const data = await res.json();
     
-    if(res.status === 200) return setToken(data.data.token);
+    if(res.status === 200) {
+      setToken(data.data.token);
+      return data.data.types;
+    }
     
     const values = Object.keys(data.errors).map(key => data.errors[key].join(';'))[0]
     if(res.status === 400) throw new Error(values)
@@ -37,8 +52,10 @@ class Http {
     });
     const data = await res.json();
 
-    if(res.status === 201) return setToken(data.data.token);
-    
+    if(res.status === 201) {
+      setToken(data.data.token);
+      return data.data.types;
+    }
     const values = Object.keys(data.errors).map(key => data.errors[key].join(';'))[0]
     if(res.status === 400) throw new Error(values)
     if(res.status === 500) throw new Error('Error con el servidor. Contacte al equipo administrador.')

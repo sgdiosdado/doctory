@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from core.serializers import SignupSerializer, LoginSerializer, ChangePasswordSerializer
 from core.utils import standard_response
-
+from rest_framework import permissions
+from core.models import User
 
 class Signup(APIView):
 
@@ -52,3 +53,25 @@ class ChangePassword(APIView):
             return Response(res)
         res = standard_response(errors=serializer.errors)
         return Response(res, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Types(APIView):
+    """
+    Views to get user's type
+
+    * Requires token authentication
+    """
+
+    permissions_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        """
+        Return a list of user's type
+        """
+        try:
+            user = User.objects.get(id=request.user.id)
+            res = standard_response(data={'types': user.type})
+            return Response(res)
+        except User.DoesNotExist:
+            res = standard_response(errors={'user': 'Not found'})
+            return Response(res, status=status.HTTP_404_NOT_FOUND)

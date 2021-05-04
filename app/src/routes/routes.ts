@@ -11,26 +11,22 @@ type route = {
   component: React.FC,
 }
 
-const patientPaths: { [name: string]: route } = {
-  patientHome: { path: '/pat/home', component: PatientHomeView },
-}
-
-const doctorPaths: { [name: string]: route } = {
-  doctorLanding: { path: '/med/landing', component: DoctorLandingView },
-  doctorpatients: { path: '/med/patients', component: NotfoundPage },
-}
-
-const generalPaths: { [name: string]: route } = {
+export const publicRoutes: { [name: string]: route } = {
   default: { path: '/', component: Landing },
   login: { path: '/login', component: LoginView },
   signup: { path: '/signup', component: SignUpView },
-  profile: {path: '/profile', component: ProfileView},
   contact: { path: '/contact', component: NotfoundPage },
   notFound: { path: '/404', component: NotfoundPage },
 }
 
+export const protectedRoutes: { [name: string]: route } = {
+  profile: { path: '/profile', component: ProfileView },
+  home: { path: '/home', component: PatientHomeView },
+  doctorHome: { path: '/med/landing', component: DoctorLandingView }, //UNIFY WITH HOME
+  doctorpatients: { path: '/med/patients', component: NotfoundPage },
+}
+
 export const routes: { [name: string]: route } = {
-  ...generalPaths,
-  ...patientPaths,
-  ...doctorPaths,
+  ...publicRoutes,
+  ...protectedRoutes,
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   Flex,
   Box,
@@ -23,17 +23,20 @@ import { useForm } from 'react-hook-form';
 import { LoginData } from '../../http/types';
 import { routes } from '../../routes/routes';
 import { useMutation } from 'react-query';
+import { UserContext } from '../../provider/AuthProvider';
 
 
 export const LoginView = () => {
+  const { login } = useContext(UserContext);
+  const { register, handleSubmit, errors } = useForm<LoginData>();
   const history = useHistory()
   
   const toast = useToast();
   const toastPosition = useBreakpointValue({base:'top', md:'top-right'});
-  const { register, handleSubmit, errors } = useForm<LoginData>();
   
-  const onSuccess = () => {
-    history.push(routes.patientHome.path)
+  const onSuccess = (type: string[]) => {
+    login(type)
+    history.push(routes.home.path)
   }
   
   const onError = (data:Error) => {
