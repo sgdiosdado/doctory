@@ -25,7 +25,7 @@ SECRET_KEY = environ['DJANGO_SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = environ['DJANGO_DEBUG']
 
-ALLOWED_HOSTS = [environ['DJANGO_ALLOWED_HOSTS']]
+ALLOWED_HOSTS = environ['DJANGO_ALLOWED_HOSTS'].split(' ')
 
 AUTH_USER_MODEL = 'core.User'
 
