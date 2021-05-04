@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useState, useContext } from 'react'
 import {
   Flex,
   Box,
@@ -24,16 +24,18 @@ import { http } from '../../http/client';
 import { Link, useHistory } from 'react-router-dom';
 import { routes } from '../../routes/routes';
 import { useMutation } from 'react-query';
+import { UserContext } from '../../provider/AuthProvider';
 
 export const SignUpView = () => {
   const history = useHistory()
-
+  const { login } = useContext(UserContext);
   const toast = useToast()
   const toastPosition = useBreakpointValue({base:'top', md:'top-right'});
   const { register, handleSubmit, errors } = useForm<SignUpData>();
 
   const onSuccess = () => {
-    history.push(routes.patientHome.path)
+    login(type)
+    history.push(routes.home.path)
   }
   
   const onError = (data:Error) => {

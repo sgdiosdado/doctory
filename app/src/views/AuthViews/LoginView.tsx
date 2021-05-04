@@ -23,24 +23,20 @@ import { useForm } from 'react-hook-form';
 import { LoginData } from '../../http/types';
 import { routes } from '../../routes/routes';
 import { useMutation } from 'react-query';
-// import { connectionErrorToast } from '../../utils/connectionErrorToast';
 import { UserContext } from '../../provider/AuthProvider';
 
 
 export const LoginView = () => {
-
-
-export const LoginView = () => {
-  const { authContext, login } = useContext(UserContext);
+  const { login } = useContext(UserContext);
   const { register, handleSubmit, errors } = useForm<LoginData>();
   const history = useHistory()
   
   const toast = useToast();
   const toastPosition = useBreakpointValue({base:'top', md:'top-right'});
-  const { register, handleSubmit, errors } = useForm<LoginData>();
   
-  const onSuccess = () => {
-    history.push(routes.patientHome.path)
+  const onSuccess = (type: string[]) => {
+    login(type)
+    history.push(routes.home.path)
   }
   
   const onError = (data:Error) => {
