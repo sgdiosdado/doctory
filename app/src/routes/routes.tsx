@@ -1,6 +1,7 @@
 import { LoginView } from "../views/AuthViews/LoginView";
 import { SignUpView } from "../views/AuthViews/SignUpView";
 import { DoctorLandingView } from "../views/Doctor/DoctorLandingView";
+import { DoctorPatientTableView } from "../views/Doctor/DoctorPatientTableView";
 import { Landing } from "../views/Landing/Landing";
 import { NotfoundPage } from "../views/NotFoundPage/NotfoundPage";
 import { PatientHomeView } from "../views/Patient/PatientHomeView";
@@ -19,7 +20,8 @@ const patientPaths: {[name:string]: route} = {
 
 const doctorPaths: {[name:string]: route} = {
   doctorLanding: {path: '/med/landing', component: DoctorLandingView},
-  doctorpatients: {path: '/med/patients', component: NotfoundPage }, // TODO: Doctors view on patients component 
+  doctorPatientsTable: {path: '/med/ListPatients', component: DoctorPatientTableView },
+  doctorPatients: {path: '/med/patients', component: NotfoundPage }, // TODO: Doctors view on patients component 
   // TODO: check which others paths are required
 }
 

@@ -24,6 +24,7 @@ export type doctorInformation = {
 }
 
 export type patientInformation = {
+  id: string,
   name: string,
   lname: string,
 }

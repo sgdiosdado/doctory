@@ -1,20 +1,26 @@
 import React from 'react'
-import { Icon } from "@chakra-ui/icon";
-import { Box, HStack, Text } from '@chakra-ui/layout'
-import {patientInformation} from '../../utils/typesDefinitions'
+import { ArrowForwardIcon } from "@chakra-ui/icons";
+import { Td, Tr } from "@chakra-ui/react"
+import { Link } from 'react-router-dom';
+import { routes } from '../../routes/routes';
+import { patientInformation } from '../../utils/typesDefinitions'
+
+// style={tdStyle}
 
 type patientTableItemPropsTypes = {
   userData: patientInformation,
 }
 
-export const PatientTableItem = ({userData}:patientTableItemPropsTypes) => {
-  
+export const PatientTableItem = ({ userData }: patientTableItemPropsTypes) => {
+  const uniqueID = userData.id;
   return (
-    <Box>
-      <HStack>
-        <Text>{userData.name + ' ' + userData.lname}</Text>
-        <Icon name="arrow-forward"/>
-      </HStack>
-    </Box>
+      <Tr key={uniqueID}>
+        <Td>{userData.name + ' ' + userData.lname}</Td>
+        <Td>
+          <Link to={routes.doctorPatients.path}>
+            <ArrowForwardIcon />
+          </Link>
+        </Td>
+      </Tr>
   )
 }

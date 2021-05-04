@@ -12,21 +12,16 @@ export const PresentationCardDoctor = ({userData}:presentationCardPropsTypes) =>
     <Box
       p='2em'
     >
-      <HStack maxW={'100%'}>
-        <Box maxW={{base:'80%', md:'100%'}}
+      <HStack maxW={'70%'}>
+        <Box maxW={{base:'60%', md:'70%'}}
           textAlign='left' 
-          fontSize={{base:'sm', md:'xl'}}
+          fontSize={{base:'2xl', md:'3xl'}}
           whiteSpace='nowrap' 
         >
-          <Text>Buenos días</Text>
-          <Text 
-            textOverflow='ellipsis'
-            overflow='hidden' 
-            fontSize='3x1'
-          >
-            {userData.honorific + '. ' + userData.lname + ','}
+          <Text>
+            {'Buenos días\n' + userData.honorific + '. ' + userData.lname + ','}
           </Text>
-          <Text>{'@'+userData.user} </Text>
+          <Text fontSize='xl'>{'@'+userData.user} </Text>
         </Box>
       </HStack>
     </Box>

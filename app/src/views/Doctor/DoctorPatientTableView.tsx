@@ -1,14 +1,12 @@
-import { Container, Flex, VStack, Box } from '@chakra-ui/layout';
-import { Link } from 'react-router-dom';
-import { routes } from '../../routes/routes';
-import { Button } from '@chakra-ui/button';
-import { Image } from '@chakra-ui/react'
+import { Container, Flex, Text, VStack } from '@chakra-ui/layout';
+import { Table, Tbody } from "@chakra-ui/react"
 import React from 'react'
+import { PresentationCardDoctor } from '../../components/PresentationCardDoctor';
+import { PatientTableItem } from '../../components/PatientTable/PatientTableItem';
 import { doctorInformation, patientInformation } from '../../utils/typesDefinitions';
-import DoctorsInComputerImage from '../../assets/DoctorsInComputerImage.svg';
 
 
-export const DoctorLandingView = () => {
+export const DoctorPatientTableView = () => {
     const userData: doctorInformation = {
         name: 'Arely',
         lname: 'Aceves',
@@ -20,15 +18,15 @@ export const DoctorLandingView = () => {
         { id: '2', name: 'Sergio', lname: 'Diosado' },
         { id: '3', name: 'Juan Pablo', lname: 'Vargas' }
     ];
-
     return (
 
         <Container
             w="100vw"
             h="100%"
-            maxW="90%"
+            maxW="80%"
             d={'flex'}
             flexGrow={1}
+            justify={'center'}
             mx={{ base: '1em', md: '2em' }}
         >
             <Flex
@@ -39,14 +37,19 @@ export const DoctorLandingView = () => {
                 w={'80%'}
             >
                 <VStack>
-                    <Image src={DoctorsInComputerImage} w='85%' alt={'Doctor'} mb={'2em'}/>
-                    <Box textAlign='center' w={['90%', '50%']} >
-                        <Link to={routes.doctorPatientsTable.path}>
-                            <Button size={'md'} isFullWidth colorScheme={'primary'} >
-                                Mis pacientes
-                            </Button>
-                        </Link>
-                    </Box>
+                    <PresentationCardDoctor userData={userData} />
+                    <Text fontSize='4xl'>Mis Pacientes</Text>
+                    <Table variant="striped" colorScheme="gray">
+                        <Tbody>
+                            {patientsList.map(patient => (
+
+                                <PatientTableItem
+                                    userData={patient}
+                                />
+
+                            ))}
+                        </Tbody>
+                    </Table>
                 </VStack>
 
             </Flex>
