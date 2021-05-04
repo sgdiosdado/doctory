@@ -1,7 +1,7 @@
 import React, { useState, FC, useEffect } from 'react';
 import { createContext } from "react";
 import { http } from '../http/client';
-import { getToken } from '../utils/token';
+import { clearToken, getToken } from '../utils/token';
 
 
 type authContextStateType = {
@@ -38,6 +38,7 @@ export const AuthProvider : FC = ({ children }) => {
   };
 
   const logout = () => {
+    clearToken();
     setAuthContext(_ => ({
       type: [''],
       isLoggedIn: false,
@@ -49,7 +50,7 @@ export const AuthProvider : FC = ({ children }) => {
     if(getToken()) { // If there's already a Token in storage we validate it
       http.getUserType().then(type => {
         if(!type) {
-          localStorage.clear();
+          clearToken();
           setAuthContext({type:undefined, isLoggedIn: false, isLoading: false})
         }else{
           setAuthContext({type:type, isLoggedIn: true, isLoading: false})
