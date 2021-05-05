@@ -87,7 +87,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     medic = MedicProfileSerializer(source='medicmore')
 
     class Meta:
-        FIELDS = ['email', 'first_name', 'last_name', 'type', 'location', 'sex', 'dob', 'patient', 'medic']
+        FIELDS = ['id', 'email', 'first_name', 'last_name', 'type', 'location', 'sex', 'dob', 'patient', 'medic']
         model = User
         fields = FIELDS
         read_only_fields = FIELDS

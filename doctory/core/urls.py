@@ -5,6 +5,7 @@ from .views.views_background import ListBackgroundSubtypes, ListBackgroundTypes
 from .views.views_specialty import ListSpecialties
 from .views.views_profile import Profile
 from .views.views_authentication import Signup, Login, ChangePassword, Types
+from .views.views_medic import ListPatients
 
 urlpatterns = [
     path('conditions/', ListConditions.as_view(), name='conditions'),
@@ -12,6 +13,7 @@ urlpatterns = [
     path('background-types/', ListBackgroundTypes.as_view(), name='background_types'),
     path('background-subtypes/', ListBackgroundSubtypes.as_view(), name='background_subtypes'),
     path('specialties/', ListSpecialties.as_view(), name='specialties'),
+    path('patients/', ListPatients.as_view(), name='patients'),
     path('signup/', Signup.as_view(), name='signup'),
     path('login/', Login.as_view(), name='login'),
     path('profile/', Profile.as_view(), name='profile'),
