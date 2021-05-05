@@ -20,7 +20,8 @@ import {
   TabList,
   TabPanels,
   Tab,
-  TabPanel
+  TabPanel,
+  DrawerProps
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { BackgroundSubtypeData, ConditionData, userInformation } from '../../http/types';
@@ -29,9 +30,10 @@ import { useToast } from "@chakra-ui/react"
 import { useMutation, useQuery } from 'react-query';
 import { ConditionsTimeLine } from './ConditionsTimeLine';
 import { ConditionsTable } from './ConditionsTable';
+import { useParams } from 'react-router';
 
 export const PatientHomeView = () => {
-
+  const {id: patientId} = useParams();
   const [userData, setUserData] = useState<userInformation>({
     first_name: '',
     last_name: '',
@@ -49,6 +51,7 @@ export const PatientHomeView = () => {
 
   const toast = useToast();
   const toastPosition = useBreakpointValue({base:'top', md:'top-right'});
+  const drawerPlacement = useBreakpointValue({base: 'bottom', lg: 'right'});
 
   const onSuccessNewCondition = (data:ConditionData) => {
     const conds = [...conditions, data]
@@ -83,11 +86,11 @@ export const PatientHomeView = () => {
     mutateNewCondition(values);
   }
 
-  useQuery('conditions', () => http.conditions(), {
+  useQuery('conditions', () => http.conditions(patientId), {
     onSuccess: (data:ConditionData[]) => setConditions(data),
     onError
   })
-  useQuery('profile', () => http.getProfileInfo(), {
+  useQuery('profile', () => http.getProfileInfo(patientId), {
     onSuccess: (data:userInformation) => setUserData(data),
     onError
   })
@@ -123,46 +126,48 @@ export const PatientHomeView = () => {
           </Tabs>
         </Box>
       </VStack>
-      
-      <Drawer 
-        placement={useBreakpointValue({base: 'bottom', lg: 'right'})}
-        isOpen={isOpen}
-        onClose={onClose}>
-          <DrawerOverlay>
-            <DrawerContent>
-              <DrawerCloseButton/>
-              <DrawerHeader borderBottomWidth='1px'>
-                Nueva condición
-              </DrawerHeader>
+      {!patientId && <>
+        <Drawer 
+          placement={drawerPlacement as DrawerProps['placement']}
+          isOpen={isOpen}
+          onClose={onClose}>
+            <DrawerOverlay>
+              <DrawerContent>
+                <DrawerCloseButton/>
+                <DrawerHeader borderBottomWidth='1px'>
+                  Nueva condición
+                </DrawerHeader>
 
-              <DrawerBody>
-                <NewConditionForm
-                  onSubmit={onSubmit}
-                  formId='form-condition'
-                  backgroundSubtypes={backgroundSubtypes}/>
-              </DrawerBody>
-              
-              <DrawerFooter>
-                <Button
-                  type='submit'
-                  form='form-condition'
-                  leftIcon={<AddIcon/>}
-                  colorScheme='primary'>Añadir</Button>
-              </DrawerFooter>
-            </DrawerContent>
-          </DrawerOverlay>
-      </Drawer>
-      <Box
-        display='inline-block'
-        ml='auto'
-        mr='1rem'
-        mb='1rem'
-        position='sticky'
-        bottom='1rem'
-        onClick={onOpen}
-      >
-        <AddButton/>
-      </Box>
+                <DrawerBody>
+                  <NewConditionForm
+                    onSubmit={onSubmit}
+                    formId='form-condition'
+                    backgroundSubtypes={backgroundSubtypes}/>
+                </DrawerBody>
+                
+                <DrawerFooter>
+                  <Button
+                    type='submit'
+                    form='form-condition'
+                    leftIcon={<AddIcon/>}
+                    colorScheme='primary'>Añadir</Button>
+                </DrawerFooter>
+              </DrawerContent>
+            </DrawerOverlay>
+        </Drawer>
+        <Box
+          display='inline-block'
+          ml='auto'
+          mr='1rem'
+          mb='1rem'
+          position='sticky'
+          bottom='1rem'
+          onClick={onOpen}
+        >
+          <AddButton/>
+        </Box>
+      </>
+      }
     </>
   )
 }

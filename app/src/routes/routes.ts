@@ -22,7 +22,8 @@ export const publicRoutes: { [name: string]: route } = {
 export const protectedRoutes: { [name: string]: route } = {
   profile: { path: '/profile', component: ProfileView },
   home: { path: '/home', component: PatientHomeView },
-  doctorHome: { path: '/med/home', component: MedicHomeView }, //UNIFY WITH HOME
+  patient: { path: '/patient/:id', component: PatientHomeView },
+  medic: { path: '/med/home', component: MedicHomeView }, //UNIFY WITH HOME
 }
 
 export const routes: { [name: string]: route } = {

@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import {
     Box,
     Flex,
-    Text,
     IconButton,
     Button,
     Stack,
@@ -19,6 +18,7 @@ import {
   import { ColorModeSwitcher } from "../../theme/ColorModeSwitcher";
   import { UserContext } from '../../provider/AuthProvider';
 import { routes } from "../../routes/routes";
+import { userTypes } from '../../utils/typesDefinitions';
 
 type NavItem = {
   label: string;
@@ -40,6 +40,10 @@ export const Navbar = () => {
 
     if (authContext.isLoggedIn) {
       setHomePath(routes.home.path);
+      if(authContext.type?.includes(userTypes.MEDIC)){
+        setHomePath(routes.medic.path)
+        loggedInItems.push({label:'Mis condiciones', path:routes.home.path})
+      }
       setNavbarItems(loggedInItems);
     }else{
       setHomePath(routes.default.path)

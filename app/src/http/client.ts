@@ -79,8 +79,9 @@ class Http {
     if(res.status === 500) throw new Error('Error con el servidor. Contacte al equipo administrador.')
   }
 
-  public async conditions() {
-    const res = await fetch(`${this.url}/api/v1/conditions/`, {
+  public async conditions(id:number|null = null) {
+    const params = id? `?patient_id=${id}` : ''
+    const res = await fetch(`${this.url}/api/v1/conditions/${params}`, {
       headers: {
         'Authorization': `Token ${getToken()}`
       }
@@ -108,8 +109,9 @@ class Http {
     if(res.status === 500) throw new Error('Error con el servidor. Contacte al equipo administrador.')
   }
 
-  public async getProfileInfo() {
-    const res = await fetch(`${this.url}/api/v1/profile/`, {
+  public async getProfileInfo(id:number|null = null) {
+    const params = id? `?patient_id=${id}` : ''
+    const res = await fetch(`${this.url}/api/v1/profile/${params}`, {
       headers: {
         'Authorization': `Token ${getToken()}`
       }
@@ -149,6 +151,21 @@ class Http {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(fields)
+    });
+    const data = await res.json();
+
+    if(res.status === 200) return data.data;
+    
+    const values = Object.keys(data.errors).map(key => data.errors[key].join(';'))[0]
+    if(res.status === 400) throw new Error(values)
+    if(res.status === 500) throw new Error('Error con el servidor. Contacte al equipo administrador.')
+  }
+
+  public async getPatients() {
+    const res = await fetch(`${this.url}/api/v1/patients/`, {
+      headers: {
+        'Authorization': `Token ${getToken()}`
+      }
     });
     const data = await res.json();
 

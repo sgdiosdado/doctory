@@ -1,6 +1,6 @@
 import React from 'react'
 import { CheckIcon } from '@chakra-ui/icons'
-import { List, ListItem, ListIcon } from '@chakra-ui/react'
+import { List, ListItem, ListIcon, useColorModeValue } from '@chakra-ui/react'
 
 type passwordChecklistPropsTypes = {
   hasNumber: boolean,
@@ -22,7 +22,7 @@ export const ValidPasswordChecklist = ({
     invalid: 'gray.500',
   }
   const textStates = {
-    valid: 'gray.100',
+    valid: useColorModeValue('gray.800','gray.100'),
     invalid: 'gray.500',
   }
   return (
