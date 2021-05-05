@@ -1,0 +1,155 @@
+[
+  {
+    "model": "core.BackgroundSubtype",
+    "pk": 1,
+    "fields": {
+      "name": "Hereditary",
+      "description": "",
+      "background_type": 1
+    }
+  },
+  {
+    "model": "core.BackgroundSubtype",
+    "pk": 2,
+    "fields" : {
+      "name": "Infectious contagious",
+      "description": "",
+      "background_type": 2
+    }
+  },
+  {
+    "model": "core.BackgroundSubtype",
+    "pk": 3,
+    "fields": {
+      "name": "Chronic degenerative",
+      "description": "",
+      "background_type": 2
+    }
+  },
+  {
+    "model": "core.BackgroundSubtype",
+    "pk": 4,
+    "fields": {
+      "name": "Traumatological",
+      "description": "",
+      "background_type": 2
+    }
+  },
+  {
+    "model": "core.BackgroundSubtype",
+    "pk": 5,
+    "fields": {
+      "name": "Allergy",
+      "description": "",
+      "background_type": 2
+    }
+  },
+  {
+    "model": "core.BackgroundSubtype",
+    "pk": 6,
+    "fields": {
+      "name": "Surgical",
+      "description": "",
+      "background_type": 2
+    }
+  },
+  {
+    "model": "core.BackgroundSubtype",
+    "pk": 7,
+    "fields": {
+      "name": "Hospitalization",
+      "description": "",
+      "background_type": 2
+    }
+  },
+  {
+    "model": "core.BackgroundSubtype",
+    "pk": 8,
+    "fields": {
+      "name": "Transfusion",
+      "description": "",
+      "background_type": 2
+    }
+  },
+  {
+    "model": "core.BackgroundSubtype",
+    "pk": 9,
+    "fields": {
+      "name": "Addiction",
+      "description": "",
+      "background_type": 2
+    }
+  },
+  {
+    "model": "core.BackgroundSubtype",
+    "pk": 10,
+    "fields": {
+      "name": "General",
+      "description": "",
+      "background_type": 3
+    }
+  },
+  {
+    "model": "core.BackgroundSubtype",
+    "pk": 11,
+    "fields": {
+      "name": "Andrological",
+      "description": "",
+      "background_type": 3
+    }
+  },
+  {
+    "model": "core.BackgroundSubtype",
+    "pk": 12,
+    "fields": {
+      "name": "Gyneco-obstretic",
+      "description": "",
+      "background_type": 3
+    }
+  },
+  {
+    "model": "core.BackgroundSubtype",
+    "pk": 13,
+    "fields": {
+      "name": "Living place",
+      "description": "",
+      "background_type": 4
+    }
+  },
+  {
+    "model": "core.BackgroundSubtype",
+    "pk": 14,
+    "fields": {
+      "name": "Hygiene",
+      "description": "",
+      "background_type": 4
+    }
+  },
+  {
+    "model": "core.BackgroundSubtype",
+    "pk": 15,
+    "fields": {
+      "name": "Diet",
+      "description": "",
+      "background_type": 4
+    }
+  },
+  {
+    "model": "core.BackgroundSubtype",
+    "pk": 16,
+    "fields": {
+      "name": "Zoonosis",
+      "description": "",
+      "background_type": 4
+    }
+  },
+  {
+    "model": "core.BackgroundSubtype",
+    "pk": 17,
+    "fields": {
+      "name": "Addiction",
+      "description": "",
+      "background_type": 4
+    }
+  }
+]

@@ -16,18 +16,18 @@ from os import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'y1ar^6-_o+3@r=bajv#x=(+9r(0f1@ewd8qkayq83+7w+_mu$a'
+SECRET_KEY = environ['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = environ['DJANGO_DEBUG']
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = environ['DJANGO_ALLOWED_HOSTS'].split(' ')
 
+AUTH_USER_MODEL = 'core.User'
 
 # Application definition
 
@@ -38,11 +38,30 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # 3rd party packages
+    'django_extensions',
+    'corsheaders',
+
+    # DRF
+    'rest_framework',
+    'rest_framework.authtoken',
+
+    # Doctory
+    'core',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -50,12 +69,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+CORS_ALLOWED_ORIGINS = environ['DJANGO_CORS_ALLOWED_ORIGINS'].split(' ')
+
 ROOT_URLCONF = 'doctory.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'build'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -77,16 +100,12 @@ WSGI_APPLICATION = 'doctory.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': environ['POSTGRES_DB'],
-        'USER': environ['POSTGRES_USER'],
-        'PASSWORD': environ['POSTGRES_PASSWORD'],
-        'HOST': 'db',
+        'NAME': environ['DATABASE_DB'],
+        'USER': environ['DATABASE_USER'],
+        'PASSWORD': environ['DATABASE_PASSWORD'],
+        'HOST': environ['DATABASE_HOST'],
         'PORT': 5432,
     }
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
 }
 
 
@@ -125,5 +144,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_DIRS = [BASE_DIR / 'build/static']
