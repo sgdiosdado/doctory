@@ -68,10 +68,5 @@ class Types(APIView):
         """
         Return a list of user's type
         """
-        try:
-            user = User.objects.get(id=request.user.id)
-            res = standard_response(data={'types': user.type})
-            return Response(res)
-        except User.DoesNotExist:
-            res = standard_response(errors={'user': 'Not found'})
-            return Response(res, status=status.HTTP_404_NOT_FOUND)
+        res = standard_response(data={'types': request.user.type})
+        return Response(res)
