@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.js": "/static/js/main.dfcfa745.chunk.js",
-    "main.js.map": "/static/js/main.dfcfa745.chunk.js.map",
+    "main.js": "/static/js/main.d83174fb.chunk.js",
+    "main.js.map": "/static/js/main.d83174fb.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.9a0cb175.js",
     "runtime-main.js.map": "/static/js/runtime-main.9a0cb175.js.map",
-    "static/js/2.4051bacd.chunk.js": "/static/js/2.4051bacd.chunk.js",
-    "static/js/2.4051bacd.chunk.js.map": "/static/js/2.4051bacd.chunk.js.map",
+    "static/js/2.2cd3e80e.chunk.js": "/static/js/2.2cd3e80e.chunk.js",
+    "static/js/2.2cd3e80e.chunk.js.map": "/static/js/2.2cd3e80e.chunk.js.map",
     "static/js/3.f11bcfca.chunk.js": "/static/js/3.f11bcfca.chunk.js",
     "static/js/3.f11bcfca.chunk.js.map": "/static/js/3.f11bcfca.chunk.js.map",
     "index.html": "/index.html",
-    "static/js/2.4051bacd.chunk.js.LICENSE.txt": "/static/js/2.4051bacd.chunk.js.LICENSE.txt",
+    "static/js/2.2cd3e80e.chunk.js.LICENSE.txt": "/static/js/2.2cd3e80e.chunk.js.LICENSE.txt",
     "static/media/DoctorWithPhoneImage.c8f46967.svg": "/static/media/DoctorWithPhoneImage.c8f46967.svg",
     "static/media/DoctorsInComputerImage.9b5784fb.svg": "/static/media/DoctorsInComputerImage.9b5784fb.svg",
     "static/media/PowerPeople_Emma.1670a887.png": "/static/media/PowerPeople_Emma.1670a887.png",
@@ -18,7 +18,7 @@
   },
   "entrypoints": [
     "static/js/runtime-main.9a0cb175.js",
-    "static/js/2.4051bacd.chunk.js",
-    "static/js/main.dfcfa745.chunk.js"
+    "static/js/2.2cd3e80e.chunk.js",
+    "static/js/main.d83174fb.chunk.js"
   ]
 }
