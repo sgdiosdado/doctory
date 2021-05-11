@@ -11,7 +11,7 @@ type presentationCardPropsTypes = {
 export const PresetationCard = ({userData, avatar}:presentationCardPropsTypes) => {
   
   return (
-    <Box my='1em'>
+    <Box my='1rem'>
       <HStack maxW={'100%'}>
         <Box maxW={{base:'30%', md:'20%'}}>
           <Image borderRadius="full" maxH={'15em'} src={avatar}/>
