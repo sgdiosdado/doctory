@@ -6,7 +6,9 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 from django.contrib.auth.password_validation import validate_password
-from .models import BackgroundSubtype, BackgroundType, Condition, MedicMore, PatientMore, User, Specialty
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+from .models import BackgroundSubtype, BackgroundType, Condition, MedicMore, PatientMore, User, Specialty, Medic
 
 
 class SignupSerializer(serializers.ModelSerializer):
@@ -136,3 +138,15 @@ class BackgroundTypeSerializer(serializers.ModelSerializer):
         model = BackgroundType
         fields = ['id', 'name', 'description', 'background_subtypes']
         read_only_fields = ['id', 'name', 'description', 'backgroundsubtypes']
+
+class ShareSerializer(serializers.Serializer):
+    email = serializers.CharField(max_length=255, write_only=True)
+
+    def validate(self, data):
+        email = data.get('email', None)
+        try:
+            validate_email( email )
+        except ValidationError:
+            raise serializers.ValidationError({'email': 'This is not a valid email address.'})
+        return data
+        

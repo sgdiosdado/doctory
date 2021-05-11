@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "loadash": "^1.0.0",
+    "react-query": "^3.16.0"
+  }
+}

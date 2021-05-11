@@ -50,3 +50,8 @@ export type BackgroundSubtypeData = {
   name: string;
   description: string;
 }
+
+export type ShareData = {
+  id?: number;
+  email: string;
+}

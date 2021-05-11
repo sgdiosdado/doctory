@@ -6,6 +6,7 @@ from .views.views_specialty import ListSpecialties
 from .views.views_profile import Profile
 from .views.views_authentication import Signup, Login, ChangePassword, Types
 from .views.views_medic import ListPatients
+from .views.views_share import ShareHistory
 
 urlpatterns = [
     path('conditions/', ListConditions.as_view(), name='conditions'),
@@ -19,4 +20,5 @@ urlpatterns = [
     path('profile/', Profile.as_view(), name='profile'),
     path('change-password/', ChangePassword.as_view(), name='change_password'),
     path('type/', Types.as_view(), name='type'),
+    path('share-history/', ShareHistory.as_view(), name='share'),
 ]

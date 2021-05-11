@@ -3,7 +3,11 @@ import { Box, Text, VStack } from '@chakra-ui/layout';
 import { PresetationCard } from '../../components/PresentationCard';
 import avatar from '../../assets/PowerPeople_Emma.png';
 import { AddButton } from '../../components/TimeLine/AddButton';
+import { ShareButton } from '../../components/ShareButton';
 import { NewConditionForm } from './NewConditionForm';
+import { ShareHistoryForm } from './ShareHistoryForm';
+import { Icon } from "@chakra-ui/react"
+import { MdShare } from "react-icons/md"
 import {
   useDisclosure,
   Drawer,
@@ -24,7 +28,7 @@ import {
   DrawerProps
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
-import { BackgroundSubtypeData, ConditionData, userInformation } from '../../http/types';
+import { BackgroundSubtypeData, ConditionData, userInformation, ShareData } from '../../http/types';
 import { http } from '../../http/client';
 import { useToast } from "@chakra-ui/react"
 import { useMutation, useQuery } from 'react-query';
@@ -34,6 +38,8 @@ import { useParams } from 'react-router';
 
 export const PatientHomeView = () => {
   const {id: patientId} = useParams();
+  const [share, setShare] = useState<boolean>(false);
+  
   const [userData, setUserData] = useState<userInformation>({
     first_name: '',
     last_name: '',
@@ -44,6 +50,18 @@ export const PatientHomeView = () => {
   })
 
   const { isOpen, onOpen, onClose } = useDisclosure()
+  //const { isOpenShare, onOpenShare, onCloseShare } = useDisclosure()
+
+  const onOpenCond = () => {
+    setShare(false)
+    onOpen()
+    
+  }
+  const onOpenShare= () => {
+    setShare(true)
+    onOpen()
+    
+  }
 
   const [backgroundSubtypes, setBackgroundSubtype] = useState<BackgroundSubtypeData[]>([])
   
@@ -67,6 +85,18 @@ export const PatientHomeView = () => {
       position: toastPosition as ToastPosition,
     });
   }
+
+  const onSuccessShareHistory = (data:ShareData) => {
+    onClose();
+    toast({
+      title: 'Hisoria clínica compartida',
+      description: 'Se ha compartido tu historia clínica',
+      status: 'success',
+      duration: 5000,
+      isClosable: true,
+      position: toastPosition as ToastPosition,
+    });
+  }
   
   const onError = (data:Error) => {
     if(data.message === 'Failed to fetch') data.message = 'Comprueba tu conexión a internet e intenta de nuevo.'
@@ -82,8 +112,14 @@ export const PatientHomeView = () => {
 
   const { mutate: mutateNewCondition } = useMutation('newCondition', (values:ConditionData) => http.newCondition(values), {onSuccess: onSuccessNewCondition, onError})
 
+  const { mutate: mutateShareHistory } = useMutation('shareHistory', (values:ShareData) => http.shareHistory(values), {onSuccess: onSuccessShareHistory, onError})
+
   const onSubmit = (values:ConditionData) => {
     mutateNewCondition(values);
+  }
+
+  const onSubmitShare = (values:ShareData) => {
+    mutateShareHistory(values)
   }
 
   useQuery('conditions', () => http.conditions(patientId), {
@@ -104,6 +140,20 @@ export const PatientHomeView = () => {
       <VStack>
         <Text fontSize='4xl'>Historia Médica</Text>
         <PresetationCard userData={userData} avatar={avatar}/>
+        {!patientId && <>
+        <Box
+          display='inline-block'
+          ml='auto'
+          mr='1rem'
+          mb='1rem'
+          position='sticky'
+          bottom='1rem'
+          onClick={onOpenShare}
+        >
+          <ShareButton/>
+        </Box>
+        </>
+        }
         <Box
           w='100%'
           pt='2rem'
@@ -135,22 +185,48 @@ export const PatientHomeView = () => {
               <DrawerContent>
                 <DrawerCloseButton/>
                 <DrawerHeader borderBottomWidth='1px'>
-                  Nueva condición
+                  {
+                    !share 
+                    ?
+                    "Nueva condición"
+                    :
+                    "Compartir historia clínica"
+                  }
+                  
                 </DrawerHeader>
 
                 <DrawerBody>
-                  <NewConditionForm
+                {
+                    !share 
+                    ?
+                    <NewConditionForm
                     onSubmit={onSubmit}
                     formId='form-condition'
                     backgroundSubtypes={backgroundSubtypes}/>
+                    :
+                    <ShareHistoryForm
+                    onSubmit={onSubmitShare}
+                    formId='form-share'/>
+                  }
+                  
                 </DrawerBody>
                 
                 <DrawerFooter>
+                {
+                    !share 
+                    ?
                   <Button
                     type='submit'
                     form='form-condition'
                     leftIcon={<AddIcon/>}
                     colorScheme='primary'>Añadir</Button>
+                    :
+                    <Button
+                    type='submit'
+                    form='form-share'
+                    leftIcon={<Icon as={MdShare}/>}
+                    colorScheme='primary'>Compartir</Button>
+                }
                 </DrawerFooter>
               </DrawerContent>
             </DrawerOverlay>
@@ -162,7 +238,7 @@ export const PatientHomeView = () => {
           mb='1rem'
           position='sticky'
           bottom='1rem'
-          onClick={onOpen}
+          onClick={onOpenCond}
         >
           <AddButton/>
         </Box>

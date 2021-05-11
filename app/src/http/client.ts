@@ -3,7 +3,8 @@ import {
   LoginData,
   SignUpData,
   ConditionData,
-  ChangePasswordData
+  ChangePasswordData,
+  ShareData
 } from './types';
 import { getToken, setToken } from '../utils/token';
 
@@ -172,6 +173,24 @@ class Http {
     if(res.status === 200) return data.data;
     
     const values = Object.keys(data.errors).map(key => data.errors[key].join(';'))[0]
+    if(res.status === 400) throw new Error(values)
+    if(res.status === 500) throw new Error('Error con el servidor. Contacte al equipo administrador.')
+  }
+
+  public async shareHistory(fields:ShareData) {
+    const res = await fetch(`${this.url}/api/v1/share-history/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${getToken()}`
+      },
+      body: JSON.stringify(fields)
+    });
+    
+    const data = await res.json();
+    if(res.status === 201) return data.data;
+
+    const values = Object.keys(data.errors).map(key => data.errors[key]).join(';')[0]
     if(res.status === 400) throw new Error(values)
     if(res.status === 500) throw new Error('Error con el servidor. Contacte al equipo administrador.')
   }
