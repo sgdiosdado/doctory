@@ -34,7 +34,7 @@ class ShareHistoryTests(APITestCase):
 
   def test_fail_share_history(self):
     """
-    Ensure it can create a new PatientMedic relationship with nonexistent email.
+    Ensure it cannot create a new PatientMedic relationship with an email address that does not belong to any medic.
     """
     data = {
       'email': 'medictest@mail.com'
@@ -46,7 +46,7 @@ class ShareHistoryTests(APITestCase):
   
   def test_fail_no_data_share_history(self):
     """
-    Ensure it can create a new PatientMedic relationship with nonexistent email.
+    Ensure it cannot create a new PatientMedic relationship without providing an email address.
     """
     data = {}
     
@@ -56,7 +56,7 @@ class ShareHistoryTests(APITestCase):
   
   def test_fail_invalid_data_share_history(self):
     """
-    Ensure it can create a new PatientMedic relationship with invalid email address.
+    Ensure it cannot create a new PatientMedic relationship with invalid email address.
     """
     data = {
       'email': 'medictest'

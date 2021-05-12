@@ -174,6 +174,7 @@ class Http {
     
     const values = Object.keys(data.errors).map(key => data.errors[key].join(';'))[0]
     if(res.status === 400) throw new Error(values)
+    
     if(res.status === 500) throw new Error('Error con el servidor. Contacte al equipo administrador.')
   }
 
@@ -190,8 +191,9 @@ class Http {
     const data = await res.json();
     if(res.status === 201) return data.data;
 
-    const values = Object.keys(data.errors).map(key => data.errors[key]).join(';')[0]
+    const values = Object.keys(data.errors).map(key => data.errors[key]).join(';')
     if(res.status === 400) throw new Error(values)
+    if(res.status === 404) throw new Error(values)
     if(res.status === 500) throw new Error('Error con el servidor. Contacte al equipo administrador.')
   }
 }

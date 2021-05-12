@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Text, VStack } from '@chakra-ui/layout';
+import { Box, Text, VStack, HStack } from '@chakra-ui/layout';
 import { PresetationCard } from '../../components/PresentationCard';
 import avatar from '../../assets/PowerPeople_Emma.png';
 import { AddButton } from '../../components/TimeLine/AddButton';
@@ -86,7 +86,7 @@ export const PatientHomeView = () => {
     });
   }
 
-  const onSuccessShareHistory = (data:ShareData) => {
+  const onSuccessShareHistory = () => {
     onClose();
     toast({
       title: 'Hisoria clínica compartida',
@@ -100,6 +100,7 @@ export const PatientHomeView = () => {
   
   const onError = (data:Error) => {
     if(data.message === 'Failed to fetch') data.message = 'Comprueba tu conexión a internet e intenta de nuevo.'
+    else if(data.message === 'This user does not exist.') data.message = 'Usuario inexistente.'
     toast({
       title: 'Ups!',
       description: data.message,
@@ -139,21 +140,24 @@ export const PatientHomeView = () => {
     <>
       <VStack>
         <Text fontSize='4xl'>Historia Médica</Text>
-        <PresetationCard userData={userData} avatar={avatar}/>
-        {!patientId && <>
-        <Box
-          display='inline-block'
-          ml='auto'
-          mr='1rem'
-          mb='1rem'
-          position='sticky'
-          bottom='1rem'
-          onClick={onOpenShare}
-        >
-          <ShareButton/>
-        </Box>
-        </>
-        }
+        <HStack>
+          <PresetationCard userData={userData} avatar={avatar}/>
+          {!patientId && <>
+          <Box
+            display='inline-block'
+            ml='auto'
+            mr='1rem'
+            mb='1rem'
+            position='sticky'
+            bottom='1rem'
+            right='1rem'
+            onClick={onOpenShare}
+          >
+            <ShareButton/>
+          </Box>
+          </>
+          }
+        </HStack>
         <Box
           w='100%'
           pt='2rem'
