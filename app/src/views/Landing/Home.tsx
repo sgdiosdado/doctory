@@ -39,7 +39,6 @@ export const Home = () => {
   const {id: patientId} = useParams<{id:string}>();
 
   const { isOpen, onOpen, onClose } = useDisclosure() 
-  
   const [patients, setPatients] = useState<userInformation[]>([])
   const [backgroundSubtypes, setBackgroundSubtype] = useState<BackgroundSubtypeData[]>([])
   const [conditions, setConditions] = useState<ConditionData[]>([])
@@ -169,6 +168,7 @@ export const Home = () => {
         w='100%'
         pt='2rem'
         maxW={{base: '100%', md: '75%', lg: '50%'}} >
+
         <Tabs isFitted index={tabIndex} onChange={handleTabsChange}>
           <TabList>
             {isMedic && <Tab>Pacientes</Tab>}
