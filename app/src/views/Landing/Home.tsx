@@ -1,30 +1,55 @@
 import React, { useContext, useState } from 'react';
-import { Box, Image, Tabs, TabList, Tab, TabPanel, TabPanels, VStack, useToast, useBreakpointValue, ToastPosition, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, DrawerFooter, Button, useDisclosure, DrawerProps } from '@chakra-ui/react';
-
-
+import {
+  Box,
+  Image,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanel,
+  TabPanels,
+  VStack,
+  useToast,
+  useBreakpointValue,
+  ToastPosition,
+  useDisclosure,
+  DrawerProps,
+  Icon,
+} from '@chakra-ui/react';
+import { UserContext } from '../../provider/AuthProvider';
 import DoctorsInComputerImage from '../../assets/DoctorsInComputerImage.svg';
-import { BackgroundSubtypeData, ConditionData, userInformation } from '../../http/types';
+import { BackgroundSubtypeData, ConditionData, userInformation, ShareData } from '../../http/types';
 import { http } from '../../http/client';
 import { useMutation, useQuery } from 'react-query';
 import { ConditionsTimeLine } from '../Conditions/ConditionsTimeLine';
 import { ConditionsTable } from '../Conditions/ConditionsTable';
 import { PatientsTable } from '../Medic/PatientsTable';
-import { AddButton } from '../../components/TimeLine/AddButton';
 import { NewConditionForm } from '../Conditions/NewConditionForm';
 import { AddIcon } from '@chakra-ui/icons';
-import { UserContext } from '../../provider/AuthProvider';
+import { MdShare } from "react-icons/md"
 import { userTypes } from '../../utils/typesDefinitions';
 import { useParams } from 'react-router-dom';
+import { ActionButton } from '../../components/ActionButton';
+import { buttonSubmit, HomeDrawer } from '../../components/HomeDrawer';
+import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
+import { ShareHistoryForm } from '../Patient/ShareHistoryForm';
+
 
 export const Home = () => {
   const { authContext } = useContext(UserContext)
-  const { isOpen, onOpen, onClose } = useDisclosure()
   const {id: patientId} = useParams<{id:string}>();
 
+  const { isOpen, onOpen, onClose } = useDisclosure() 
+  
   const [patients, setPatients] = useState<userInformation[]>([])
   const [backgroundSubtypes, setBackgroundSubtype] = useState<BackgroundSubtypeData[]>([])
   const [conditions, setConditions] = useState<ConditionData[]>([])
   const [tabIndex, setTabIndex] = useState(0);
+
+  const [drawerContent, setDrawerContent] = useState<{headerText: string, Form: ReactJSXElement, buttonProps: buttonSubmit}>({
+    headerText: '',
+    Form: <></>,
+    buttonProps: {} as buttonSubmit,
+  })
 
   const toast = useToast();
   const toastPosition = useBreakpointValue({base:'top', md:'top-right'});
@@ -35,6 +60,37 @@ export const Home = () => {
   const handleTabsChange = (index:number) => {
     setTabIndex(index);
   };
+
+  const onOpenCond = () => {
+    setDrawerContent({
+      headerText: 'Nueva condición',
+      Form: <NewConditionForm
+        onSubmit={onSubmitNewCondition}
+        formId='form-condition'
+        backgroundSubtypes={backgroundSubtypes}/>,
+      buttonProps: {
+        formId: 'form-condition',
+        icon: <AddIcon/>,
+        text: 'Añadir',
+      }
+    })
+    onOpen()
+  }
+
+  const onOpenShare = () => {
+    setDrawerContent({
+      headerText: 'Compartir historia clínica',
+      Form: <ShareHistoryForm
+        onSubmit={onSubmitShare}
+        formId='form-share'/>,
+      buttonProps: {
+        formId: 'form-share',
+        icon: <Icon as={MdShare}/>,
+        text: 'Compartir',
+      }
+    })
+    onOpen()
+  }
 
   const onError = (data:Error) => {
     if(data.message === 'Failed to fetch') data.message = 'Comprueba tu conexión a internet e intenta de nuevo.'
@@ -63,10 +119,28 @@ export const Home = () => {
     });
   }
 
+  const onSuccessShareHistory = () => {
+    onClose();
+    toast({
+      title: 'Hisoria clínica compartida',
+      description: 'Se ha compartido tu historia clínica',
+      status: 'success',
+      duration: 5000,
+      isClosable: true,
+      position: toastPosition as ToastPosition,
+    });
+  }
+
   const { mutate: mutateNewCondition } = useMutation('newCondition', (values:ConditionData) => http.newCondition(values), {onSuccess: onSuccessNewCondition, onError})
 
-  const onSubmit = (values:ConditionData) => {
+  const onSubmitNewCondition = (values:ConditionData) => {
     mutateNewCondition(values);
+  }
+
+  const { mutate: mutateShareHistory } = useMutation('shareHistory', (values:ShareData) => http.shareHistory(values), {onSuccess: onSuccessShareHistory, onError})
+
+  const onSubmitShare = (values:ShareData) => {
+    mutateShareHistory(values)
   }
 
   useQuery('patients', () => http.getPatients(), {
@@ -74,6 +148,7 @@ export const Home = () => {
     onSuccess: (data:userInformation[]) => setPatients(data),
     onError
   })
+
   useQuery('conditions', () => http.conditions(Number(patientId)), {
     onSuccess: (data:ConditionData[]) => setConditions(data),
     onError
@@ -89,13 +164,11 @@ export const Home = () => {
     <VStack>
       <Image 
         maxH='15rem'
-        src={DoctorsInComputerImage}
-      />
+        src={DoctorsInComputerImage} />
       <Box
         w='100%'
         pt='2rem'
-        maxW={{base: '100%', md: '75%', lg: '50%'}}
-      >
+        maxW={{base: '100%', md: '75%', lg: '50%'}} >
         <Tabs isFitted index={tabIndex} onChange={handleTabsChange}>
           <TabList>
             {isMedic && <Tab>Pacientes</Tab>}
@@ -118,36 +191,29 @@ export const Home = () => {
           </Tabs>
       </Box>
     </VStack>
-    <Drawer 
-      placement={drawerPlacement as DrawerProps['placement']}
-      isOpen={isOpen}
+    
+    <HomeDrawer
       onClose={onClose}
-    >
-      <DrawerOverlay>
-        <DrawerContent>
-          <DrawerCloseButton/>
-          <DrawerHeader borderBottomWidth='1px'>
-            Nueva condición
-          </DrawerHeader>
+      isOpen={isOpen}
+      drawerPlacement={drawerPlacement as DrawerProps['placement']}
+      {...drawerContent}
+    />
 
-          <DrawerBody>
-            <NewConditionForm
-              onSubmit={onSubmit}
-              formId='form-condition'
-              backgroundSubtypes={backgroundSubtypes}/>
-          </DrawerBody>
-          
-          <DrawerFooter>
-            <Button
-              type='submit'
-              form='form-condition'
-              leftIcon={<AddIcon/>}
-              colorScheme='primary'>Añadir</Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </DrawerOverlay>
-    </Drawer>
     {(tabIndex !== 0 || !isMedic) &&
+    <>
+      <Box
+        display='inline-block'
+        ml='auto'
+        mr='1rem'
+        mb='1rem'
+        position='sticky'
+        bottom='4rem'
+        right='1rem'
+        onClick={onOpenShare}
+      >
+        <ActionButton icon={MdShare} />
+      </Box>
+
       <Box
         display='inline-block'
         ml='auto'
@@ -155,11 +221,12 @@ export const Home = () => {
         mb='1rem'
         position='sticky'
         bottom='1rem'
-        onClick={onOpen}
+        onClick={onOpenCond}
       >
-        <AddButton/>
+        <ActionButton/>
       </Box>
+    </>
     }
-  </>
+    </>
   );
 };

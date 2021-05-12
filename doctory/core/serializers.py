@@ -1,14 +1,10 @@
-from core.utils import SexTypes
-from django.contrib.postgres import fields
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 from django.contrib.auth.password_validation import validate_password
-from django.core.validators import validate_email
-from django.core.exceptions import ValidationError
-from .models import BackgroundSubtype, BackgroundType, Condition, MedicMore, PatientMore, User, Specialty, Medic
+from .models import BackgroundSubtype, BackgroundType, Condition, MedicMore, PatientMore, User, Specialty
 
 
 class SignupSerializer(serializers.ModelSerializer):

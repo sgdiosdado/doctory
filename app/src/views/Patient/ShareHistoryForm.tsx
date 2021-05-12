@@ -29,7 +29,7 @@ export const ShareHistoryForm = ({ formId, onSubmit}: ShareHistoryProps) => {
             name="email"
             type="text"
             autoComplete='on'
-            placeholder='medico@mail.com'
+            placeholder='medico@gmail.com'
             ref={register({required: 'El correo electrónico del médico es obligatorio'})}
           />
           <FormErrorMessage>

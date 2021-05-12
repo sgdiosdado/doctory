@@ -52,6 +52,5 @@ export type BackgroundSubtypeData = {
 }
 
 export type ShareData = {
-  id?: number;
   email: string;
 }
