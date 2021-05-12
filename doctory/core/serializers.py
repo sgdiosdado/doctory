@@ -1,5 +1,3 @@
-from core.utils import SexTypes
-from django.contrib.postgres import fields
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework.authtoken.models import Token
@@ -136,3 +134,7 @@ class BackgroundTypeSerializer(serializers.ModelSerializer):
         model = BackgroundType
         fields = ['id', 'name', 'description', 'background_subtypes']
         read_only_fields = ['id', 'name', 'description', 'backgroundsubtypes']
+
+
+class ShareSerializer(serializers.Serializer):
+    email = serializers.CharField(max_length=255, write_only=True, required=True)

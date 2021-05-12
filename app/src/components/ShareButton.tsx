@@ -1,9 +1,10 @@
 import { useColorModeValue } from '@chakra-ui/color-mode'
-import { AddIcon } from '@chakra-ui/icons'
+import { Icon } from "@chakra-ui/react"
+import { MdShare } from "react-icons/md"
 import { Box } from '@chakra-ui/layout'
 import React from 'react'
 
-export const AddButton = () => {
+export const ShareButton = () => {
   return (
       <Box
         bg={useColorModeValue('primary.500', 'primary.200')}
@@ -13,11 +14,12 @@ export const AddButton = () => {
           bg:useColorModeValue('primary.300', 'primary.300')
         }}
       >
-        <AddIcon 
+        <Icon 
           w='2em'
           h='2em'
           p='.5em'
           color='white'
+          as={MdShare}
         />
       </Box>
   )
