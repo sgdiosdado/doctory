@@ -139,14 +139,6 @@ class BackgroundTypeSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description', 'background_subtypes']
         read_only_fields = ['id', 'name', 'description', 'backgroundsubtypes']
 
-class ShareSerializer(serializers.Serializer):
-    email = serializers.CharField(max_length=255, write_only=True)
 
-    def validate(self, data):
-        email = data.get('email', None)
-        try:
-            validate_email( email )
-        except ValidationError:
-            raise serializers.ValidationError({'email': 'This is not a valid email address.'})
-        return data
-        
+class ShareSerializer(serializers.Serializer):
+    email = serializers.CharField(max_length=255, write_only=True, required=True)
