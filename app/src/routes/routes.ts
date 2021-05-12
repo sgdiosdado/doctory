@@ -1,9 +1,9 @@
 import { LoginView } from "../views/AuthViews/LoginView";
 import { SignUpView } from "../views/AuthViews/SignUpView";
+import { Home } from "../views/Landing/Home";
 import { Landing } from "../views/Landing/Landing";
-import { MedicHomeView } from "../views/Medic/MedicHomeView";
 import { NotfoundPage } from "../views/NotFoundPage/NotfoundPage";
-import { PatientHomeView } from "../views/Patient/PatientHomeView";
+import { PatientConditions } from "../views/Patient/PatientConditions";
 import { ProfileView } from "../views/Profile/ProfileView";
 
 type route = {
@@ -21,9 +21,8 @@ export const publicRoutes: { [name: string]: route } = {
 
 export const protectedRoutes: { [name: string]: route } = {
   profile: { path: '/profile', component: ProfileView },
-  home: { path: '/home', component: PatientHomeView },
-  patient: { path: '/patient/:id', component: PatientHomeView },
-  medic: { path: '/med/home', component: MedicHomeView }, //UNIFY WITH HOME
+  home: { path: '/home', component: Home },
+  patient: { path: '/patient/:id', component: PatientConditions },
 }
 
 export const routes: { [name: string]: route } = {
