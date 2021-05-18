@@ -32,17 +32,20 @@ import { ActionButton } from '../../components/ActionButton';
 import { buttonSubmit, HomeDrawer } from '../../components/HomeDrawer';
 import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
 import { ShareHistoryForm } from '../Patient/ShareHistoryForm';
+import { TableSkeleton } from '../../components/TableSkeleton';
+import { TimeLineSkeleton } from '../../components/TimeLine/TimeLineSkeleton';
 
 
 export const Home = () => {
   const { authContext } = useContext(UserContext)
   const {id: patientId} = useParams<{id:string}>();
+  const lastTabIndex = localStorage.getItem('tableTabIndex');
 
   const { isOpen, onOpen, onClose } = useDisclosure() 
   const [patients, setPatients] = useState<userInformation[]>([])
   const [backgroundSubtypes, setBackgroundSubtype] = useState<BackgroundSubtypeData[]>([])
   const [conditions, setConditions] = useState<ConditionData[]>([])
-  const [tabIndex, setTabIndex] = useState(0);
+  const [tabIndex, setTabIndex] = useState(lastTabIndex? Number(lastTabIndex): 0);
 
   const [drawerContent, setDrawerContent] = useState<{headerText: string, Form: ReactJSXElement, buttonProps: buttonSubmit}>({
     headerText: '',
@@ -53,11 +56,12 @@ export const Home = () => {
   const toast = useToast();
   const toastPosition = useBreakpointValue({base:'top', md:'top-right'});
   const drawerPlacement = useBreakpointValue({base: 'bottom', lg: 'right'});
-
+  
   const isMedic = authContext.type?.includes(userTypes.MEDIC);
 
   const handleTabsChange = (index:number) => {
     setTabIndex(index);
+    localStorage.setItem('tableTabIndex', String(index));
   };
 
   const onOpenCond = () => {
@@ -142,13 +146,13 @@ export const Home = () => {
     mutateShareHistory(values)
   }
 
-  useQuery('patients', () => http.getPatients(), {
+  const {isFetchedAfterMount: isPatintsFetched} = useQuery('patients', () => http.getPatients(), {
     enabled: isMedic,
     onSuccess: (data:userInformation[]) => setPatients(data),
     onError
   })
 
-  useQuery('conditions', () => http.conditions(Number(patientId)), {
+  const {isFetchedAfterMount: isConditionsFetched} = useQuery('conditions', () => http.conditions(Number(patientId)), {
     onSuccess: (data:ConditionData[]) => setConditions(data),
     onError
   })
@@ -179,13 +183,16 @@ export const Home = () => {
           <TabPanels>
             {isMedic &&
             <TabPanel>
-              <PatientsTable patients={patients} />
+              {isPatintsFetched && <PatientsTable patients={patients} />}
+              <TableSkeleton isLoading={!isPatintsFetched} />
             </TabPanel>}
             <TabPanel>
-              <ConditionsTimeLine conditions={conditions} />
+              {isConditionsFetched && <ConditionsTimeLine conditions={conditions} />}
+              <TimeLineSkeleton isLoading={!isConditionsFetched} />
             </TabPanel>
             <TabPanel overflowX={{base: 'scroll', lg: 'visible'}}>
-              <ConditionsTable conditions={conditions} />
+              {isConditionsFetched &&  <ConditionsTable conditions={conditions} />}
+              <TableSkeleton isLoading={!isConditionsFetched} />
             </TabPanel>
           </TabPanels>
           </Tabs>

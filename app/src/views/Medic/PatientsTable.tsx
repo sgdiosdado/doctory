@@ -3,6 +3,7 @@ import { Table, Tbody, Td, Th, Thead, Tr, Link as ChakraLink, useColorModeValue 
 import { userInformation } from '../../http/types';
 import { Link } from 'react-router-dom';
 import { routes } from '../../routes/routes';
+import { EmptyState } from '../../components/EmptyState';
 
 type PatientsTableProps = {
   patients: userInformation[];
@@ -10,6 +11,11 @@ type PatientsTableProps = {
 
 export const PatientsTable = ({ patients }: PatientsTableProps) => {
   const linkColor = useColorModeValue('blue.600', 'blue.400');
+  
+  if(patients.length === 0){
+    return <EmptyState text='Sin pacientes' />
+  }
+
   return (
     <Table variant="striped">
       <Thead>
