@@ -2,12 +2,18 @@ import React from 'react';
 import { TimeLine } from '../../components/TimeLine/TimeLine';
 import { TimeLineItem } from '../../components/TimeLine/TimeLineItem';
 import { ConditionData } from '../../http/types';
+import { EmptyState } from '../../components/EmptyState';
 
 type ConditionsTimeLineProps = {
   conditions: ConditionData[];
 }
 
 export const ConditionsTimeLine = ({ conditions }:ConditionsTimeLineProps) => {
+  
+  if(conditions.length === 0){
+    return <EmptyState text='Sin condiciones' />
+  }
+
   return(
     <TimeLine>
       {conditions.map((condition:ConditionData) => (

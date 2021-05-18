@@ -19,6 +19,9 @@ import { ConditionsTimeLine } from '../Conditions/ConditionsTimeLine';
 import { ConditionsTable } from '../Conditions/ConditionsTable';
 import { ConditionData, userInformation } from '../../http/types';
 import { http } from '../../http/client';
+import { PresentationSkeletonCard } from '../../components/PresentationSkeletonCard';
+import { TimeLineSkeleton } from '../../components/TimeLine/TimeLineSkeleton';
+import { TableSkeleton } from '../../components/TableSkeleton';
 
 export const PatientConditions = () => {
   const {id: patientId} = useParams<{id:string}>();
@@ -48,11 +51,12 @@ export const PatientConditions = () => {
     });
   }
 
-  useQuery('conditions', () => http.conditions(Number(patientId)), {
+  const {isFetchedAfterMount: isConditionsFetched} = useQuery('conditions', () => http.conditions(Number(patientId)), {
     onSuccess: (data:ConditionData[]) => setConditions(data),
     onError
   })
-  useQuery('profile', () => http.getProfileInfo(Number(patientId)), {
+  
+  const {isFetchedAfterMount: isProfileFetched} = useQuery('profile', () => http.getProfileInfo(Number(patientId)), {
     onSuccess: (data:userInformation) => setUserData(data),
     onError
   })
@@ -60,7 +64,8 @@ export const PatientConditions = () => {
   return (
     <>
       <VStack pt='2rem'>
-        <PresetationCard userData={userData} avatar={avatar}/>
+        <PresentationSkeletonCard isLoading={!isProfileFetched} />
+        {isProfileFetched && <PresetationCard userData={userData} avatar={avatar} />}
         <Box
           w='100%'
           pt='2rem'
@@ -74,10 +79,12 @@ export const PatientConditions = () => {
 
             <TabPanels>
               <TabPanel>
-                <ConditionsTimeLine conditions={conditions}/>
+                <TimeLineSkeleton isLoading={!isConditionsFetched}/>
+                {isConditionsFetched && <ConditionsTimeLine conditions={conditions}/>}
               </TabPanel>
               <TabPanel overflowX={{base: 'scroll', lg: 'visible'}}>
-                <ConditionsTable conditions={conditions}/>
+                <TableSkeleton isLoading={!isConditionsFetched} />
+                {isConditionsFetched && <ConditionsTable conditions={conditions}/>}
               </TabPanel>
             </TabPanels>
           </Tabs>

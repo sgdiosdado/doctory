@@ -8,12 +8,18 @@ import {
   Td,
 } from "@chakra-ui/react"
 import { ConditionData } from '../../http/types';
+import { EmptyState } from '../../components/EmptyState';
 
 type ConditionsTableProps = {
   conditions: ConditionData[];
 }
 
 export const ConditionsTable = ({ conditions }:ConditionsTableProps) => {
+
+  if(conditions.length === 0){
+    return <EmptyState text='Sin condiciones' />
+  }
+
   return (
     <Table variant="striped" width={{lg:'150%'}} ml={{lg:'-25%'}}>
       <Thead>
