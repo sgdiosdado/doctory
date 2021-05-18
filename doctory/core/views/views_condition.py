@@ -57,7 +57,8 @@ class ConditionDetail(APIView):
 
     def get(self, request, condition_id):
         try:
-            condition = Condition.objects.get(id=condition_id, patient=request.user)
+            patient = Patient.objects.get(email=request.user.email)
+            condition = Condition.objects.get(id=condition_id, patient=patient)
             res = standard_response(data=ConditionSerializer(condition).data)
             return Response(res)
         except Condition.DoesNotExist:
@@ -66,10 +67,11 @@ class ConditionDetail(APIView):
 
     def put(self, request, condition_id):
         try:
+            patient = Patient.objects.get(email=request.user.email)
             condition = Condition.objects.get(id=condition_id, patient=request.user)
             serializer = ConditionSerializer(condition, data=request.data)
             if serializer.is_valid():
-                serializer.save(patient=Patient.objects.get(email=request.user.email))
+                serializer.save(patient=patient)
                 res = standard_response(data=serializer.data)
                 return Response(res)
             res = standard_response(errors=serializer.errors)
@@ -80,7 +82,8 @@ class ConditionDetail(APIView):
     
     def delete(self, request, condition_id):
         try:
-            condition = Condition.objects.get(id=condition_id, patient=request.user)
+            patient = Patient.objects.get(email=request.user.email)
+            condition = Condition.objects.get(id=condition_id, patient=patient)
             condition.delete()
             res = standard_response()
             return Response(res, status.HTTP_204_NO_CONTENT)
