@@ -4,21 +4,17 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 from django.contrib.auth.password_validation import validate_password
-from .models import BackgroundSubtype, BackgroundType, Condition, MedicMore, PatientMore, User, Specialty
+from .models import BackgroundSubtype, BackgroundType, Condition, User, Patient, Medic, Specialty
+from .utils import UserTypes
 
 
-class SignupSerializer(serializers.ModelSerializer):
+class SignupSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True, validators=[UniqueValidator(queryset=User.objects.all(), message='This email is already in use')])
     password1 = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
-
-    class Meta:
-        model = User
-        fields = ('email', 'first_name', 'last_name', 'password1', 'password2',)
-        extra_kwargs = {
-            'first_name': {'required': True},
-            'last_name': {'required': True}
-        }
+    first_name = serializers.CharField(write_only=True, required=True)
+    last_name = serializers.CharField(write_only=True, required=True)
+    user_type = serializers.CharField(write_only=True, required=True)
 
     def validate(self, attrs):
         if attrs['password1'] != attrs['password2']:
@@ -26,10 +22,18 @@ class SignupSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        user = User.objects.create(
+        user_types = {
+            UserTypes.PATIENT: Patient,
+            UserTypes.MEDIC: Medic
+        }
+
+        user_model = user_types[validated_data['user_type']]
+
+        user = user_model.objects.create(
             email=validated_data['email'],
             first_name=validated_data['first_name'],
-            last_name=validated_data['last_name']
+            last_name=validated_data['last_name'],
+            type=[validated_data['user_type']]
         )
         
         user.set_password(validated_data['password1'])
@@ -61,14 +65,14 @@ class SpecialtySerializer(serializers.ModelSerializer):
 
 class MedicProfileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = MedicMore
+        model = Medic
         fields = ['license', 'specialties']
 
 
 class PatientProfileSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = PatientMore
+        model = Medic
         fields = ['blood_type', 'allergies']
 
 
@@ -81,11 +85,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    patient = PatientProfileSerializer(source='patientmore')
-    medic = MedicProfileSerializer(source='medicmore')
+    # patient = PatientProfileSerializer(source='patientmore')
+    # medic = MedicProfileSerializer(source='medicmore')
 
     class Meta:
-        FIELDS = ['id', 'email', 'first_name', 'last_name', 'type', 'location', 'sex', 'dob', 'patient', 'medic']
+        FIELDS = ['id', 'email', 'first_name', 'last_name', 'type', 'location', 'sex', 'dob'] #, 'patient', 'medic']
         model = User
         fields = FIELDS
         read_only_fields = FIELDS
@@ -106,6 +110,7 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 class ConditionSerializer(serializers.ModelSerializer):
     background_subtype_name = serializers.CharField(source='background_subtype.name', read_only=True)
+
     class Meta:
         model = Condition
         fields = ['id', 'name', 'description', 'patient', 'date_of_diagnosis', 'background_subtype', 'background_subtype_name']
