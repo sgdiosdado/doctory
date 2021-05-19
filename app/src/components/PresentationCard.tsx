@@ -32,17 +32,17 @@ export const PresetationCard = ({userData, avatar}:presentationCardPropsTypes) =
           {userData.dob &&
             <Text>{userData.dob}</Text>
           }
-          {userData.patient?.blood_type &&
-            <Text>Tipo de sangre: {userData.patient?.blood_type}</Text>
+          {userData.blood_type &&
+            <Text>Tipo de sangre: {userData.blood_type}</Text>
           }
           {userData.location &&
             <Text textOverflow='ellipsis' overflow='hidden' >
               {userData.location}
             </Text>
           }
-          {userData.patient?.allergies &&
+          {userData.allergies &&
             <Text textOverflow='ellipsis' overflow='hidden' >
-              Alergias: {userData.patient?.allergies.join(', ')}
+              Alergias: {userData.allergies.join(', ')}
             </Text>
           }
           <Text textOverflow='ellipsis' overflow='hidden' >

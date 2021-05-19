@@ -67,7 +67,7 @@ class PatientProfileSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Patient
-        fields = ['email', 'first_name', 'last_name', 'type', 'location', 'sex', 'dob', 'blood_type', 'allergies']
+        fields = ['id', 'email', 'first_name', 'last_name', 'type', 'location', 'sex', 'dob', 'blood_type', 'allergies']
         read_only_fields = ['email']
 
 
@@ -75,7 +75,7 @@ class MedicProfileSerializer(serializers.ModelSerializer):
     specialties = SpecialtySerializer(many=True, required=False)
     class Meta:
         model = Medic
-        fields = ['email', 'first_name', 'last_name', 'type', 'location', 'sex', 'dob', 'blood_type', 'allergies', 'license', 'specialties']
+        fields = ['id', 'email', 'first_name', 'last_name', 'type', 'location', 'sex', 'dob', 'blood_type', 'allergies', 'license', 'specialties']
         read_only_fields = ['email']
 
 

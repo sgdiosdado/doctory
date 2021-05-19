@@ -2,7 +2,7 @@ from rest_framework import permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from core.models import Patient, Condition, PatientMedic
+from core.models import Patient, Medic, Condition, PatientMedic
 from core.serializers import ConditionSerializer
 from core.utils import standard_response
 
@@ -24,11 +24,11 @@ class ListConditions(APIView):
         if 'patient_id' in request.query_params:
             patient_id = request.query_params['patient_id']
             try:
-                patient_medic = PatientMedic.objects.get(medic=request.user, patient__user__id=patient_id)
+                patient_medic = PatientMedic.objects.get(medic=Medic.objects.get(email=request.user.email), patient__id=patient_id)
             except PatientMedic.DoesNotExist:
                 res = standard_response(errors={'patient': 'This user has no access to the patient\'s information'})
                 return Response(res, status=status.HTTP_404_NOT_FOUND)
-            user = patient_medic.patient.user
+            user = patient_medic.patient
         conditions = ConditionSerializer(Condition.objects.filter(patient=user).order_by('-date_of_diagnosis'), many=True)
         res = standard_response(data=conditions.data)
         return Response(res)

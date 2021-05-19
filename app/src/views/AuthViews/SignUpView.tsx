@@ -15,6 +15,7 @@ import {
   Link as ChakraLink,
   useBreakpointValue,
   ToastPosition,
+  Select
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form';
 import { usePasswordValidation } from '../../hooks/usePasswordValidation';
@@ -25,6 +26,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { routes } from '../../routes/routes';
 import { useMutation } from 'react-query';
 import { UserContext } from '../../provider/AuthProvider';
+import { userTypes } from '../../utils/typesDefinitions';
 
 export const SignUpView = () => {
   const history = useHistory()
@@ -199,6 +201,19 @@ export const SignUpView = () => {
                 <FormErrorMessage>
                   {errors.password2 && errors.password2.message}
                 </FormErrorMessage>
+              </FormControl>
+
+              <FormControl
+                mb={4}>
+                <FormLabel htmlFor='user_type'>Tipo de Cuenta</FormLabel>
+                  <Select
+                    as='select'
+                    name='user_type'
+                    ref={register()}
+                  >
+                    <option value={userTypes.PATIENT}>Paciente</option>
+                    <option value={userTypes.MEDIC}>Médico</option>
+                  </Select>
               </FormControl>
               
               <Button

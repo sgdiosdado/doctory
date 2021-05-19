@@ -20,7 +20,7 @@ class Profile(APIView):
             UserTypes.PATIENT: PatientProfileSerializer,
             UserTypes.MEDIC: MedicProfileSerializer
     }
-    
+
     user_models = {
         UserTypes.PATIENT: Patient,
         UserTypes.MEDIC: Medic
@@ -38,11 +38,12 @@ class Profile(APIView):
             patient_id = request.query_params['patient_id']
             profile_serializer = PatientProfileSerializer
             try:
-                patient_medic = PatientMedic.objects.get(medic=request.user.medicmore, patient__user__id=patient_id)
+                patient_medic = PatientMedic.objects.get(medic=user, patient__id=patient_id)
             except PatientMedic.DoesNotExist:
                 res = standard_response(errors={'patient': 'This user has no access to the patient\'s information'})
                 return Response(res, status=status.HTTP_404_NOT_FOUND)
-            user = patient_medic.patient.user
+            
+            user = patient_medic.patient
         
         serializer = profile_serializer(user)
         res = standard_response(data=serializer.data)
