@@ -5,6 +5,7 @@ import { Landing } from "../views/Landing/Landing";
 import { NotfoundPage } from "../views/NotFoundPage/NotfoundPage";
 import { PatientConditions } from "../views/Patient/PatientConditions";
 import { ProfileView } from "../views/Profile/ProfileView";
+import { MedicsView } from "../views/Patient/MedicsView";
 
 type route = {
   path: string,
@@ -23,7 +24,7 @@ export const protectedRoutes: { [name: string]: route } = {
   profile: { path: '/profile', component: ProfileView },
   home: { path: '/home', component: Home },
   patient: { path: '/patient/:id', component: PatientConditions },
-  sharedWith: { path: '/shared-with', component: SharedWith },
+  sharedWith: { path: '/shared-with', component: MedicsView },
 }
 
 export const routes: { [name: string]: route } = {
