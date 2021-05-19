@@ -23,6 +23,7 @@ export const protectedRoutes: { [name: string]: route } = {
   profile: { path: '/profile', component: ProfileView },
   home: { path: '/home', component: Home },
   patient: { path: '/patient/:id', component: PatientConditions },
+  sharedWith: { path: '/shared-with', component: SharedWith },
 }
 
 export const routes: { [name: string]: route } = {
