@@ -63,36 +63,20 @@ class SpecialtySerializer(serializers.ModelSerializer):
         fields = ['id','name']
 
 
-class MedicProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Medic
-        fields = ['license', 'specialties']
-
-
 class PatientProfileSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = Medic
-        fields = ['blood_type', 'allergies']
-
-
-class UserProfileSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        fields = ['email', 'first_name', 'last_name', 'type', 'location', 'sex', 'dob']
+        model = Patient
+        fields = ['email', 'first_name', 'last_name', 'type', 'location', 'sex', 'dob', 'blood_type', 'allergies']
         read_only_fields = ['email']
 
 
-class ProfileSerializer(serializers.ModelSerializer):
-    # patient = PatientProfileSerializer(source='patientmore')
-    # medic = MedicProfileSerializer(source='medicmore')
-
+class MedicProfileSerializer(serializers.ModelSerializer):
+    specialties = SpecialtySerializer(many=True, required=False)
     class Meta:
-        FIELDS = ['id', 'email', 'first_name', 'last_name', 'type', 'location', 'sex', 'dob'] #, 'patient', 'medic']
-        model = User
-        fields = FIELDS
-        read_only_fields = FIELDS
+        model = Medic
+        fields = ['email', 'first_name', 'last_name', 'type', 'location', 'sex', 'dob', 'blood_type', 'allergies', 'license', 'specialties']
+        read_only_fields = ['email']
 
 
 class ChangePasswordSerializer(serializers.Serializer):
