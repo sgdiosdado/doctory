@@ -60,6 +60,7 @@ class SpecialtySerializer(serializers.ModelSerializer):
 
 
 class MedicProfileSerializer(serializers.ModelSerializer):
+    specialties = SpecialtySerializer(many=True)
     class Meta:
         model = MedicMore
         fields = ['license', 'specialties']

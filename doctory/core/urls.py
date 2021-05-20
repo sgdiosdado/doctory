@@ -7,7 +7,7 @@ from .views.views_profile import Profile
 from .views.views_authentication import Signup, Login, ChangePassword, Types
 from .views.views_medic import ListPatients
 from .views.views_share import ShareHistory
-from .views.views_sharedWith import ListMedics, MedicDetail
+from .views.views_shared_with import ListMedics, MedicDetail
 
 urlpatterns = [
     path('conditions/', ListConditions.as_view(), name='conditions'),

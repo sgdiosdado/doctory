@@ -1,20 +1,18 @@
 import React, { useContext, useState  } from 'react'
-import { Link } from "react-router-dom";
-import { VStack, ToastPosition, useDisclosure, useToast, useBreakpointValue} from '@chakra-ui/react'
+import { Box, Image, VStack, ToastPosition, useDisclosure, useToast, useBreakpointValue} from '@chakra-ui/react'
 import { userInformation } from '../../http/types';
 import { http } from '../../http/client';
-import { useMutation, useQuery } from 'react-query';
+import { useQuery, useMutation, queryCache } from 'react-query';
 import { MedicsTable } from '../Patient/MedicsTable';
 import { UserContext } from '../../provider/AuthProvider';
 import { useParams } from 'react-router-dom';
 import { TableSkeleton } from '../../components/TableSkeleton';
+import DoctorsInComputerImage from '../../assets/DoctorsInComputerImage.svg';
 
 
 export const MedicsView = () => {
   const { authContext } = useContext(UserContext)
-  const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast();
-  const {id: medicId} = useParams<{id:string}>();
   const [medics, setMedics] = useState<userInformation[]>([])
   const toastPosition = useBreakpointValue({base:'top', md:'top-right'});
 
@@ -34,11 +32,21 @@ export const MedicsView = () => {
     onSuccess: (data:userInformation[]) => setMedics(data),
     onError
   })
+  const { mutate: mutateDeleteMedic } = useMutation('deleteMedic', (id:number | undefined) => http.removeShare(id), {onSuccess: () => queryCache.refetchQueries('medics'), onError})
 
   return (
-    <VStack flexGrow={1} justifyContent='center'>
-      {isMedicsFetched && <MedicsTable medics={medics} />}
+    <VStack>
+      <Image 
+        maxH='15rem'
+        src={DoctorsInComputerImage} />
+      <Box
+        w='100%'
+        pt='2rem'
+        maxW={{base: '100%', md: '75%', lg: '50%'}} 
+        overflowX={{base: 'scroll', lg: 'visible'}}>
+      {isMedicsFetched && <MedicsTable medics={medics} deleteMedic={mutateDeleteMedic} />}
       <TableSkeleton isLoading={!isMedicsFetched} />
+      </Box>
     </VStack>
   )
 }
