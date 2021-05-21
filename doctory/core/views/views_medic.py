@@ -2,8 +2,8 @@ from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from core.models import Patient, PatientMedic
-from core.serializers import ProfileSerializer
+from core.models import Patient, Medic, PatientMedic
+from core.serializers import PatientProfileSerializer
 from core.utils import standard_response
 
 class ListPatients(APIView):
@@ -19,8 +19,9 @@ class ListPatients(APIView):
         """
         Return a list of all medic's patients
         """
-        query_set = PatientMedic.objects.filter(medic=request.user.medicmore).values('patient__user')
+        medic = Medic.objects.get(email=request.user.email)
+        query_set = PatientMedic.objects.filter(medic=medic).values('patient')
         patients = Patient.objects.filter(id__in=query_set)
-        serializer = ProfileSerializer(patients, many=True)
+        serializer = PatientProfileSerializer(patients, many=True)
         res = standard_response(data=serializer.data)
         return Response(res)

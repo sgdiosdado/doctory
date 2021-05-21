@@ -12,14 +12,26 @@ class UserTypes(models.TextChoices):
 def set_default_user_type():
     return [UserTypes.PATIENT]
 
+
 class SexTypes(models.TextChoices):
     FEMALE = 'F'
     MALE = 'M'
     OTHER = 'O'
     NOT_SPECIFIED = 'U'
 
+
 def set_default_sex_type():
     return SexTypes.NOT_SPECIFIED
+
+
+def user_model(user_type): 
+    from .models import Patient, Medic
+    types = {
+        UserTypes.PATIENT: Patient,
+        UserTypes.MEDIC: Medic
+    }
+    return types[user_type]
+
 
 def standard_response(data=None, errors=None):
     res = {

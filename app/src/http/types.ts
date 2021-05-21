@@ -10,6 +10,7 @@ export type SignUpData = {
   email: string;
   password1: string;
   password2: string;
+  user_type: string,
 }
 
 export type ChangePasswordData = {
@@ -19,21 +20,17 @@ export type ChangePasswordData = {
 
 export type userInformation = {
   id?: number,
+  type: string[],
   first_name: string,
   last_name: string,
   email: string,
   location?: string,
   dob?: string,
   sex?: string,
-  patient?: {
-    blood_type: string,
-    allergies: string[],
-  },
-  medic?: {
-    license: string,
-    specialties: string[],
-  },
-  type: string[],
+  blood_type?: string,
+  allergies?: string[],
+  license?: string,
+  specialties?: string[],
 }
 
 export type ConditionData = {

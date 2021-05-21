@@ -17,6 +17,7 @@ class SignupTests(APITestCase):
             'last_name': 'Doe',
             'password1': 'MyVeryStrongPassword@',
             'password2': 'MyVeryStrongPassword@',
+            'user_type': 'PAT'
         }
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
