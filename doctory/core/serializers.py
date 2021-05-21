@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 from django.contrib.auth.password_validation import validate_password
 from .models import BackgroundSubtype, BackgroundType, Condition, User, Patient, Medic, Specialty
-from .utils import UserTypes
+from .utils import UserTypes, user_model
 
 
 class SignupSerializer(serializers.Serializer):
@@ -20,16 +20,12 @@ class SignupSerializer(serializers.Serializer):
         if attrs['password1'] != attrs['password2']:
             raise serializers.ValidationError({'password': 'Password fields didn\'t match.'})
         return attrs
-
+    
     def create(self, validated_data):
-        user_types = {
-            UserTypes.PATIENT: Patient,
-            UserTypes.MEDIC: Medic
-        }
 
-        user_model = user_types[validated_data['user_type']]
+        UserModel = user_model(validated_data['user_type'])
 
-        user = user_model.objects.create(
+        user = UserModel.objects.create(
             email=validated_data['email'],
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],

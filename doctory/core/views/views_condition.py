@@ -24,12 +24,14 @@ class ListConditions(APIView):
         if 'patient_id' in request.query_params:
             patient_id = request.query_params['patient_id']
             try:
-                patient_medic = PatientMedic.objects.get(medic=Medic.objects.get(email=request.user.email), patient__id=patient_id)
+                medic = Medic.objects.get(email=request.user.email)
+                patient_medic = PatientMedic.objects.get(medic=medic, patient__id=patient_id)
             except PatientMedic.DoesNotExist:
                 res = standard_response(errors={'patient': 'This user has no access to the patient\'s information'})
                 return Response(res, status=status.HTTP_404_NOT_FOUND)
             user = patient_medic.patient
-        conditions = ConditionSerializer(Condition.objects.filter(patient=user).order_by('-date_of_diagnosis'), many=True)
+        patient_conditions = Condition.objects.filter(patient=user).order_by('-date_of_diagnosis')
+        conditions = ConditionSerializer(patient_conditions, many=True)
         res = standard_response(data=conditions.data)
         return Response(res)
  
@@ -39,7 +41,8 @@ class ListConditions(APIView):
         """
         serializer = ConditionSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(patient=Patient.objects.get(email=request.user.email))
+            patient = Patient.objects.get(email=request.user.email)
+            serializer.save(patient=patient)
             res = standard_response(data=serializer.data)
             return Response(res, status=status.HTTP_201_CREATED)
         res = standard_response(errors=serializer.errors)

@@ -4,8 +4,7 @@ from rest_framework.response import Response
 
 from core.models import User, PatientMedic, Medic, Patient
 from core.serializers import PatientProfileSerializer, MedicProfileSerializer
-from core.utils import standard_response
-from core.utils import UserTypes
+from core.utils import UserTypes, standard_response, user_model
 
 class Profile(APIView):
     """
@@ -21,16 +20,12 @@ class Profile(APIView):
             UserTypes.MEDIC: MedicProfileSerializer
     }
 
-    user_models = {
-        UserTypes.PATIENT: Patient,
-        UserTypes.MEDIC: Medic
-    }
-
     def get(self, request):
         """
         Return profile's information
         """
-        user = self.user_models[request.user.type[0]].objects.get(email=request.user.email)
+        UserModel = user_model(request.user.type[0])
+        user = UserModel.objects.get(email=request.user.email)
         
         profile_serializer = self.user_serializers[user.type[0]]
         
@@ -54,7 +49,8 @@ class Profile(APIView):
         Put user's profile information
 
         """
-        user = self.user_models[request.user.type[0]].objects.get(email=request.user.email)
+        UserModel = user_model(request.user.type[0])
+        user = UserModel.objects.get(email=request.user.email)
         
         profile_serializer = self.user_serializers[user.type[0]]
         try:
