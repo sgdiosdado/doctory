@@ -34,6 +34,7 @@ export const Navbar = () => {
   useEffect(() => {
     const loggedInItems:NavItem[] = [
       {label: 'Perfil', path: routes.profile.path},
+      {label: 'Mis médicos', path: routes.sharedWith.path},
     ];
     const loggedOutItems:NavItem[] = [];
 

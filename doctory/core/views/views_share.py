@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from core.utils import standard_response
 from core.models import Medic, Patient
-from core.serializers import ShareSerializer
+from core.serializers import ShareSerializer, MedicProfileSerializer
 
 
 class ShareHistory(APIView):
@@ -21,7 +21,7 @@ class ShareHistory(APIView):
                 patient = Patient.objects.get(email=request.user.email)
                 medic = Medic.objects.get(email=serializer.validated_data['email'])
                 medic.patients.add(patient)
-                res = standard_response()
+                res = standard_response(data=MedicProfileSerializer(medic).data)
                 return Response(res, status=status.HTTP_201_CREATED)
             except Medic.DoesNotExist:
                 res = standard_response(errors={'medic': 'This user does not exist.'})

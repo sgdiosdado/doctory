@@ -196,6 +196,40 @@ class Http {
     if(res.status === 404) throw new Error(values)
     if(res.status === 500) throw new Error('Error con el servidor. Contacte al equipo administrador.')
   }
+
+  public async getMedics() {
+    const res = await fetch(`${this.url}/api/v1/shared-with/`, {
+      headers: {
+        'Authorization': `Token ${getToken()}`
+      }
+    });
+    const data = await res.json();
+
+    if(res.status === 200) return data.data;
+    
+    const values = Object.keys(data.errors).map(key => data.errors[key].join(';'))[0]
+    if(res.status === 400) throw new Error(values)
+    if(res.status === 500) throw new Error('Error con el servidor. Contacte al equipo administrador.')
+  }
+
+  public async removeShare(id:number) {
+    const params = id? `${id}` : '';
+    
+    const res = await fetch(`${this.url}/api/v1/shared-with/${params}/`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Token ${getToken()}`
+      },
+    });
+    
+    
+    if(res.status === 204) return {id};
+    
+    const data = await res.json();
+    const values = Object.keys(data.errors).map(key => data.errors[key]).join(';')
+    if(data.status === 404) throw new Error(values)
+    if(data.status === 500) throw new Error('Error con el servidor. Contacte al equipo administrador.')
+  }
 }
 
 export const http = new Http();
