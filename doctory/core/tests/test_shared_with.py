@@ -45,8 +45,9 @@ class SharedWitTests(APITestCase):
         }
 
         _ = self.client.post('share', data)
-        
-        response = self.client.delete(reverse('shared_medic', kwargs={'medic_id': medic_user.more.pk}))
+        #print(reverse('shared_medic', kwargs={'medic_id': medic_user.more.pk}))
+        #print(medic_user.pk)
+        response = self.client.delete(reverse('shared_medic', kwargs={'medic_id': medic_user.pk}))
 
         self.assertEqual(self.user.patientmore.medics.all().exists(), False)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

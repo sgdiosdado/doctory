@@ -1,13 +1,12 @@
 import React from 'react';
-import { Table, Tbody, Td, Th, Thead, Tr, useDisclosure, Button, Icon} from '@chakra-ui/react';
+import { Table, Tbody, Td, Th, Thead, Tr, Button, Icon} from '@chakra-ui/react';
 import { userInformation } from '../../http/types';
 import { EmptyState } from '../../components/EmptyState';
 import { DeleteIcon } from '@chakra-ui/icons';
-import { MedicItem } from '../Patient/MedicItem';
 
 type MedicsTableProps = {
   medics: userInformation[];
-  deleteMedic: (id:number | undefined) => void;
+  deleteMedic: (id:number | null) => void;
 };
 
 export const MedicsTable = ({ medics, deleteMedic }: MedicsTableProps) => {
@@ -32,7 +31,7 @@ export const MedicsTable = ({ medics, deleteMedic }: MedicsTableProps) => {
           <Td>
             {medic.first_name + ' ' + medic.last_name}
           </Td>
-          <Td> {(medic.medic?.specialties.length == 0 ? ('-')
+          <Td> {(medic.medic?.specialties.length === 0 ? ('-')
             :
             (medic.medic?.specialties.map((specialty) =>
               `${specialty.name}`
@@ -40,7 +39,7 @@ export const MedicsTable = ({ medics, deleteMedic }: MedicsTableProps) => {
           </Td>
           <Td> {medic.medic?.license || '-'}</Td>
           <Td> 
-          <Button key={medic.id} colorScheme='red' size="md" onClick={() => deleteMedic(medic.id)}><Icon 
+          <Button key={medic.id} colorScheme='red' size="md" onClick={() => deleteMedic(Number(medic.id))}><Icon 
             w='2em'
             h='2em'
             p='.5em'
