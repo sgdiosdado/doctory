@@ -41,13 +41,3 @@ class UserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True')
         return self._create_user(email, password, **extra_fields)
-
-
-class PatientManager(models.Manager):
-    def get_queryset(self, *args, **kwargs):
-        return super().get_queryset(*args, **kwargs).filter(type__contains=[UserTypes.PATIENT])
-
-
-class MedicManager(models.Manager):
-    def get_queryset(self, *args, **kwargs):
-        return super().get_queryset(*args, **kwargs).filter(type__contains=[UserTypes.MEDIC])

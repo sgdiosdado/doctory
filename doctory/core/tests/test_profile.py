@@ -19,7 +19,7 @@ class PatientProfileTests(APITestCase):
             'last_name': 'Castellanos',
             'location': 'San Luis Potosi',
             'sex': SexTypes.MALE,
-            'type': ['PAT'],
+            'type': ['PAT']
             }
         self.user = Patient.objects.create(**self.data)
         self.token = Token.objects.get(user=self.user)
@@ -42,20 +42,20 @@ class PatientProfileTests(APITestCase):
         new_fields = {
             'location': 'Monterrey',
             'sex': SexTypes.OTHER,
-            'patient': {
-                'allergies': new_allergies,
-                'blood_type': 'O+'
-                },
-            }
+            'allergies': new_allergies,
+            'blood_type': 'O+'
+        }
         response = self.client.put(self.url, new_fields, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         location = response.data['data']['location']
         sex = response.data['data']['sex']
-        patient_data = response.data['data']['patient']
+        allergies = response.data['data']['allergies']
+        blood_type = response.data['data']['blood_type']
+
         self.assertEqual(location, new_fields['location'])
         self.assertEqual(sex, new_fields['sex'])
-        self.assertEqual(patient_data['allergies'], new_allergies)
-        self.assertEqual(patient_data['blood_type'], new_fields['patient']['blood_type'])
+        self.assertEqual(allergies, new_allergies)
+        self.assertEqual(blood_type, new_fields['blood_type'])
 
     def test_put_wrong_patient_user_profile(self):
         """
@@ -65,10 +65,8 @@ class PatientProfileTests(APITestCase):
         new_fields = {
             'location': 'Monterrey',
             'sex': SexTypes.OTHER,
-            'patient': {
-                'allergies': new_allergies,
-                'blood_type': new_allergies
-                },
+            'allergies': new_allergies,
+            'blood_type': new_allergies
             }
         response = self.client.put(self.url, new_fields, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -90,10 +88,8 @@ class PatientProfileTests(APITestCase):
         """
         new_fields = {
             'location': 'Monterrey',
-            'medic':  {
-                'license': '12345678',
-                'specialties': []
-                },
+            'license': '12345678',
+            'specialties': []
             }
         response = self.client.put(self.url, new_fields, format='json')
         self.assertFalse('medic' in response.data['data'])
@@ -108,8 +104,8 @@ class MedicProfileTests(APITestCase):
             'last_name': 'Castellanos',
             'location': 'San Luis Potosi',
             'sex': SexTypes.FEMALE,
-            'type': ['MED'],
-            }
+            'type': ['MED']
+        }
         self.user = Medic.objects.create(**self.data)
         self.token = Token.objects.get(user=self.user)
         self.client = APIClient()
@@ -129,41 +125,12 @@ class MedicProfileTests(APITestCase):
         """
         new_fields = {
             'location': 'Monterrey',
-            'medic': {
-                'license': '12345678',
-                'specialties': []
-                },
-            }
-        response = self.client.put(self.url, new_fields, format='json')
+            'license': '12345678',
+            'specialties': []
+        }
+        response = self.client.put(self.url, new_fields)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         location = response.data['data']['location']
-        medic_data = response.data['data']['medic']
+        license = response.data['data']['license']
         self.assertEqual(location, new_fields['location'])
-        self.assertEqual(medic_data['license'], new_fields['medic']['license'])
-
-    def test_put_wrong_medic_user_profile(self):
-        """
-        Ensure it can fail when updatieng patient with invalid payload
-        """
-        new_fields = {
-            'location': 'Monterrey',
-            'sex': SexTypes.OTHER,
-            'medic': {
-                'license': ['invalid', 'type'],
-                },
-            }
-        response = self.client.put(self.url, new_fields, format='json')
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_put_wrong_medic_profile_data(self):
-        """
-        Ensure medic can't write data that is only for patient
-        """
-        new_fields = {
-            'location': 'Monterrey',
-            'patient':  {
-                'allergies': ['Gatos']
-                },
-            }
-        response = self.client.put(self.url, new_fields, format='json')
-        self.assertFalse('patient' in response.data['data'])
+        self.assertEqual(license, new_fields['license'])

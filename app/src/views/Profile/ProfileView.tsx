@@ -86,18 +86,16 @@ export const ProfileView = () => {
       return res;
     }
     const userData = data as userInformation;
-    const {patient, medic} = userData;
+    
     setValue('sex', userData.sex)
     setData(userData);
+    register('allergies');
+    setAllergiesObject(parseArrayToAllergiesObject(userData.allergies));
     
-    if (userData.type.includes(userTypes.PATIENT)) {
-      register('patient.allergies');
-      setAllergiesObject(parseArrayToAllergiesObject(patient && patient.allergies));
-    }
     if (userData.type.includes(userTypes.MEDIC)) {
-      register('medic.specialties');
-      setValue('medic.specialties', medic? medic.specialties : ['']);
-      setSpecialties(medic? medic.specialties : ['']);
+      register('specialties');
+      setValue('specialties', userData.specialties || ['']);
+      setSpecialties(userData.specialties || ['']);
     }
     setIsLoading(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -142,9 +140,11 @@ export const ProfileView = () => {
 
   const onSubmit = (values: userInformation) => {
     setIsLoading(true);
-    if (data.type.includes(userTypes.PATIENT)) {
-      values.patient && (values.patient.allergies = allergiesObject.map(x => x.value).filter(y => y !== ''));
-    }
+    
+    values.allergies = allergiesObject.map(x => x.value).filter(y => y !== '');
+    values.specialties = undefined; // TODO: Medic Specialties
+    console.log(values);
+    
     mutate(values);
   }
 
@@ -369,10 +369,10 @@ export const ProfileView = () => {
             <FormControl mb={4}>
               <FormLabel htmlFor='license'>Cédula Profesional</FormLabel>
               <Input
-                name='medic.license'
+                name='license'
                 type='text'
                 placeholder='12345678'
-                defaultValue={data.medic? data.medic.license : ''}
+                defaultValue={data.license || ''}
                 ref={register}
               />
             </FormControl>
@@ -389,7 +389,7 @@ export const ProfileView = () => {
                   {BulletPoint()}
                   <Input
                     value={specialty}
-                    onChange={e => handleValueArrChange(e, index, 'medic.specialties', setSpecialties)}
+                    onChange={e => handleValueArrChange(e, index, 'specialties', setSpecialties)}
                     size='sm'
                     type='text'
                     placeholder='Cirujano'
@@ -411,21 +411,18 @@ export const ProfileView = () => {
             </FormControl>
           }
 
-          {data.type.includes(userTypes.PATIENT) &&
-            <FormControl mb={4}>
-              <FormLabel htmlFor='blood_type'>Tipo de Sangre</FormLabel>
-              <Input
-                name='patient.blood_type'
-                type='text'
-                autoComplete='on'
-                placeholder='O+'
-                defaultValue={data.patient? data.patient.blood_type : ''}
-                ref={register}
-              />
-            </FormControl>
-          }
+          <FormControl mb={4}>
+            <FormLabel htmlFor='blood_type'>Tipo de Sangre</FormLabel>
+            <Input
+              name='blood_type'
+              type='text'
+              autoComplete='on'
+              placeholder='O+'
+              defaultValue={data.blood_type || ''}
+              ref={register}
+            />
+          </FormControl>
 
-          {data.type.includes(userTypes.PATIENT) && 
           <FormControl
             mb={4}
           >
@@ -458,7 +455,7 @@ export const ProfileView = () => {
               </div>
             </HStack>
           </FormControl>
-          }
+          
           <Stack  w={'100%'} align='flex-end'>
             <Button 
               isLoading={isLoading}

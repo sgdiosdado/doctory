@@ -31,8 +31,7 @@ class ShareHistoryTests(APITestCase):
         response = self.client.post(self.url, data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(PatientMedic.objects.get(
-            patient=self.user.more, medic=medic_user.more).medic, medic_user.more)
+        self.assertEqual(PatientMedic.objects.get(patient=self.user, medic=medic_user).medic, medic_user)
 
 
     def test_fail_share_history(self):
