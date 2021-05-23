@@ -2,8 +2,8 @@ from rest_framework import permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from core.models import Medic, PatientMedic
-from core.serializers import ProfileSerializer
+from core.models import Medic, Patient, PatientMedic
+from core.serializers import MedicProfileSerializer
 from core.utils import standard_response
 
 class ListMedics(APIView):
@@ -19,9 +19,10 @@ class ListMedics(APIView):
       """
       Return a list of all patient's medics
       """
-      query_set = PatientMedic.objects.filter(patient=request.user.patientmore).values('medic__user')
+      patient = Patient.objects.get(email=request.user.email)
+      query_set = PatientMedic.objects.filter(patient=patient).values('medic')
       medics = Medic.objects.filter(id__in=query_set)
-      serializer = ProfileSerializer(medics, many=True)
+      serializer = MedicProfileSerializer(medics, many=True)
       res = standard_response(data=serializer.data)
       return Response(res)
 
@@ -37,8 +38,14 @@ class MedicDetail(APIView):
     """
     Delete existing PatientMedic relationship.
     """
-    medic_more = Medic.objects.get(id=medic_id).more
-    request.user.patientmore.medics.remove(medic_more)
+    try:
+      medic = Medic.objects.get(id=medic_id)
+    except Medic.DoesNotExist:
+      res = standard_response(errors={'medic': 'This medic does not exist'})
+      return Response(res, status=status.HTTP_404_NOT_FOUND)
+
+    patient = Patient.objects.get(email=request.user.email)
+    patient.medics.remove(medic)
     res = standard_response()
     return Response(res, status.HTTP_204_NO_CONTENT)
   

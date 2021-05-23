@@ -209,12 +209,11 @@ class Http {
     
     const values = Object.keys(data.errors).map(key => data.errors[key].join(';'))[0]
     if(res.status === 400) throw new Error(values)
-    
     if(res.status === 500) throw new Error('Error con el servidor. Contacte al equipo administrador.')
   }
-  public async removeShare(id:number|null = null) {
-    //const params = id? `?medic_id=${id}` : ''
-    const params = id? `${id}` : ''
+
+  public async removeShare(id:number) {
+    const params = id? `${id}` : '';
     
     const res = await fetch(`${this.url}/api/v1/shared-with/${params}/`, {
       method: 'DELETE',
@@ -223,13 +222,12 @@ class Http {
       },
     });
     
-    const data = await res;
-    //if(res.status === 204) return data;
-
-    /*const values = Object.keys(data.errors).map(key => data.errors[key]).join(';')
-    if(data.status === 400) throw new Error(values)
+    
+    if(res.status === 204) return {id};
+    
+    const data = await res.json();
+    const values = Object.keys(data.errors).map(key => data.errors[key]).join(';')
     if(data.status === 404) throw new Error(values)
-    if(data.status === 405) throw new Error(values)*/
     if(data.status === 500) throw new Error('Error con el servidor. Contacte al equipo administrador.')
   }
 }

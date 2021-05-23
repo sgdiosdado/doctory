@@ -59,16 +59,6 @@ class SpecialtySerializer(serializers.ModelSerializer):
         fields = ['id','name']
 
 
-<<<<<<< HEAD
-class MedicProfileSerializer(serializers.ModelSerializer):
-    specialties = SpecialtySerializer(many=True)
-    class Meta:
-        model = MedicMore
-        fields = ['license', 'specialties']
-
-
-=======
->>>>>>> 75fd8c7ae1ee5fd7b1d505e832e051134f91d1b0
 class PatientProfileSerializer(serializers.ModelSerializer):
     
     class Meta:
