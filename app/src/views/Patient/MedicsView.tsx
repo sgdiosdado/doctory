@@ -40,7 +40,8 @@ export const MedicsView = () => {
   
   const {isFetchedAfterMount: isMedicsFetched} = useQuery('medics', () => http.getMedics(), {
     onSuccess: (data:userInformation[]) => setMedics(data),
-    onError
+    onError,
+    //notifyOnChangeProps: ['data']
   })
 
   const successDelete = () => {
