@@ -2,7 +2,7 @@ from rest_framework import permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from core.models import Patient
+from core.models import Patient, Allergy
 from core.serializers import AllergySerializer
 from core.utils import standard_response
 
@@ -27,3 +27,14 @@ class ListAllergies(APIView):
             return Response(res, status=status.HTTP_201_CREATED)
         res = standard_response(errors=serializer.errors)
         return Response(res, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request):
+        try:
+            patient = Patient.objects.get(email=request.user.email)
+            allergies = Allergy.objects.filter(id__in=request.data['allergies'], patient=patient)
+            if not allergies: raise Allergy.DoesNotExist
+            allergies.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Allergy.DoesNotExist:
+            res = standard_response(errors={'allergy': 'The given allergies does not exist'})
+            return Response(res, status=status.HTTP_404_NOT_FOUND)

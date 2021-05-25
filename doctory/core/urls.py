@@ -25,6 +25,6 @@ urlpatterns = [
     path('share-history/', ShareHistory.as_view(), name='share'),
     path('shared-with/', ListMedics.as_view(), name='shared_with'),
     path('shared-with/<int:medic_id>/', MedicDetail.as_view(), name='shared_medic'),
-    path('allergy/', ListAllergies.as_view(), name='allergy'),
-    path('specialty/', ListSpecialties.as_view(), name='specialty'),
+    path('allergy/', ListAllergies.as_view(), name='allergies'),
+    path('specialty/', ListSpecialties.as_view(), name='specialties')
 ]
