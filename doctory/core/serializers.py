@@ -4,7 +4,7 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 from django.contrib.auth.password_validation import validate_password
-from .models import BackgroundSubtype, BackgroundType, Condition, User, Patient, Medic, Specialty
+from .models import BackgroundSubtype, BackgroundType, Condition, User, Patient, Medic, Specialty, Allergy
 from .utils import UserTypes, user_model
 
 
@@ -57,10 +57,18 @@ class SpecialtySerializer(serializers.ModelSerializer):
     class Meta:
         model = Specialty
         fields = ['id','name']
+        read_only_fields = ['id']
+
+
+class AllergySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Allergy
+        fields = ['id','name']
+        read_only_fields = ['id']
 
 
 class PatientProfileSerializer(serializers.ModelSerializer):
-    
+    allergies = AllergySerializer(many=True, required=False)
     class Meta:
         model = Patient
         fields = ['id', 'email', 'first_name', 'last_name', 'type', 'location', 'sex', 'dob', 'blood_type', 'allergies']
@@ -69,6 +77,7 @@ class PatientProfileSerializer(serializers.ModelSerializer):
 
 class MedicProfileSerializer(serializers.ModelSerializer):
     specialties = SpecialtySerializer(many=True, required=False)
+    allergies = AllergySerializer(many=True, required=False)
     class Meta:
         model = Medic
         fields = ['id', 'email', 'first_name', 'last_name', 'type', 'location', 'sex', 'dob', 'blood_type', 'allergies', 'license', 'specialties']

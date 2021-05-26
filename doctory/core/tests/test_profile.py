@@ -38,35 +38,29 @@ class PatientProfileTests(APITestCase):
         """
         Ensure it can update Patient's profile
         """
-        new_allergies = ['Polén', 'Penicilina']
         new_fields = {
             'location': 'Monterrey',
             'sex': SexTypes.OTHER,
-            'allergies': new_allergies,
             'blood_type': 'O+'
         }
         response = self.client.put(self.url, new_fields, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         location = response.data['data']['location']
         sex = response.data['data']['sex']
-        allergies = response.data['data']['allergies']
         blood_type = response.data['data']['blood_type']
 
         self.assertEqual(location, new_fields['location'])
         self.assertEqual(sex, new_fields['sex'])
-        self.assertEqual(allergies, new_allergies)
         self.assertEqual(blood_type, new_fields['blood_type'])
 
     def test_put_wrong_patient_user_profile(self):
         """
         Ensure it can fail when updatieng patient with invalid payload
         """
-        new_allergies = ['Polén', 'Penicilina']
         new_fields = {
             'location': 'Monterrey',
             'sex': SexTypes.OTHER,
-            'allergies': new_allergies,
-            'blood_type': new_allergies
+            'blood_type': [1, 2, 3]
             }
         response = self.client.put(self.url, new_fields, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

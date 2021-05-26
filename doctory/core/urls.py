@@ -1,3 +1,4 @@
+
 from django.urls import path
 
 from .views.views_condition import ListConditions, ConditionDetail
@@ -8,13 +9,13 @@ from .views.views_authentication import Signup, Login, ChangePassword, Types
 from .views.views_medic import ListPatients
 from .views.views_share import ShareHistory
 from .views.views_shared_with import ListMedics, MedicDetail
+from .views.views_allergy import ListAllergies
 
 urlpatterns = [
     path('conditions/', ListConditions.as_view(), name='conditions'),
     path('conditions/<int:condition_id>/', ConditionDetail.as_view(), name='condition'),
     path('background-types/', ListBackgroundTypes.as_view(), name='background_types'),
     path('background-subtypes/', ListBackgroundSubtypes.as_view(), name='background_subtypes'),
-    path('specialties/', ListSpecialties.as_view(), name='specialties'),
     path('patients/', ListPatients.as_view(), name='patients'),
     path('signup/', Signup.as_view(), name='signup'),
     path('login/', Login.as_view(), name='login'),
@@ -24,4 +25,6 @@ urlpatterns = [
     path('share-history/', ShareHistory.as_view(), name='share'),
     path('shared-with/', ListMedics.as_view(), name='shared_with'),
     path('shared-with/<int:medic_id>/', MedicDetail.as_view(), name='shared_medic'),
+    path('allergy/', ListAllergies.as_view(), name='allergies'),
+    path('specialty/', ListSpecialties.as_view(), name='specialties')
 ]

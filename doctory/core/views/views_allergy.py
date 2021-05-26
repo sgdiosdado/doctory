@@ -2,13 +2,13 @@ from rest_framework import permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from core.models import Medic, Specialty
-from core.serializers import SpecialtySerializer
+from core.models import Patient, Allergy
+from core.serializers import AllergySerializer
 from core.utils import standard_response
 
-class ListSpecialties(APIView):
+class ListAllergies(APIView):
     """
-    View to list medic's specialties
+    View to list patient's allergies
 
     * Requires token authentication
     """
@@ -17,12 +17,12 @@ class ListSpecialties(APIView):
 
     def post(self, request):
         """
-        Creates new specialty for a user and returns it
+        Creates new allergy for a user and returns it
         """
-        serializer = SpecialtySerializer(data=request.data, many=True)
+        serializer = AllergySerializer(data=request.data, many=True)
         if serializer.is_valid():
-            medic = Medic.objects.get(email=request.user.email)
-            serializer.save(medic=medic)
+            patient = Patient.objects.get(email=request.user.email)
+            serializer.save(patient=patient)
             res = standard_response(data=serializer.data)
             return Response(res, status=status.HTTP_201_CREATED)
         res = standard_response(errors=serializer.errors)
@@ -30,11 +30,11 @@ class ListSpecialties(APIView):
 
     def delete(self, request):
         try:
-            medic = Medic.objects.get(email=request.user.email)
-            specialties = Specialty.objects.filter(id__in=request.data['specialties'], medic=medic)
-            if not specialties: raise Specialty.DoesNotExist
-            specialties.delete()
+            patient = Patient.objects.get(email=request.user.email)
+            allergies = Allergy.objects.filter(id__in=request.data['allergies'], patient=patient)
+            if not allergies: raise Allergy.DoesNotExist
+            allergies.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        except Specialty.DoesNotExist:
-            res = standard_response(errors={'specialty': 'The given specialties does not exist'})
+        except Allergy.DoesNotExist:
+            res = standard_response(errors={'allergy': 'The given allergies does not exist'})
             return Response(res, status=status.HTTP_404_NOT_FOUND)
