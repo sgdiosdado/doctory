@@ -5,6 +5,10 @@ from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
 
+def add_specialties_to_first_medic(apps, schema_editor):
+    Medic = apps.get_model('core', 'Medic')
+    Specialty = apps.get_model('core', 'Specialty')
+    Specialty.objects.all().update(medic=Medic.objects.first())
 
 class Migration(migrations.Migration):
 
@@ -40,7 +44,24 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='specialty',
             name='medic',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='specialties', to='core.medic'),
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='specialties',
+                to='core.medic'
+            ),
+            preserve_default=False,
+        ),
+        migrations.RunPython(add_specialties_to_first_medic),
+        migrations.AlterField(
+            model_name='specialty',
+            name='medic',
+            field=models.ForeignKey(
+                null=False,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='specialties',
+                to='core.medic'
+            ),
             preserve_default=False,
         ),
         migrations.DeleteModel(
