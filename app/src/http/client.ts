@@ -1,5 +1,5 @@
 import { 
-  userInformation,
+  UserInformation,
   LoginData,
   SignUpData,
   ConditionData,
@@ -126,7 +126,7 @@ class Http {
     if(res.status === 500) throw new Error('Error con el servidor. Contacte al equipo administrador.')
   }
 
-  public async updateProfile(fields:userInformation) {
+  public async updateProfile(fields:UserInformation) {
     const res = await fetch(`${this.url}/api/v1/profile/`, {
       method: 'PUT',
       headers: {

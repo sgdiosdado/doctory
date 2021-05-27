@@ -17,7 +17,7 @@ import avatar from '../../assets/PowerPeople_Emma.png';
 import { PresetationCard } from '../../components/PresentationCard';
 import { ConditionsTimeLine } from '../Conditions/ConditionsTimeLine';
 import { ConditionsTable } from '../Conditions/ConditionsTable';
-import { ConditionData, userInformation } from '../../http/types';
+import { ConditionData, UserInformation } from '../../http/types';
 import { http } from '../../http/client';
 import { PresentationSkeletonCard } from '../../components/PresentationSkeletonCard';
 import { TimeLineSkeleton } from '../../components/TimeLine/TimeLineSkeleton';
@@ -25,7 +25,7 @@ import { TableSkeleton } from '../../components/TableSkeleton';
 
 export const PatientConditions = () => {
   const {id: patientId} = useParams<{id:string}>();
-  const [userData, setUserData] = useState<userInformation>({
+  const [userData, setUserData] = useState<UserInformation>({
     first_name: '',
     last_name: '',
     dob: '',
@@ -57,7 +57,7 @@ export const PatientConditions = () => {
   })
   
   const {isFetchedAfterMount: isProfileFetched} = useQuery('profile', () => http.getProfileInfo(Number(patientId)), {
-    onSuccess: (data:userInformation) => setUserData(data),
+    onSuccess: (data:UserInformation) => setUserData(data),
     onError
   })
 

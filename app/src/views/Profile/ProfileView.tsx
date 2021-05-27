@@ -33,22 +33,40 @@ import avatar from '../../assets/PowerPeople_Emma.png';
 import { AddIcon } from '@chakra-ui/icons';
 import { FaCamera } from 'react-icons/fa';
 import { sexTypes, userTypes } from '../../utils/typesDefinitions';
-import { ChangePasswordData, userInformation } from '../../http/types';
+import { ChangePasswordData, UserInformation, Allergy, Specialty } from '../../http/types';
 import { http } from '../../http/client';
 import { isValidDate } from '../../utils/utils';
 import { ChangePasswordForm } from './ChangePasswordForm';
 import { setToken } from '../../utils/token';
 import { useMutation, useQuery } from 'react-query';
+import { HomeDrawer } from '../../components/HomeDrawer';
+
+
+const BulletPoint = () => (
+  <Box 
+    bg= 'currentcolor'
+    borderRadius= '50%'
+    w='5px'
+    h='5px'
+    mx='.5em'
+  />
+)
+
 
 export const ProfileView = () => {
   
   const [isLoading, setIsLoading] = useState(true)
-  const [allergiesObject, setAllergiesObject] = useState<{id: number, value: string}[]>([{id:0,value:''},]);
-  const [lastKnownAllergiesId, setLastKnownAllergiesId] = useState(1)
-  const [specialties, setSpecialties] = useState(['']);
+
+  const [allergies, setAllergies] = useState<Allergy[]>( [{id: 1, name: ''}] );
+  const [allergiesToDelete, setAllergiesToDelete] = useState<Allergy[]>();
+
+  const [specialties, setSpecialties] = useState<Specialty[]>( [{id: 1, name: ''}] );
+  const [specialtiesToDelete, setSpecialtiesToDelete] = useState<Specialty[]>();
+
   const toastPosition = useBreakpointValue({base:'top', md:'top-right'});
   const toast = useToast();
-  const [data, setData] = useState<userInformation>({
+
+  const [data, setData] = useState<UserInformation>({
     first_name: '',
     last_name: '',
     dob: '',
@@ -58,7 +76,7 @@ export const ProfileView = () => {
   });
 
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { register, handleSubmit, errors, setValue } = useForm<userInformation>();
+  const { register, handleSubmit, errors, setValue } = useForm<UserInformation>();
 
   const onError = (data:Error) => {
     if(data.message === 'Failed to fetch') data.message = 'Comprueba tu conexión a internet e intenta de nuevo.'
@@ -72,42 +90,47 @@ export const ProfileView = () => {
     });
   }
 
+  // function when is succes on getting profile info
   const ok = useCallback((_, data) => {
-    
-    const parseArrayToAllergiesObject = (allergies:string[] = ['']) => {
-      if (!allergies || allergies.length === 0) allergies = [''];
-      
-      let localLastKownID = lastKnownAllergiesId;
-      const res = allergies.map(allergy => ({
-        id: localLastKownID++,
-        value: allergy
-      }));    
-      setLastKnownAllergiesId(localLastKownID);
-      return res;
-    }
-    const userData = data as userInformation;
-    
-    setValue('sex', userData.sex)
+    const userData = data as UserInformation;
     setData(userData);
-    register('allergies');
-    setAllergiesObject(parseArrayToAllergiesObject(userData.allergies));
+    setValue('sex', userData.sex);
     
-    if (userData.type.includes(userTypes.MEDIC)) {
-      register('specialties');
-      setValue('specialties', userData.specialties || ['']);
-      setSpecialties(userData.specialties || ['']);
-    }
+    setAllergies(userData.allergies || [{id:1, name: ''}]);
+    
+    userData.type.includes(userTypes.MEDIC) &&
+      setSpecialties(userData.specialties || [{id:1, name: ''}]);
+    
     setIsLoading(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[setValue, register])
 
+
+  // Get profile info
   useQuery('profile', () => http.getProfileInfo(), {
-    onSuccess: (data:userInformation) => ok(null, data),
+    onSuccess: (data:UserInformation) => ok(null, data),
     onError,
     onSettled: () => setIsLoading(false)
   })
 
-  const { mutate } = useMutation('updateProfile', (values:userInformation) => http.updateProfile(values), {
+
+  
+
+  const { mutate: mutateProfile } = useMutation('updateProfile', (values:UserInformation) => http.updateProfile(values), {
+    onSuccess: () => {
+      toast({
+        description: '¡Tu información se ha guardado con éxito!',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+        position: toastPosition as ToastPosition,
+      })
+    },
+    onError,
+    onSettled: () => setIsLoading(false)
+  });
+  
+  const { mutate: Alergies } = useMutation('updateProfile', (values:UserInformation) => http.updateProfile(values), {
     onSuccess: () => {
       toast({
         description: '¡Tu información se ha guardado con éxito!',
@@ -138,25 +161,26 @@ export const ProfileView = () => {
     onSettled: () => setIsLoading(false)
   });
 
-  const onSubmit = (values: userInformation) => {
+  const onSubmit = (values: UserInformation) => {
     setIsLoading(true);
     
-    values.allergies = allergiesObject.map(x => x.value).filter(y => y !== '');
-    values.specialties = undefined; // TODO: Medic Specialties
+    // values.allergies = allergiesObject.map(x => x.value).filter(y => y !== '');
+    // values.specialties = undefined; // TODO: Medic Specialties
     console.log(values);
-    
-    mutate(values);
+
+    // Post profile data
+    mutateProfile(values);
   }
 
-  const addSpecialtyField = () => setSpecialties((s) => [...s, '']);
+  const addSpecialtyField = () => setSpecialties((s) => [...s]); //TODO
   
-  const addAllergyField = () => {
-    setAllergiesObject(obj => {
-      const newValue = {id: lastKnownAllergiesId, value: ''};
-      setLastKnownAllergiesId(x => x+1);
-      return [...obj, newValue];
-    })
-  }
+  // const addAllergyField = () => {
+  //   setAllergiesObject(obj => {
+  //     const newValue = {id: lastKnownAllergiesId, value: ''};
+  //     setLastKnownAllergiesId(x => x+1);
+  //     return [...obj, newValue];
+  //   })
+  // }
 
   const handleValueArrChange = (e: ChangeEvent<HTMLInputElement>, index: number, name:string,  setArrValue: Dispatch<SetStateAction<string[]>>) => {
     setArrValue(values => {
@@ -167,28 +191,20 @@ export const ProfileView = () => {
     })
   }
   
-  const handleAllergieChange = (e: ChangeEvent<HTMLInputElement>, allergy:{id:number, value:string} ) => {
-    let allergyId = allergiesObject.findIndex(x => x.id === allergy.id);
-    setAllergiesObject(allergies => {    
-      let newValues = [...allergies];
-      newValues[allergyId] = {...allergy, value:e.target.value};
-      return newValues
-    })
+  const handleAllergieChange = (e: ChangeEvent<HTMLInputElement>, allergy:Allergy ) => {
+    // let allergyId = allergiesObject.findIndex(x => x.id === allergy.id);
+    // setAllergiesObject(allergies => {    
+    //   let newValues = [...allergies];
+    //   newValues[allergyId] = {...allergy, value:e.target.value};
+    //   return newValues
+    // })
   }
 
   const onChangePassword = (values:ChangePasswordData) => {
     mutatePassword(values);
   }
 
-  const BulletPoint = () => (
-    <Box 
-      bg= 'currentcolor'
-      borderRadius= '50%'
-      w='5px'
-      h='5px'
-      mx='.5em'
-    />
-  )
+
 
   return (
     <Container
@@ -199,32 +215,18 @@ export const ProfileView = () => {
     flexGrow={1}
     mx={{base:'1em', md:'2em'}}
     >
-      <Drawer
-        placement={useBreakpointValue({base: 'bottom', lg: 'right'})}
+      <HomeDrawer 
+        drawerPlacement= {useBreakpointValue({base: 'bottom', lg: 'right'})}
         isOpen={isOpen}
         onClose={onClose}
-        >
-        <DrawerOverlay>
-          <DrawerContent>
-            <DrawerCloseButton/>
-            <DrawerHeader>
-              Actualizar contraseña
-            </DrawerHeader>
+        headerText='Actualizar contraseña'
+        Form={ChangePasswordForm({formId: 'change-password-form', onSubmit: onChangePassword})}
+        buttonProps={{
+          text: 'Cambiar contraseña',
+          formId: 'change-password-form'
+        }}
+      />
 
-            <DrawerBody>
-              <ChangePasswordForm formId='change-password-form' onSubmit={onChangePassword}/>
-            </DrawerBody>
-
-            <DrawerFooter>
-              <Button
-                type='submit'
-                form='change-password-form'
-                colorScheme='primary'>Cambiar contraseña</Button>
-            </DrawerFooter>
-
-          </DrawerContent>
-        </DrawerOverlay>
-      </Drawer>
     <Flex
       flexGrow={1}
       align={'flex-start'}
@@ -378,18 +380,18 @@ export const ProfileView = () => {
             </FormControl>
           }
 
-          {data.type.includes(userTypes.MEDIC) && 
+          { specialties && 
             <FormControl mb={4} >
               <FormLabel htmlFor='specialty'>Especialidad(s)</FormLabel>
-              {specialties.map((specialty,index) => (
+              {specialties.map((specialty) => (
                 <HStack
                   mb={2}
-                  key={'specialty-'+index} // TODO: 
+                  key={specialty.id}
                 >
                   {BulletPoint()}
                   <Input
-                    value={specialty}
-                    onChange={e => handleValueArrChange(e, index, 'specialties', setSpecialties)}
+                    value={specialty.name}
+                    // onChange={e => handleValueArrChange(e, index, 'specialties', setSpecialties)} //TODO
                     size='sm'
                     type='text'
                     placeholder='Cirujano'
@@ -427,14 +429,14 @@ export const ProfileView = () => {
             mb={4}
           >
             <FormLabel htmlFor='allergies'>Alergias</FormLabel>
-            {allergiesObject.map((allergy) => (
+            {allergies.map((allergy) => (
               <HStack
                 mb={2}
                 key={allergy.id}
               >
                 {BulletPoint()}
                 <Input
-                  value={allergy.value}
+                  value={allergy.name}
                   onChange={e => handleAllergieChange(e, allergy)}
                   size='sm'
                   type='text'
@@ -447,9 +449,9 @@ export const ProfileView = () => {
               <div>
               <Button
                 size='sm'
-                variant="outline"
-                disabled={allergiesObject[allergiesObject.length-1] && allergiesObject[allergiesObject.length-1].value === ''}
-                onClick={addAllergyField}
+                variant="outline" //TODO
+                // disabled={allergiesObject[allergiesObject.length-1] && allergiesObject[allergiesObject.length-1].value === ''}
+                // onClick={addAllergyField}
                 leftIcon={<AddIcon/>}
               >Agregar</Button>
               </div>

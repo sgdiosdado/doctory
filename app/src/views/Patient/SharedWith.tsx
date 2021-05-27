@@ -10,7 +10,7 @@ import {
   DrawerProps,
   Icon,
 } from '@chakra-ui/react';
-import { userInformation, ShareData } from '../../http/types';
+import { UserInformation, ShareData } from '../../http/types';
 import { http } from '../../http/client';
 import { useQuery, useMutation } from 'react-query';
 import { MedicsTable } from './MedicsTable';
@@ -28,7 +28,7 @@ export const SharedWith = () => {
   const drawerPlacement = useBreakpointValue({ base: 'bottom', lg: 'right' });
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [medics, setMedics] = useState<userInformation[]>([]);
+  const [medics, setMedics] = useState<UserInformation[]>([]);
   
   const [drawerContent, setDrawerContent] = useState<{
     headerText: string;
@@ -57,7 +57,7 @@ export const SharedWith = () => {
     'medics',
     () => http.getMedics(),
     {
-      onSuccess: (data: userInformation[]) => setMedics(data),
+      onSuccess: (data: UserInformation[]) => setMedics(data),
       onError,
     }
   );
@@ -85,7 +85,7 @@ export const SharedWith = () => {
     mutateDeleteMedic(id);
   };
 
-  const onSuccessShareHistory = (medic: userInformation) => {
+  const onSuccessShareHistory = (medic: UserInformation) => {
     setMedics(m => {
       const newMedics = m.filter(med => med.id !== medic.id);
       return [...newMedics, medic];

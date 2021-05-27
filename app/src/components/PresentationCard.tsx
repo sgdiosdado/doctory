@@ -1,10 +1,10 @@
 import React from 'react'
 import { Image } from '@chakra-ui/image'
 import { Box, HStack, Text } from '@chakra-ui/layout'
-import { userInformation } from '../http/types'
+import { UserInformation } from '../http/types'
 
 type presentationCardPropsTypes = {
-  userData: userInformation,
+  userData: UserInformation,
   avatar?: string,
 }
 
