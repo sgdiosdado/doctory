@@ -19,12 +19,12 @@ export type ChangePasswordData = {
 }
 
 export type Allergy = {
-  id?: number,
+  id: number,
   name: string,
 }
 
 export type Specialty = {
-  id?: number,
+  id: number,
   name: string,
 }
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import {
   Button,
   FormControl,
@@ -6,13 +6,13 @@ import {
   FormLabel,
   Input,
   Select,
-  HStack,
   Stack,
 } from "@chakra-ui/react"
-import { UserInformation, Allergy, Specialty } from '../../http/types';
+import { UserInformation} from '../../http/types';
 import { useForm } from 'react-hook-form';
 import { isValidDate } from '../../utils/utils';
-import { sexTypes, userTypes } from '../../utils/typesDefinitions';
+import { InputArrType, sexTypes, userTypes } from '../../utils/typesDefinitions';
+import { ArrInput } from './ArrInput';
 
 type ProfileFormProps = {
   formId: string;
@@ -20,10 +20,23 @@ type ProfileFormProps = {
   data: UserInformation;
   onOpenDrawer: () => void;
   isLoading: boolean;
-  
+  allergies: InputArrType;
+  setAllergies: Dispatch<SetStateAction<InputArrType>>;
+  specialties: InputArrType;
+  setSpecialities: Dispatch<SetStateAction<InputArrType>>;
 }
 
-export const ProfileForm = ({formId, onSubmit, data, onOpenDrawer, isLoading}:ProfileFormProps) => {
+export const ProfileForm = ({
+  formId,
+  onSubmit,
+  data,
+  allergies,
+  setAllergies,
+  specialties,
+  setSpecialities,
+  onOpenDrawer,
+  isLoading,
+}:ProfileFormProps) => {
 
   const { register, handleSubmit, errors, setValue } = useForm<UserInformation>();
 
@@ -113,17 +126,20 @@ export const ProfileForm = ({formId, onSubmit, data, onOpenDrawer, isLoading}:Pr
       <FormControl
         mb={4}>
         <FormLabel htmlFor='sex'>Sexo</FormLabel>
+          {data.sex && 
           <Select
             as='select'
             name='sex'
+            defaultValue={data.sex}
             onChange= {(e) => setValue('sex', e.target.value)}
             ref={register}
           >
-            <option value={sexTypes.NOT_SPECIFIED}>Sin especificar</option>
-            <option value={sexTypes.FEMALE}>Mujer</option>
-            <option value={sexTypes.MALE}>Hombre</option>
-            <option value={sexTypes.OTHER}>Otro</option>
-          </Select>
+            {sexTypes.map(type => (
+              <option key={type.value} value={type.value}>
+                {type.label}
+              </option>
+            ))}
+          </Select>}
       </FormControl>
       
       <FormControl
@@ -140,6 +156,18 @@ export const ProfileForm = ({formId, onSubmit, data, onOpenDrawer, isLoading}:Pr
         />
       </FormControl>
       
+      <FormControl mb={4}>
+        <FormLabel htmlFor='blood_type'>Tipo de Sangre</FormLabel>
+        <Input
+          name='blood_type'
+          type='text'
+          autoComplete='on'
+          placeholder='O+'
+          defaultValue={data.blood_type || ''}
+          ref={register}
+        />
+      </FormControl>
+
       {data.type.includes(userTypes.MEDIC) &&
         <FormControl mb={4}>
           <FormLabel htmlFor='license'>Cédula Profesional</FormLabel>
@@ -153,83 +181,19 @@ export const ProfileForm = ({formId, onSubmit, data, onOpenDrawer, isLoading}:Pr
         </FormControl>
       }
 
-      { specialties && 
-        <FormControl mb={4} >
-          <FormLabel htmlFor='specialty'>Especialidad(s)</FormLabel>
-          {specialties.map((specialty) => (
-            <HStack
-              mb={2}
-              key={specialty.id}
-            >
-              {BulletPoint()}
-              <Input
-                value={specialty.name}
-                // onChange={e => handleValueArrChange(e, index, 'specialties', setSpecialties)} //TODO
-                size='sm'
-                type='text'
-                placeholder='Cirujano'
-              />
-            </HStack>
-          ))}
-
-          <HStack>
-            {BulletPoint()}
-            <div>
-            <Button
-              size='sm'
-              variant="outline"
-              onClick={addSpecialtyField}
-              leftIcon={<AddIcon/>}
-            >Agregar</Button>
-            </div>
-          </HStack>
-        </FormControl>
-      }
-
-      <FormControl mb={4}>
-        <FormLabel htmlFor='blood_type'>Tipo de Sangre</FormLabel>
-        <Input
-          name='blood_type'
-          type='text'
-          autoComplete='on'
-          placeholder='O+'
-          defaultValue={data.blood_type || ''}
-          ref={register}
+      {data.type.includes(userTypes.MEDIC) &&
+        <ArrInput
+          labelText='Specialidad(es)'
+          data={specialties}
+          setData={setSpecialities}
         />
-      </FormControl>
-
-      <FormControl
-        mb={4}
-      >
-        <FormLabel htmlFor='allergies'>Alergias</FormLabel>
-        {allergies.map((allergy) => (
-          <HStack
-            mb={2}
-            key={allergy.id}
-          >
-            {BulletPoint()}
-            <Input
-              value={allergy.name}
-              onChange={e => handleAllergieChange(e, allergy)}
-              size='sm'
-              type='text'
-              placeholder='Pólen'
-            />
-          </HStack>
-        ))}
-        <HStack>
-          {BulletPoint()}
-          <div>
-          <Button
-            size='sm'
-            variant="outline" //TODO
-            // disabled={allergiesObject[allergiesObject.length-1] && allergiesObject[allergiesObject.length-1].value === ''}
-            // onClick={addAllergyField}
-            leftIcon={<AddIcon/>}
-          >Agregar</Button>
-          </div>
-        </HStack>
-      </FormControl>
+      }
+      
+      <ArrInput
+        labelText='Alergia(s)'
+        data={allergies}
+        setData={setAllergies}
+      />
       
       <Stack  w={'100%'} align='flex-end'>
         <Button 
