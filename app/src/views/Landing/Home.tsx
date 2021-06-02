@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react';
 import { UserContext } from '../../provider/AuthProvider';
 import DoctorsInComputerImage from '../../assets/DoctorsInComputerImage.svg';
-import { BackgroundSubtypeData, ConditionData, userInformation, ShareData } from '../../http/types';
+import { BackgroundSubtypeData, ConditionData, UserInformation, ShareData } from '../../http/types';
 import { http } from '../../http/client';
 import { useMutation, useQuery } from 'react-query';
 import { ConditionsTimeLine } from '../Conditions/ConditionsTimeLine';
@@ -42,7 +42,7 @@ export const Home = () => {
   const lastTabIndex = localStorage.getItem('tableTabIndex');
 
   const { isOpen, onOpen, onClose } = useDisclosure() 
-  const [patients, setPatients] = useState<userInformation[]>([])
+  const [patients, setPatients] = useState<UserInformation[]>([])
   const [backgroundSubtypes, setBackgroundSubtype] = useState<BackgroundSubtypeData[]>([])
   const [conditions, setConditions] = useState<ConditionData[]>([])
   const [tabIndex, setTabIndex] = useState(lastTabIndex? Number(lastTabIndex): 0);
@@ -148,7 +148,7 @@ export const Home = () => {
 
   const {isFetchedAfterMount: isPatintsFetched} = useQuery('patients', () => http.getPatients(), {
     enabled: isMedic,
-    onSuccess: (data:userInformation[]) => setPatients(data),
+    onSuccess: (data:UserInformation[]) => setPatients(data),
     onError
   })
 

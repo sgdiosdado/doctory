@@ -1,10 +1,12 @@
 import { 
-  userInformation,
+  UserInformation,
   LoginData,
   SignUpData,
   ConditionData,
   ChangePasswordData,
-  ShareData
+  ShareData,
+  Allergy,
+  Specialty
 } from './types';
 import { getToken, setToken } from '../utils/token';
 
@@ -126,7 +128,7 @@ class Http {
     if(res.status === 500) throw new Error('Error con el servidor. Contacte al equipo administrador.')
   }
 
-  public async updateProfile(fields:userInformation) {
+  public async updateProfile(fields:UserInformation) {
     const res = await fetch(`${this.url}/api/v1/profile/`, {
       method: 'PUT',
       headers: {
@@ -141,6 +143,80 @@ class Http {
     
     const values = Object.keys(data.errors).map(key => data.errors[key].join(';'))[0]
     if(res.status === 400) throw new Error(values)
+    if(res.status === 500) throw new Error('Error con el servidor. Contacte al equipo administrador.')
+  }
+
+  public async newAllergies(fields: Allergy[]) {
+    const res = await fetch(`${this.url}/api/v1/allergy/`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Token ${getToken()}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(fields)
+    });
+    const data = await res.json();
+    
+    if(res.status === 201) return data.data;
+    
+    const values = Object.keys(data.errors).map(key => data.errors[key].join(';'))[0]
+    if(res.status === 400) throw new Error(values)
+    if(res.status === 500) throw new Error('Error con el servidor. Contacte al equipo administrador.')
+  }
+
+  public async deleteAllergies(fields: Allergy[]) {
+    const payload=fields.map(x => x.id);
+    const res = await fetch(`${this.url}/api/v1/allergy/`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Token ${getToken()}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({allergies:payload})
+    });
+    
+    if(res.status === 204) return payload;
+    
+    const data = await res.json();
+    const values = Object.keys(data.errors).map(key => data.errors[key].join(';'))[0]
+    if(res.status === 404) throw new Error(values)
+    if(res.status === 500) throw new Error('Error con el servidor. Contacte al equipo administrador.')
+  }
+
+  public async newSpecialties(fields: Specialty[]) {
+    const res = await fetch(`${this.url}/api/v1/specialty/`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Token ${getToken()}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(fields)
+    });
+    const data = await res.json();
+
+    if(res.status === 201) return data.data;
+    
+    const values = Object.keys(data.errors).map(key => data.errors[key].join(';'))[0]
+    if(res.status === 400) throw new Error(values)
+    if(res.status === 500) throw new Error('Error con el servidor. Contacte al equipo administrador.')
+  }
+
+  public async deleteSpecialtes(fields: Specialty[]) {
+    const payload=fields.map(x => x.id);
+    const res = await fetch(`${this.url}/api/v1/specialty/`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Token ${getToken()}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({specialties:payload})
+    });
+    
+    if(res.status === 204) return payload;
+    
+    const data = await res.json();
+    const values = Object.keys(data.errors).map(key => data.errors[key].join(';'))[0]
+    if(res.status === 404) throw new Error(values)
     if(res.status === 500) throw new Error('Error con el servidor. Contacte al equipo administrador.')
   }
 

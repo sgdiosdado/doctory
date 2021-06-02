@@ -1,10 +1,10 @@
 import React from 'react'
 import { Image } from '@chakra-ui/image'
 import { Box, HStack, Text } from '@chakra-ui/layout'
-import { userInformation } from '../http/types'
+import { UserInformation } from '../http/types'
 
 type presentationCardPropsTypes = {
-  userData: userInformation,
+  userData: UserInformation,
   avatar?: string,
 }
 
@@ -42,7 +42,7 @@ export const PresetationCard = ({userData, avatar}:presentationCardPropsTypes) =
           }
           {userData.allergies &&
             <Text textOverflow='ellipsis' overflow='hidden' >
-              Alergias: {userData.allergies.join(', ')}
+              Alergias: {userData.allergies.map(x=>x.name).join(', ')}
             </Text>
           }
           <Text textOverflow='ellipsis' overflow='hidden' >

@@ -1,11 +1,11 @@
 import React from 'react';
 import { Table, Tbody, Td, Th, Thead, Tr, Button, Icon} from '@chakra-ui/react';
-import { userInformation } from '../../http/types';
+import { UserInformation } from '../../http/types';
 import { EmptyState } from '../../components/EmptyState';
 import { DeleteIcon } from '@chakra-ui/icons';
 
 type MedicsTableProps = {
-  medics: userInformation[];
+  medics: UserInformation[];
   deleteMedic: (id:number) => void;
 };
 

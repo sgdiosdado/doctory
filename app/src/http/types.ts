@@ -18,7 +18,17 @@ export type ChangePasswordData = {
   password2: string;
 }
 
-export type userInformation = {
+export type Allergy = {
+  id: number,
+  name: string,
+}
+
+export type Specialty = {
+  id: number,
+  name: string,
+}
+
+export type UserInformation = {
   id?: number,
   type: string[],
   first_name: string,
@@ -28,9 +38,9 @@ export type userInformation = {
   dob?: string,
   sex?: string,
   blood_type?: string,
-  allergies?: string[],
+  allergies?: Allergy[],
   license?: string,
-  specialties?: string[],
+  specialties?: Specialty[],
 }
 
 export type ConditionData = {
