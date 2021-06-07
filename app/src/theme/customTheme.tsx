@@ -1,18 +1,23 @@
-import { extendTheme } from "@chakra-ui/react"
+import { extendTheme, withDefaultColorScheme } from "@chakra-ui/react"
 
-export const customTheme =  extendTheme({
+export const customTheme =  extendTheme(
+  withDefaultColorScheme({
+    colorScheme: 'primary',
+    components: ['Button']
+  }),
+  {
   colors: {
     primary: {
-      50: '#e9e8ff',
-      100: '#c3c0f5',
-      200: '#9a97e8',
-      300: '#6f6fdd',
-      400: '#464ad3',
-      500: '#302cb9',
-      600: '#2d2291',
-      700: '#241769',
-      800: '#170c41',
-      900: '#0c041c'
+      50: '#b0c4ff',
+      100: '#7ea1ff',
+      200: '#4b82ff',
+      300: '#1a66ff',
+      400: '#0b5cff',
+      500: '#003de6',
+      600: '#0023b4',
+      700: '#001082',
+      800: '#000351',
+      900: '#030021',
     }
   }
 })

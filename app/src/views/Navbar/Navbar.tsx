@@ -29,7 +29,7 @@ export const Navbar = () => {
   const { isOpen, onToggle } = useDisclosure();
   const [navbarItems, setNavbarItems] = useState<NavItem[]>([]);
   const [homePath, setHomePath] = useState('/')
-  const mobileContainerHover = useColorModeValue('gray.100', 'gray.700');
+  const mobileContainerHover = useColorModeValue('gray.50', 'gray.700');
 
   useEffect(() => {
     const loggedInItems:NavItem[] = [
@@ -48,13 +48,11 @@ export const Navbar = () => {
   }, [authContext])
 
   return (
-    <Box>
+    <Box bg={useColorModeValue('gray.50', 'gray.900')}>
       <Flex
         minH={'60px'}
         py={{ base: 2 }}
         px={{ base: 4 }}
-        borderBottom={1}
-        borderStyle={'solid'}
         align={'center'}>
         <Flex
           flex={{ base: 1, md: 'auto' }}
@@ -114,7 +112,7 @@ export const Navbar = () => {
 
       <Collapse in={isOpen} animateOpacity>
         <Stack
-          borderBottom='0.5px solid gray'
+          bg={useColorModeValue('gray.100', 'gray.800')}
           py={4}
           display={{ md: 'none' }}>
           {navbarItems.map((navItem) => (

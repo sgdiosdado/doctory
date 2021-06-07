@@ -203,8 +203,7 @@ export const SignUpView = () => {
                 </FormErrorMessage>
               </FormControl>
 
-              <FormControl
-                mb={4}>
+              <FormControl mb={4}>
                 <FormLabel htmlFor='user_type'>Tipo de Cuenta</FormLabel>
                   <Select
                     as='select'
@@ -217,8 +216,11 @@ export const SignUpView = () => {
               </FormControl>
               
               <Button
+                my={6}
                 onClick={_ => setInitialPassword(true)}
-                type='submit'>
+                type='submit'
+                isFullWidth
+              >
                 Registrar
               </Button>
             </form>

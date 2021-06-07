@@ -100,7 +100,7 @@ export const TimeLineItem = ({conditionTitle, date_of_diagnosis, conditionDescri
         {/* Point of card in line */}
         <Box as='span' 
           className="circle" 
-          bg={useColorModeValue('primary.500','primary.800')}
+          bg={useColorModeValue('primary.600','primary.400')}
           borderRadius='50%'
           position='absolute'
           top='calc(50% - .5em)' //half of height
