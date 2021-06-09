@@ -173,7 +173,7 @@ export const Home = () => {
         pt='2rem'
         maxW={{base: '100%', md: '75%', lg: '50%'}} >
 
-        <Tabs isFitted index={tabIndex} onChange={handleTabsChange}>
+        <Tabs isFitted colorScheme='primary' index={tabIndex} onChange={handleTabsChange}>
           <TabList>
             {isMedic && <Tab>Pacientes</Tab>}
             <Tab>Mis condiciones</Tab>

@@ -17,7 +17,7 @@ export const AppRouter = () => {
         <Box w='100%'>
           <Navbar />
         </Box>
-        <Box h='100%' width='100%' d='flex' flexGrow={1} flexDirection={'column'} bg={useColorModeValue('gray.100', 'gray.800')}>
+        <Box h='100%' width='100%' d='flex' flexGrow={1} flexDirection={'column'} bg={useColorModeValue('gray.50', 'gray.900')}>
           { authContext.isLoading
             ? <LoadingView />
             : (

@@ -15,18 +15,18 @@ import PresonInComputerImage from '../../assets/PresonInComputerImage.svg';
 const bulletList = [{
   title: 'Con una cuenta de paciente:',
   listItems: [
-    'Administrar tu historia médica',
-    'Compartir tu historia médica con tu doctor',
-    'Organizar tus estudios médicos'
+    'Administra tu perfil',
+    'Agrega tus condiciones',
+    'Comparte tu historia médica con tu doctor',
   ]
 },
 {
   title: 'Con una cuenta de doctor:',
   listItems: [
-    'Ver las historias médicas de tus pacientes',
-    'Organizar las notas de tus pacientes',
-    'Administrar tu historia médica',
-    'Organizar tus estudios médicos'
+    'Ve las historias médicas de tus pacientes',
+    'Administra tu perfil',
+    'Agrega tus condiciones',
+    'Comparte tu historia médica con tu doctor',
   ]
 }, 
 ]
@@ -59,6 +59,7 @@ const landingImage = useBreakpointValue({ base: DoctorWithPhoneImage, md: Doctor
             </Box>
             <Box w={'40%'} maxW={{sm:'xs', md:'sm', xl:'md'}} align='center'>
                 <Heading as='h1' 
+                  fontWeight='medium'
                   textAlign='left'
                   mb={{base:'1em', lg:'2em'}} 
                   fontSize={{base:'2xl', md:'4xl', lg:'6xl'}}
@@ -66,7 +67,7 @@ const landingImage = useBreakpointValue({ base: DoctorWithPhoneImage, md: Doctor
                 >
                   Doctory
                 </Heading>
-              <Text fontSize={['xl', '2xl', '3xl', '4xl']} mb={'2em'} textAlign='left' fontWeight='medium'>
+              <Text fontSize={['xl', '3xl', '4xl']} mb={'2em'} textAlign='left' fontWeight='normal'>
                 Administra tu historia clínica y compartela con tu doctor
               </Text>
               <Box textAlign='center' w={['90%', '50%']} >
@@ -84,7 +85,7 @@ const landingImage = useBreakpointValue({ base: DoctorWithPhoneImage, md: Doctor
               <Image src={SecureImage} alt={'Doctory'}/>
             </Box>
             <Box maxW={{base:'md', md:'sm'}} align='center'>
-              <Text fontSize={['xl', '2xl', '3xl', '4xl']} textAlign='left' fontWeight='normal'>
+              <Text fontSize={['xl', '3xl', '4xl']} textAlign='left' fontWeight='normal'>
                 Tu información es segura y confidencial, tú decides con quien la compartes
               </Text>
             </Box>

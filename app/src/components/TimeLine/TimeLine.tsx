@@ -28,7 +28,7 @@ export const TimeLine:FC = ({children}) => {
         pb='2em'
         sx={{
           '::after':{
-            backgroundColor: useColorModeValue('primary.500','primary.800'),
+            backgroundColor: useColorModeValue('primary.500','primary.400'),
             content:'""',
             position: 'absolute',
             left: `${isMobile? '-0.1em': 'calc(50% - 0.1em)'}`, //(50% - 1/2(width))

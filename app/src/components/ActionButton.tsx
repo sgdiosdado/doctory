@@ -12,7 +12,7 @@ type actionButonProps = {
 export const ActionButton = ({icon = AddIcon}:actionButonProps) => {
   return (
     <Box
-      bg={useColorModeValue('primary.500', 'primary.200')}
+      bg={useColorModeValue('primary.500', 'primary.400')}
       rounded='50%'
       cursor='pointer'
       _hover={{
