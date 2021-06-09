@@ -10,7 +10,7 @@ type PatientsTableProps = {
 };
 
 export const PatientsTable = ({ patients }: PatientsTableProps) => {
-  const linkColor = useColorModeValue('blue.600', 'blue.400');
+  const linkColor = useColorModeValue('primary.500','primary.400');
   
   if(patients.length === 0){
     return <EmptyState text='Sin pacientes' />

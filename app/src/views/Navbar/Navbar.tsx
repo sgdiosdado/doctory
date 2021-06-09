@@ -30,6 +30,7 @@ export const Navbar = () => {
   const [navbarItems, setNavbarItems] = useState<NavItem[]>([]);
   const [homePath, setHomePath] = useState('/')
   const mobileContainerHover = useColorModeValue('gray.50', 'gray.700');
+  const buttonColor = useColorModeValue('primary.500','primary.400');
 
   useEffect(() => {
     const loggedInItems:NavItem[] = [
@@ -59,6 +60,7 @@ export const Navbar = () => {
           ml={{ base: -2 }}
           display={{ base: 'flex', md: 'none' }}>
           <IconButton
+            color={buttonColor}
             onClick={onToggle}
             icon={
               isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />
@@ -98,11 +100,11 @@ export const Navbar = () => {
         >
           {!authContext.isLoading &&
             authContext.isLoggedIn ? (
-              <Button as={Link} to={routes.default.path} onClick={logout} size={'md'} fontSize={'sm'} variant={'ghost'}>
+              <Button as={Link} to={routes.default.path} onClick={logout} size={'md'} fontSize={'sm'} variant={'ghost'} color={buttonColor}>
                 Cerrar Sesión
               </Button>
             ):(
-              <Button as={Link} to={routes.login.path} size={'md'} fontSize={'sm'} variant={'ghost'}>
+              <Button as={Link} to={routes.login.path} size={'md'} fontSize={'sm'} variant={'ghost'} color={buttonColor}>
                 Iniciar sesión
               </Button>
             )
