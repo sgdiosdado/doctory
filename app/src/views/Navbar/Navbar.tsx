@@ -18,7 +18,6 @@ import {
   import { ColorModeSwitcher } from "../../theme/ColorModeSwitcher";
   import { UserContext } from '../../provider/AuthProvider';
 import { routes } from "../../routes/routes";
-import { userTypes } from '../../utils/typesDefinitions';
 
 type NavItem = {
   label: string;
@@ -30,20 +29,18 @@ export const Navbar = () => {
   const { isOpen, onToggle } = useDisclosure();
   const [navbarItems, setNavbarItems] = useState<NavItem[]>([]);
   const [homePath, setHomePath] = useState('/')
-  const mobileContainerHover = useColorModeValue('gray.100', 'gray.700');
+  const mobileContainerHover = useColorModeValue('gray.50', 'gray.700');
+  const buttonColor = useColorModeValue('primary.500','primary.400');
 
   useEffect(() => {
     const loggedInItems:NavItem[] = [
       {label: 'Perfil', path: routes.profile.path},
+      {label: 'Mis médicos', path: routes.sharedWith.path},
     ];
     const loggedOutItems:NavItem[] = [];
 
     if (authContext.isLoggedIn) {
       setHomePath(routes.home.path);
-      if(authContext.type?.includes(userTypes.MEDIC)){
-        setHomePath(routes.medic.path)
-        loggedInItems.push({label:'Mis condiciones', path:routes.home.path})
-      }
       setNavbarItems(loggedInItems);
     }else{
       setHomePath(routes.default.path)
@@ -52,19 +49,18 @@ export const Navbar = () => {
   }, [authContext])
 
   return (
-    <Box>
+    <Box bg={useColorModeValue('gray.50', 'gray.900')}>
       <Flex
         minH={'60px'}
         py={{ base: 2 }}
         px={{ base: 4 }}
-        borderBottom={1}
-        borderStyle={'solid'}
         align={'center'}>
         <Flex
           flex={{ base: 1, md: 'auto' }}
           ml={{ base: -2 }}
           display={{ base: 'flex', md: 'none' }}>
           <IconButton
+            color={buttonColor}
             onClick={onToggle}
             icon={
               isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />
@@ -104,11 +100,11 @@ export const Navbar = () => {
         >
           {!authContext.isLoading &&
             authContext.isLoggedIn ? (
-              <Button as={Link} to={routes.default.path} onClick={logout} size={'md'} fontSize={'sm'} variant={'ghost'}>
+              <Button as={Link} to={routes.default.path} onClick={logout} size={'md'} fontSize={'sm'} variant={'ghost'} color={buttonColor}>
                 Cerrar Sesión
               </Button>
             ):(
-              <Button as={Link} to={routes.login.path} size={'md'} fontSize={'sm'} variant={'ghost'}>
+              <Button as={Link} to={routes.login.path} size={'md'} fontSize={'sm'} variant={'ghost'} color={buttonColor}>
                 Iniciar sesión
               </Button>
             )
@@ -118,7 +114,7 @@ export const Navbar = () => {
 
       <Collapse in={isOpen} animateOpacity>
         <Stack
-          borderBottom='0.5px solid gray'
+          bg={useColorModeValue('gray.100', 'gray.800')}
           py={4}
           display={{ md: 'none' }}>
           {navbarItems.map((navItem) => (

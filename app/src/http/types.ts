@@ -10,6 +10,7 @@ export type SignUpData = {
   email: string;
   password1: string;
   password2: string;
+  user_type: string,
 }
 
 export type ChangePasswordData = {
@@ -17,23 +18,29 @@ export type ChangePasswordData = {
   password2: string;
 }
 
-export type userInformation = {
+export type Allergy = {
+  id: number,
+  name: string,
+}
+
+export type Specialty = {
+  id: number,
+  name: string,
+}
+
+export type UserInformation = {
   id?: number,
+  type: string[],
   first_name: string,
   last_name: string,
   email: string,
   location?: string,
   dob?: string,
   sex?: string,
-  patient?: {
-    blood_type: string,
-    allergies: string[],
-  },
-  medic?: {
-    license: string,
-    specialties: string[],
-  },
-  type: string[],
+  blood_type?: string,
+  allergies?: Allergy[],
+  license?: string,
+  specialties?: Specialty[],
 }
 
 export type ConditionData = {
@@ -49,4 +56,8 @@ export type BackgroundSubtypeData = {
   id?: number;
   name: string;
   description: string;
+}
+
+export type ShareData = {
+  email: string;
 }

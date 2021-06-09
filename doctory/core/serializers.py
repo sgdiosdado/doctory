@@ -1,37 +1,35 @@
-from core.utils import SexTypes
-from django.contrib.postgres import fields
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 from django.contrib.auth.password_validation import validate_password
-from .models import BackgroundSubtype, BackgroundType, Condition, MedicMore, PatientMore, User, Specialty
+from .models import BackgroundSubtype, BackgroundType, Condition, User, Patient, Medic, Specialty, Allergy
+from .utils import UserTypes, user_model
 
 
-class SignupSerializer(serializers.ModelSerializer):
+class SignupSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True, validators=[UniqueValidator(queryset=User.objects.all(), message='This email is already in use')])
     password1 = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
-
-    class Meta:
-        model = User
-        fields = ('email', 'first_name', 'last_name', 'password1', 'password2',)
-        extra_kwargs = {
-            'first_name': {'required': True},
-            'last_name': {'required': True}
-        }
+    first_name = serializers.CharField(write_only=True, required=True)
+    last_name = serializers.CharField(write_only=True, required=True)
+    user_type = serializers.CharField(write_only=True, required=True)
 
     def validate(self, attrs):
         if attrs['password1'] != attrs['password2']:
             raise serializers.ValidationError({'password': 'Password fields didn\'t match.'})
         return attrs
-
+    
     def create(self, validated_data):
-        user = User.objects.create(
+
+        UserModel = user_model(validated_data['user_type'])
+
+        user = UserModel.objects.create(
             email=validated_data['email'],
             first_name=validated_data['first_name'],
-            last_name=validated_data['last_name']
+            last_name=validated_data['last_name'],
+            type=[validated_data['user_type']]
         )
         
         user.set_password(validated_data['password1'])
@@ -59,38 +57,31 @@ class SpecialtySerializer(serializers.ModelSerializer):
     class Meta:
         model = Specialty
         fields = ['id','name']
+        read_only_fields = ['id']
 
 
-class MedicProfileSerializer(serializers.ModelSerializer):
+class AllergySerializer(serializers.ModelSerializer):
     class Meta:
-        model = MedicMore
-        fields = ['license', 'specialties']
+        model = Allergy
+        fields = ['id','name']
+        read_only_fields = ['id']
 
 
 class PatientProfileSerializer(serializers.ModelSerializer):
-    
+    allergies = AllergySerializer(many=True, required=False)
     class Meta:
-        model = PatientMore
-        fields = ['blood_type', 'allergies']
-
-
-class UserProfileSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        fields = ['email', 'first_name', 'last_name', 'type', 'location', 'sex', 'dob']
+        model = Patient
+        fields = ['id', 'email', 'first_name', 'last_name', 'type', 'location', 'sex', 'dob', 'blood_type', 'allergies']
         read_only_fields = ['email']
 
 
-class ProfileSerializer(serializers.ModelSerializer):
-    patient = PatientProfileSerializer(source='patientmore')
-    medic = MedicProfileSerializer(source='medicmore')
-
+class MedicProfileSerializer(serializers.ModelSerializer):
+    specialties = SpecialtySerializer(many=True, required=False)
+    allergies = AllergySerializer(many=True, required=False)
     class Meta:
-        FIELDS = ['id', 'email', 'first_name', 'last_name', 'type', 'location', 'sex', 'dob', 'patient', 'medic']
-        model = User
-        fields = FIELDS
-        read_only_fields = FIELDS
+        model = Medic
+        fields = ['id', 'email', 'first_name', 'last_name', 'type', 'location', 'sex', 'dob', 'blood_type', 'allergies', 'license', 'specialties']
+        read_only_fields = ['email']
 
 
 class ChangePasswordSerializer(serializers.Serializer):
@@ -108,6 +99,7 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 class ConditionSerializer(serializers.ModelSerializer):
     background_subtype_name = serializers.CharField(source='background_subtype.name', read_only=True)
+
     class Meta:
         model = Condition
         fields = ['id', 'name', 'description', 'patient', 'date_of_diagnosis', 'background_subtype', 'background_subtype_name']
@@ -136,3 +128,7 @@ class BackgroundTypeSerializer(serializers.ModelSerializer):
         model = BackgroundType
         fields = ['id', 'name', 'description', 'background_subtypes']
         read_only_fields = ['id', 'name', 'description', 'backgroundsubtypes']
+
+
+class ShareSerializer(serializers.Serializer):
+    email = serializers.CharField(max_length=255, write_only=True, required=True)

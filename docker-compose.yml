@@ -28,6 +28,8 @@ services:
   app:
     build: ./app
     command: yarn start
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
     volumes:
       - ./app:/app
     ports:

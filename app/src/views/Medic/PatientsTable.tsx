@@ -1,15 +1,21 @@
 import React from 'react';
 import { Table, Tbody, Td, Th, Thead, Tr, Link as ChakraLink, useColorModeValue } from '@chakra-ui/react';
-import { userInformation } from '../../http/types';
+import { UserInformation } from '../../http/types';
 import { Link } from 'react-router-dom';
 import { routes } from '../../routes/routes';
+import { EmptyState } from '../../components/EmptyState';
 
 type PatientsTableProps = {
-  patients: userInformation[];
+  patients: UserInformation[];
 };
 
 export const PatientsTable = ({ patients }: PatientsTableProps) => {
-  const linkColor = useColorModeValue('blue.600', 'blue.400');
+  const linkColor = useColorModeValue('primary.500','primary.400');
+  
+  if(patients.length === 0){
+    return <EmptyState text='Sin pacientes' />
+  }
+
   return (
     <Table variant="striped">
       <Thead>
@@ -32,7 +38,7 @@ export const PatientsTable = ({ patients }: PatientsTableProps) => {
               </ChakraLink>
             </Td>
             <Td>{patient.dob || '-'}</Td>
-            <Td>{patient.patient?.blood_type || '-'}</Td>
+            <Td>{patient.blood_type || '-'}</Td>
           </Tr>
         ))}
       </Tbody>
